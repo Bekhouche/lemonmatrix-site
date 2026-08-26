@@ -1,0 +1,23 @@
+{
+  "run_id": "6577226a-ef00-4250-a5fc-f2df52dea351",
+  "trials": [
+    {
+      "ttft_ms": 135.067,
+      "decode_tokens_per_sec": 6.9400660504520575,
+      "prompt_tokens": 35,
+      "output_tokens": 256,
+      "watts": null,
+      "vram_gb": null,
+      "host_memory_gb": 105.2
+    },
+    {
+      "ttft_ms": 145.022,
+      "decode_tokens_per_sec": 6.942494504446098,
+      "prompt_tokens": 35,
+      "output_tokens": 256,
+      "watts": null,
+      "vram_gb": null,
+      "host_memory_gb": 105.1
+    }
+  ]
+}

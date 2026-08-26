@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "audiogen",
+  "run_id": "04f5bc16-c082-437c-bea5-c1bdb800ea50",
+  "timestamp": "2026-08-25T04:45:35.185363+00:00",
+  "model": {
+    "name": "ACE-Step-Music",
+    "checkpoint": "Serveurperso/ACE-Step-1.5-GGUF:acestep-v15-xl-sft-Q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "acestep-rocm",
+    "os": "windows",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX",
+    "dgpu_family": "gfx110X",
+    "driver_version": "32.0.31035.1003",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 32.0,
+    "os_version": "Windows 11 Pro for Workstations 6.3 (Build 26200)",
+    "backend_version": "v0.1.1"
+  },
+  "metrics": {
+    "generation_time_ms": 5374.505940359086,
+    "audio_duration_s": 30.0,
+    "real_time_factor": 5.581908427101974,
+    "trial_count": 2,
+    "prompt_chars": 30,
+    "generation_time_ms_stddev": 7.717931557859423,
+    "generation_time_ms_p95": 5379.417601926252,
+    "peak_memory_gb": 22.0
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

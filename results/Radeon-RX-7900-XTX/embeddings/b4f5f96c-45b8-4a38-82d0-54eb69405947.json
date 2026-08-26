@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "embeddings",
+  "run_id": "b4f5f96c-45b8-4a38-82d0-54eb69405947",
+  "timestamp": "2026-08-25T04:45:50.232861+00:00",
+  "model": {
+    "name": "Qwen3-Embedding-0.6B-GGUF",
+    "checkpoint": "Qwen/Qwen3-Embedding-0.6B-GGUF:Qwen3-Embedding-0.6B-Q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-rocm",
+    "os": "windows",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX",
+    "dgpu_family": "gfx110X",
+    "driver_version": "32.0.31035.1003",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 32.0,
+    "os_version": "Windows 11 Pro for Workstations 6.3 (Build 26200)",
+    "backend_version": "b10397"
+  },
+  "metrics": {
+    "latency_ms": 83.115697465837,
+    "embeddings_per_sec": 24.062843253190035,
+    "trial_count": 5,
+    "batch_size": 2,
+    "input_chars_total": 28,
+    "latency_ms_stddev": 10.540608756446796,
+    "latency_ms_p95": 97.63009827584028,
+    "embedding_dim": 1024,
+    "peak_memory_gb": 22.6
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "9a524fe9-35d6-44ee-8b1d-8616c396372f",
+  "timestamp": "2026-08-24T20:07:41.327524+00:00",
+  "model": {
+    "name": "user.Qwen3.8-27B-GGUF-UD-Q4_K_XL",
+    "class": "dense",
+    "quantization": "UD-Q4_K_XL",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-vulkan",
+    "os": "windows",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX",
+    "dgpu_family": "gfx110X",
+    "driver_version": "32.0.31035.1003",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 32.0,
+    "os_version": "Windows 11 Pro for Workstations 6.3 (Build 26200)",
+    "backend_version": "b10375"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 207.32035035564627,
+      "stddev": 65.28363224796914,
+      "p95": 302.77170495113774,
+      "ci95_half_width": 81.04734066403371
+    },
+    "decode": {
+      "tokens_per_sec": 9.827806801046922,
+      "inter_token_latency_ms": 101.75210199425914,
+      "stddev": 5.015644499009541,
+      "p95": 15.61274389143096,
+      "ci95_half_width": 6.226746802580958
+    },
+    "ttft_ms": 381.0528,
+    "trial_count": 5,
+    "peak_memory_gb": 31.5,
+    "prompt_sha256": "1c43b07d6b0d7624785966ffe2ddc076aa76b5fcf9357882ac1165f0073f43ee",
+    "ttft_ms_stddev": 99.62031688716917,
+    "ttft_ms_ci95_half_width": 123.67513083747812
+  },
+  "validity": {
+    "valid": false,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": false,
+    "model_reload_free": true,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; peak_memory_gb is host RAM, not VRAM -- vram_gb was unavailable from this instance; competing workload detected during measurement: Qwen3.8-27B-GGUF-UD-Q4_K_XL"
+  }
+}

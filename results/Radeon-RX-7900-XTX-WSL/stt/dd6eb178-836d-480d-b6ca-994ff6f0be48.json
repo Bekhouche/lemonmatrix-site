@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "stt",
+  "run_id": "dd6eb178-836d-480d-b6ca-994ff6f0be48",
+  "timestamp": "2026-08-25T11:47:35.344808+00:00",
+  "model": {
+    "name": "Whisper-Tiny",
+    "checkpoint": "ggerganov/whisper.cpp:ggml-tiny.bin"
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "whispercpp-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX (gfx1100)",
+    "dgpu_family": "gfx1100",
+    "driver_version": "unknown",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 15.57,
+    "os_version": "Linux-6.18.33.2-microsoft-standard-WSL2 (Ubuntu 24.04)",
+    "backend_version": "v1.8.4"
+  },
+  "metrics": {
+    "transcription_time_ms": 500.4921577870846,
+    "audio_duration_s": 10.0,
+    "real_time_factor": 19.98033304700475,
+    "trial_count": 5,
+    "transcription_time_ms_stddev": 60.585358880107414,
+    "transcription_time_ms_p95": 568.4412933886051,
+    "peak_memory_gb": 7.7
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

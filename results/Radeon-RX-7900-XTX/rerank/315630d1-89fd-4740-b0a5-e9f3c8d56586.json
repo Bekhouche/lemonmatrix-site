@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "rerank",
+  "run_id": "315630d1-89fd-4740-b0a5-e9f3c8d56586",
+  "timestamp": "2026-08-25T04:46:04.543815+00:00",
+  "model": {
+    "name": "jina-reranker-v1-tiny-en-GGUF",
+    "checkpoint": "mradermacher/jina-reranker-v1-tiny-en-GGUF:Q8_0"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-rocm",
+    "os": "windows",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX",
+    "dgpu_family": "gfx110X",
+    "driver_version": "32.0.31035.1003",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 32.0,
+    "os_version": "Windows 11 Pro for Workstations 6.3 (Build 26200)",
+    "backend_version": "b10397"
+  },
+  "metrics": {
+    "latency_ms": 67.79237054288387,
+    "documents_per_sec": 29.501844882896474,
+    "trial_count": 5,
+    "document_count": 2,
+    "latency_ms_stddev": 0.9372300867212089,
+    "latency_ms_p95": 68.77579186111689,
+    "peak_memory_gb": 23.3
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

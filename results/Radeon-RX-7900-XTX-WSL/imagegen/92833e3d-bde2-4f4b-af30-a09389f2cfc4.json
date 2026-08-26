@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "imagegen",
+  "run_id": "92833e3d-bde2-4f4b-af30-a09389f2cfc4",
+  "timestamp": "2026-08-25T11:49:49.356983+00:00",
+  "model": {
+    "name": "SD-Turbo-GGUF",
+    "checkpoint": "Green-Sky/SD-Turbo-GGUF:sd_turbo-f16-q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "sd-cpp-rocm",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX (gfx1100)",
+    "dgpu_family": "gfx1100",
+    "driver_version": "unknown",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 15.57,
+    "os_version": "Linux-6.18.33.2-microsoft-standard-WSL2 (Ubuntu 24.04)"
+  },
+  "metrics": {
+    "generation_time_ms": 301.12535040825605,
+    "images_per_sec": 3.3208761688254813,
+    "trial_count": 2,
+    "operation": "generate",
+    "image_size": "256x256",
+    "generation_time_ms_stddev": 53.271823959619326,
+    "generation_time_ms_p95": 335.0273315794766,
+    "steps": 2,
+    "prompt_chars": 32,
+    "peak_memory_gb": 8.2
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

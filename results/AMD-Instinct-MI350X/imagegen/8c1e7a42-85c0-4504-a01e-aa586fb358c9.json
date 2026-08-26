@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "imagegen",
+  "run_id": "8c1e7a42-85c0-4504-a01e-aa586fb358c9",
+  "timestamp": "2026-08-24T20:52:26.956533+00:00",
+  "model": {
+    "name": "SD-Turbo-GGUF",
+    "checkpoint": "Green-Sky/SD-Turbo-GGUF:sd_turbo-f16-q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "sd-cpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD EPYC 9575F 64-Core Processor",
+    "device_model": "AMD EPYC 9575F 64-Core Processor",
+    "dgpu": "90500",
+    "dgpu_family": "gfx950",
+    "driver_version": "unknown",
+    "lemonade_version": "11.7.0",
+    "memory_gb": 251.7,
+    "os_version": "Linux-6.8.0-124-generic (Ubuntu 24.04)",
+    "backend_version": "master-827-97d2990"
+  },
+  "metrics": {
+    "generation_time_ms": 3526.6724079847336,
+    "images_per_sec": 0.2835534136189972,
+    "trial_count": 2,
+    "operation": "generate",
+    "image_size": "256x256",
+    "generation_time_ms_stddev": 28.78451946276907,
+    "generation_time_ms_p95": 3544.9907639995217,
+    "steps": 2,
+    "prompt_chars": 32,
+    "peak_memory_gb": 20.629966735839844
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

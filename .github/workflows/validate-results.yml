@@ -1,0 +1,31 @@
+name: Validate community results
+
+# The community-submission gate: any PR that adds or edits a result JSON
+# under results/ must pass schema validation before merge -- this is what
+# keeps the public leaderboard trustworthy without a human reviewing every
+# submission's JSON by hand. The validator itself lives in the sibling code
+# repo (Bekhouche/LemonMatrix) -- this repo holds only results + the
+# generated site, so the tool is installed straight from that repo.
+on:
+  pull_request:
+    paths:
+      - "results/**/*.json"
+  push:
+    branches: [main]
+    paths:
+      - "results/**/*.json"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install git+https://github.com/Bekhouche/LemonMatrix.git
+
+      - name: Validate every result JSON under results/
+        run: lemonmatrix validate-submission

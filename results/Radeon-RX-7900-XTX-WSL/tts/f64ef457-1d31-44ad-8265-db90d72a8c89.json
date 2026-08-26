@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "tts",
+  "run_id": "f64ef457-1d31-44ad-8265-db90d72a8c89",
+  "timestamp": "2026-08-25T11:45:57.643550+00:00",
+  "model": {
+    "name": "kokoro-v1",
+    "checkpoint": "mikkoph/kokoro-onnx"
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "kokoro-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX (gfx1100)",
+    "dgpu_family": "gfx1100",
+    "driver_version": "unknown",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 15.57,
+    "os_version": "Linux-6.18.33.2-microsoft-standard-WSL2 (Ubuntu 24.04)",
+    "backend_version": "b17"
+  },
+  "metrics": {
+    "generation_time_ms": 965.3570683673024,
+    "audio_duration_s": 3.4,
+    "real_time_factor": 3.522012850385383,
+    "trial_count": 5,
+    "input_chars": 27,
+    "generation_time_ms_stddev": 73.99276754272418,
+    "generation_time_ms_p95": 1064.5837089046836,
+    "peak_memory_gb": 3.6
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "083de8a2-fc9f-4e69-94e1-3cd3cf54d6c5",
+  "timestamp": "2026-08-24T19:13:54.857658+00:00",
+  "model": {
+    "name": "Qwen3-1.7B-GGUF",
+    "class": "dense",
+    "quantization": "Q4_0",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "llamacpp-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD EPYC 9575F 64-Core Processor",
+    "device_model": "AMD EPYC 9575F 64-Core Processor",
+    "dgpu": "90500",
+    "dgpu_family": "gfx950",
+    "driver_version": "unknown",
+    "lemonade_version": "11.7.0",
+    "memory_gb": 251.7,
+    "os_version": "Linux-6.8.0-124-generic (Ubuntu 24.04)",
+    "backend_version": "b10375"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 14.981708190397136,
+      "stddev": 0.08897947433244482,
+      "p95": 15.072191519565433,
+      "ci95_half_width": 0.11046489786193901
+    },
+    "decode": {
+      "tokens_per_sec": 0.4341365970158263,
+      "inter_token_latency_ms": 2303.4224870094176,
+      "stddev": 0.0011979705660985758,
+      "p95": 0.43546208651078294,
+      "ci95_half_width": 0.0014872384582905458
+    },
+    "ttft_ms": 2336.1822,
+    "trial_count": 5,
+    "peak_memory_gb": 0.5981483459472656,
+    "prompt_sha256": "1c43b07d6b0d7624785966ffe2ddc076aa76b5fcf9357882ac1165f0073f43ee",
+    "ttft_ms_stddev": 13.89280062478403,
+    "ttft_ms_ci95_half_width": 17.247424909471068
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

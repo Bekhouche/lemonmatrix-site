@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "4b590096-e7d8-4fed-ac4b-e399cba4439e",
+  "timestamp": "2026-08-24T18:10:46.234732+00:00",
+  "model": {
+    "name": "Qwen3-1.7B-GGUF",
+    "class": "dense",
+    "quantization": "Q4_0",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz",
+    "device_model": "Intel(R) Xeon(R) Silver 4314 CPU @ 2.40GHz",
+    "dgpu": "7x NVIDIA L4",
+    "dgpu_family": "7x sm_89",
+    "driver_version": "535.309.01",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 251.5,
+    "os_version": "Linux-6.8.0-117-generic (Ubuntu 22.04)",
+    "backend_version": "b10375"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 211.08599522825028,
+      "stddev": 15.34682715396733,
+      "p95": 230.7048977333338,
+      "ci95_half_width": 19.052547868892912
+    },
+    "decode": {
+      "tokens_per_sec": 6.9480170982459715,
+      "inter_token_latency_ms": 143.92595554384147,
+      "stddev": 0.010823614658876698,
+      "p95": 6.960728193514264,
+      "ci95_half_width": 0.013437138135056781
+    },
+    "ttft_ms": 165.8092,
+    "trial_count": 5,
+    "peak_memory_gb": 107.2,
+    "prompt_sha256": "1c43b07d6b0d7624785966ffe2ddc076aa76b5fcf9357882ac1165f0073f43ee",
+    "ttft_ms_stddev": 11.651462813741452,
+    "ttft_ms_ci95_half_width": 14.464882595882223
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; peak_memory_gb is host RAM, not VRAM -- vram_gb was unavailable from this instance; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

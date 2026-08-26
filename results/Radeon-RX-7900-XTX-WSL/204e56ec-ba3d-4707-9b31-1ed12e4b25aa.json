@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "204e56ec-ba3d-4707-9b31-1ed12e4b25aa",
+  "timestamp": "2026-08-26T06:24:13.768161+00:00",
+  "model": {
+    "name": "user.Demo-Router-Fresh",
+    "class": "router",
+    "quantization": "none",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "router",
+    "backend": "collection.router",
+    "os": "linux",
+    "power_state": "plugged",
+    "router_default_model": "Qwen3-1.7B-GGUF"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX (gfx1100)",
+    "dgpu_family": "gfx1100",
+    "driver_version": "unknown",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 15.57,
+    "os_version": "Linux-6.18.33.2-microsoft-standard-WSL2 (Ubuntu 24.04)"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 1137.2744405692872,
+      "stddev": 28.816560056243105,
+      "p95": 1166.1776421719017,
+      "ci95_half_width": 71.59008118015797
+    },
+    "decode": {
+      "tokens_per_sec": 32.88444461689636,
+      "inter_token_latency_ms": 30.409514639824263,
+      "stddev": 0.1495662933671089,
+      "p95": 33.02593580703648,
+      "ci95_half_width": 0.3715732572891495
+    },
+    "ttft_ms": 30.775333333333332,
+    "trial_count": 3,
+    "peak_memory_gb": 6.2,
+    "prompt_sha256": "1c43b07d6b0d7624785966ffe2ddc076aa76b5fcf9357882ac1165f0073f43ee",
+    "ttft_ms_stddev": 0.7685664143932732,
+    "ttft_ms_ci95_half_width": 1.9093789089109858
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; peak_memory_gb is host RAM, not VRAM -- vram_gb was unavailable from this instance; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  },
+  "run_type": "router"
+}

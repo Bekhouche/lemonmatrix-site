@@ -1,0 +1,669 @@
+#!/usr/bin/env python3
+"""Builds the static leaderboard site from results/**/*.json.
+
+Reads the exact result JSON files LemonMatrix (the CLI/dashboard) writes --
+this repo never computes or measures anything itself, it only renders what
+each contributor's own Lemonade instance already reported. Filtering and
+sorting happen client-side in the browser, so the output is a single
+self-contained index.html with no server and no build framework: plain
+GitHub Pages, "deploy from branch main / root", is enough to host it.
+
+Usage: python3 scripts/build_site.py [--results-dir results] [--out index.html]
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+MODEL_RUN_TYPES = {None, "model", "router"}
+MODALITY_DIRS = {
+    "classify": ("Classification", "classifications_per_sec", "class/sec"),
+    "tts": ("Text-to-speech", "real_time_factor", "RTF"),
+    "stt": ("Speech-to-text", "real_time_factor", "RTF"),
+    "imagegen": ("Image generation", "images_per_sec", "img/sec"),
+    "audiogen": ("Audio generation", "real_time_factor", "RTF"),
+    "embeddings": ("Embeddings", "embeddings_per_sec", "emb/sec"),
+    "rerank": ("Reranking", "documents_per_sec", "doc/sec"),
+    "meshgen": ("3D generation", "meshes_per_sec", "mesh/sec"),
+}
+SKIP_DIRS = {"failures", "trials"}
+
+LEADERBOARD_COLUMNS = [
+    ("timestamp", "Timestamp", "text"),
+    ("_profile", "Profile", "text"),
+    ("environment.device_model", "Device", "text"),
+    ("model.name", "Model", "text"),
+    ("model.quantization", "Quant", "text"),
+    ("config.compute_engine", "Engine", "chip"),
+    ("config.backend", "Backend", "text"),
+    ("config.power_state", "Power", "text"),
+    ("metrics.decode.tokens_per_sec", "Decode tok/s", "num1"),
+    ("metrics.prefill.tokens_per_sec", "Prefill tok/s", "num1"),
+    ("metrics.ttft_ms", "TTFT ms", "num0"),
+    ("metrics.decode.joules_per_token", "J/tok (decode)", "num3"),
+    ("validity.valid", "Valid", "status"),
+]
+
+
+def get_path(result: dict, dotted: str) -> Any:
+    value: Any = result
+    for part in dotted.split("."):
+        if not isinstance(value, dict):
+            return None
+        value = value.get(part)
+    return value
+
+
+def load_json(path: Path) -> dict | None:
+    try:
+        return json.loads(path.read_text())
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
+def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
+    """Returns (model_and_router_rows, modality_rows)."""
+    model_rows: list[dict] = []
+    modality_rows: list[dict] = []
+
+    if not results_dir.exists():
+        return model_rows, modality_rows
+
+    for profile_dir in sorted(p for p in results_dir.iterdir() if p.is_dir()):
+        profile = profile_dir.name
+
+        # Top-level files directly under <profile>/ are model/router runs.
+        for path in sorted(profile_dir.glob("*.json")):
+            data = load_json(path)
+            if data is None:
+                continue
+            data["_profile"] = profile
+            data["_run_id"] = path.stem
+            model_rows.append(data)
+
+        # Modality subdirectories.
+        for sub in sorted(p for p in profile_dir.iterdir() if p.is_dir()):
+            if sub.name in SKIP_DIRS or sub.name not in MODALITY_DIRS:
+                continue
+            label, metric_key, metric_unit = MODALITY_DIRS[sub.name]
+            for path in sorted(sub.glob("*.json")):
+                data = load_json(path)
+                if data is None:
+                    continue
+                modality_rows.append(
+                    {
+                        "profile": profile,
+                        "modality": sub.name,
+                        "modality_label": label,
+                        "timestamp": data.get("timestamp"),
+                        "model": get_path(data, "model.name"),
+                        "device": get_path(data, "environment.device_model"),
+                        "engine": get_path(data, "config.compute_engine"),
+                        "backend": get_path(data, "config.backend"),
+                        "metric_value": get_path(data, f"metrics.{metric_key}"),
+                        "metric_unit": metric_unit,
+                        "valid": get_path(data, "validity.valid"),
+                        "run_id": path.stem,
+                    }
+                )
+
+    model_rows.sort(key=lambda r: r.get("timestamp", ""), reverse=True)
+    modality_rows.sort(key=lambda r: r.get("timestamp") or "", reverse=True)
+    return model_rows, modality_rows
+
+
+def render(model_rows: list[dict], modality_rows: list[dict], generated_at: str) -> str:
+    columns_json = json.dumps(LEADERBOARD_COLUMNS)
+    model_rows_json = json.dumps(model_rows)
+    modality_rows_json = json.dumps(modality_rows)
+    modality_meta_json = json.dumps(
+        {key: {"label": label, "unit": unit} for key, (label, _metric, unit) in MODALITY_DIRS.items()}
+    )
+
+    total = len(model_rows)
+    valid = sum(1 for r in model_rows if get_path(r, "validity.valid"))
+    profiles = sorted({r.get("_profile") for r in model_rows if r.get("_profile")})
+
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LemonMatrix Leaderboard</title>
+<meta name="description" content="Community-submitted benchmark results for AMD's Lemonade runtime, collected with LemonMatrix.">
+<style>
+:root {{
+  --bg: #ffffff;
+  --bg-alt: #f6f7f9;
+  --fg: #1c1f26;
+  --fg-muted: #5b6270;
+  --border: #e2e5ea;
+  --accent: #d97706;
+  --accent-fg: #ffffff;
+  --ok: #1a7f37;
+  --bad: #cf222e;
+  --chip-bg: #fff3e0;
+  --chip-fg: #9a5b00;
+  --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}}
+@media (prefers-color-scheme: dark) {{
+  :root {{
+    --bg: #14161a;
+    --bg-alt: #1b1e24;
+    --fg: #e7e9ee;
+    --fg-muted: #9aa1ad;
+    --border: #2a2e37;
+    --accent: #f0a94e;
+    --accent-fg: #1c1300;
+    --ok: #4ade80;
+    --bad: #f87171;
+    --chip-bg: #3a2a10;
+    --chip-fg: #f0c078;
+  }}
+}}
+* {{ box-sizing: border-box; }}
+body {{
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  line-height: 1.5;
+}}
+a {{ color: var(--accent); }}
+header.hero {{
+  padding: 2.5rem 1.5rem 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}}
+header.hero h1 {{
+  margin: 0 0 .35rem;
+  font-size: 1.9rem;
+  letter-spacing: -.02em;
+}}
+header.hero .tagline {{
+  color: var(--fg-muted);
+  max-width: 62ch;
+  margin: 0 0 .75rem;
+}}
+header.hero .links {{
+  font-size: .9rem;
+  color: var(--fg-muted);
+}}
+header.hero .links a {{ margin-right: 1rem; }}
+main {{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1.5rem 4rem;
+}}
+.stat-row {{
+  display: flex;
+  gap: .75rem;
+  flex-wrap: wrap;
+  margin: 1rem 0 1.5rem;
+}}
+.stat-tile {{
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: .85rem 1.1rem;
+  min-width: 130px;
+}}
+.stat-tile .value {{ font-size: 1.5rem; font-weight: 600; }}
+.stat-tile .label {{ font-size: .78rem; color: var(--fg-muted); margin-top: .15rem; }}
+.card {{
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem 1.35rem;
+  margin-bottom: 1.75rem;
+}}
+.card h2 {{
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+}}
+.card p.hint {{
+  color: var(--fg-muted);
+  font-size: .85rem;
+  margin: -.5rem 0 1rem;
+}}
+.filters {{
+  display: flex;
+  gap: .9rem;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 1rem;
+}}
+.filters label {{
+  display: block;
+  font-size: .75rem;
+  color: var(--fg-muted);
+  margin-bottom: .3rem;
+}}
+.filters select, .filters input[type=text] {{
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: .4rem .55rem;
+  font-size: .85rem;
+  font-family: var(--sans);
+}}
+.filters .checkbox {{
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .85rem;
+}}
+.filters .checkbox label {{ margin: 0; color: var(--fg); }}
+table {{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .84rem;
+}}
+.table-scroll {{ overflow-x: auto; }}
+th, td {{
+  padding: .5rem .6rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}}
+th {{
+  cursor: pointer;
+  user-select: none;
+  color: var(--fg-muted);
+  font-weight: 600;
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+}}
+th:hover {{ color: var(--fg); }}
+th .arrow {{ opacity: .5; font-size: .7em; margin-left: .2em; }}
+td.num {{ font-family: var(--mono); text-align: right; }}
+.chip {{
+  display: inline-block;
+  background: var(--chip-bg);
+  color: var(--chip-fg);
+  border-radius: 999px;
+  padding: .1rem .55rem;
+  font-size: .75rem;
+  font-weight: 600;
+}}
+.status-ok {{ color: var(--ok); font-weight: 600; }}
+.status-bad {{ color: var(--bad); font-weight: 600; }}
+.muted {{ color: var(--fg-muted); }}
+.modality-tabs {{
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}}
+.modality-tabs button {{
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--fg-muted);
+  border-radius: 999px;
+  padding: .35rem .85rem;
+  font-size: .78rem;
+  cursor: pointer;
+}}
+.modality-tabs button.active {{
+  background: var(--accent);
+  color: var(--accent-fg);
+  border-color: var(--accent);
+}}
+footer {{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.5rem 1.5rem 3rem;
+  color: var(--fg-muted);
+  font-size: .82rem;
+  border-top: 1px solid var(--border);
+}}
+footer a {{ color: var(--accent); }}
+.empty-row td {{ color: var(--fg-muted); font-style: italic; }}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <h1>🍋 LemonMatrix Leaderboard</h1>
+  <p class="tagline">
+    Community-submitted benchmark results for
+    <a href="https://github.com/lemonade-sdk/lemonade" target="_blank" rel="noopener">AMD's Lemonade runtime</a>,
+    collected with <a href="https://github.com/Bekhouche/LemonMatrix" target="_blank" rel="noopener">LemonMatrix</a> --
+    every number here was measured by a contributor's own machine talking to its own local Lemonade instance;
+    this site only renders what Lemonade itself reported, never anything read from the machine directly.
+  </p>
+  <p class="links">
+    <a href="https://github.com/Bekhouche/LemonMatrix" target="_blank" rel="noopener">LemonMatrix (code)</a>
+    <a href="https://github.com/LemonMatrix/lemonmatrix.github.io" target="_blank" rel="noopener">This repo (results + site)</a>
+    <a href="https://github.com/LemonMatrix/lemonmatrix.github.io/tree/main/results" target="_blank" rel="noopener">Submit a result via PR</a>
+  </p>
+</header>
+
+<main>
+
+  <div class="stat-row">
+    <div class="stat-tile"><div class="value">{total}</div><div class="label">Total LLM / router runs</div></div>
+    <div class="stat-tile"><div class="value">{valid}</div><div class="label">Valid runs</div></div>
+    <div class="stat-tile"><div class="value">{len(profiles)}</div><div class="label">Profiles (machines)</div></div>
+    <div class="stat-tile"><div class="value">{len(modality_rows)}</div><div class="label">Other modality runs</div></div>
+  </div>
+
+  <div class="card">
+    <h2>Model &amp; router leaderboard</h2>
+    <p class="hint">Sorted by timestamp by default -- click a column header to re-sort. Filters are applied together (AND).</p>
+    <div class="filters">
+      <div>
+        <label for="f-profile">Profile</label>
+        <select id="f-profile"><option value="">All</option></select>
+      </div>
+      <div>
+        <label for="f-engine">Engine</label>
+        <select id="f-engine"><option value="">All</option></select>
+      </div>
+      <div>
+        <label for="f-backend">Backend</label>
+        <select id="f-backend"><option value="">All</option></select>
+      </div>
+      <div>
+        <label for="f-model">Model contains</label>
+        <input type="text" id="f-model" placeholder="e.g. Qwen3">
+      </div>
+      <div class="checkbox">
+        <input type="checkbox" id="f-valid" checked>
+        <label for="f-valid">Valid only</label>
+      </div>
+    </div>
+    <div class="table-scroll">
+      <table id="leaderboard">
+        <thead><tr id="lb-head"></tr></thead>
+        <tbody id="lb-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Other modalities</h2>
+    <p class="hint">
+      Non-LLM Lemonade recipes -- text-to-speech, speech-to-text, image/audio/3D generation, embeddings, reranking,
+      classification. Each has its own throughput metric, so these aren't ranked against the table above.
+    </p>
+    <div class="modality-tabs" id="modality-tabs"></div>
+    <div class="table-scroll">
+      <table id="modality-table">
+        <thead>
+          <tr>
+            <th>Timestamp</th><th>Profile</th><th>Model</th><th>Backend</th><th>Engine</th>
+            <th class="num">Metric</th><th>Valid</th>
+          </tr>
+        </thead>
+        <tbody id="modality-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>
+    Generated {generated_at}. Every result is validated against
+    <a href="https://github.com/Bekhouche/LemonMatrix/tree/main/schema" target="_blank" rel="noopener">LemonMatrix's JSON schemas</a>
+    by CI before merge (<code>lemonmatrix validate-submission</code>) -- built for AMD's Lemonade Developer Challenge.
+  </p>
+</footer>
+
+<script id="lm-columns" type="application/json">{columns_json}</script>
+<script id="lm-model-rows" type="application/json">{model_rows_json}</script>
+<script id="lm-modality-rows" type="application/json">{modality_rows_json}</script>
+<script id="lm-modality-meta" type="application/json">{modality_meta_json}</script>
+<script>
+(function () {{
+  "use strict";
+
+  function getPath(obj, dotted) {{
+    var parts = dotted.split(".");
+    var value = obj;
+    for (var i = 0; i < parts.length; i++) {{
+      if (value === null || typeof value !== "object") return null;
+      value = value[parts[i]];
+      if (value === undefined) return null;
+    }}
+    return value;
+  }}
+
+  function fmt(value, kind) {{
+    if (value === null || value === undefined || value === "") return '<span class="muted">--</span>';
+    if (kind === "num1") return Number(value).toFixed(1);
+    if (kind === "num0") return Math.round(Number(value)).toString();
+    if (kind === "num3") return Number(value).toFixed(3);
+    if (kind === "chip") return '<span class="chip">' + escapeHtml(String(value)) + '</span>';
+    if (kind === "status") return value ? '<span class="status-ok">valid</span>' : '<span class="status-bad">invalid</span>';
+    return escapeHtml(String(value));
+  }}
+
+  function escapeHtml(s) {{
+    return s.replace(/[&<>"']/g, function (c) {{
+      return {{ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }}[c];
+    }});
+  }}
+
+  var columns = JSON.parse(document.getElementById("lm-columns").textContent);
+  var modelRows = JSON.parse(document.getElementById("lm-model-rows").textContent);
+  var modalityRows = JSON.parse(document.getElementById("lm-modality-rows").textContent);
+  var modalityMeta = JSON.parse(document.getElementById("lm-modality-meta").textContent);
+
+  // ---- Model / router leaderboard ------------------------------------
+
+  var sortKey = "timestamp";
+  var sortDir = "desc";
+
+  var headRow = document.getElementById("lb-head");
+  columns.forEach(function (col) {{
+    var th = document.createElement("th");
+    th.dataset.key = col[0];
+    th.innerHTML = escapeHtml(col[1]) + '<span class="arrow"></span>';
+    th.addEventListener("click", function () {{
+      if (sortKey === col[0]) {{
+        sortDir = sortDir === "asc" ? "desc" : "asc";
+      }} else {{
+        sortKey = col[0];
+        sortDir = "desc";
+      }}
+      renderLeaderboard();
+    }});
+    headRow.appendChild(th);
+  }});
+
+  function uniqueSorted(rows, path) {{
+    var seen = {{}};
+    rows.forEach(function (r) {{
+      var v = getPath(r, path);
+      if (v) seen[v] = true;
+    }});
+    return Object.keys(seen).sort();
+  }}
+
+  function fillSelect(id, values) {{
+    var el = document.getElementById(id);
+    values.forEach(function (v) {{
+      var opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      el.appendChild(opt);
+    }});
+  }}
+
+  fillSelect("f-profile", uniqueSorted(modelRows, "_profile"));
+  fillSelect("f-engine", uniqueSorted(modelRows, "config.compute_engine"));
+  fillSelect("f-backend", uniqueSorted(modelRows, "config.backend"));
+
+  function renderLeaderboard() {{
+    var profile = document.getElementById("f-profile").value;
+    var engine = document.getElementById("f-engine").value;
+    var backend = document.getElementById("f-backend").value;
+    var modelNeedle = document.getElementById("f-model").value.toLowerCase();
+    var validOnly = document.getElementById("f-valid").checked;
+
+    var rows = modelRows.filter(function (r) {{
+      if (profile && r._profile !== profile) return false;
+      if (engine && getPath(r, "config.compute_engine") !== engine) return false;
+      if (backend && getPath(r, "config.backend") !== backend) return false;
+      if (modelNeedle && (getPath(r, "model.name") || "").toLowerCase().indexOf(modelNeedle) === -1) return false;
+      if (validOnly && !getPath(r, "validity.valid")) return false;
+      return true;
+    }});
+
+    rows.sort(function (a, b) {{
+      var av = getPath(a, sortKey);
+      var bv = getPath(b, sortKey);
+      var aNull = av === null || av === undefined;
+      var bNull = bv === null || bv === undefined;
+      if (aNull !== bNull) return aNull ? 1 : -1;
+      if (aNull && bNull) return 0;
+      var cmp = av < bv ? -1 : av > bv ? 1 : 0;
+      return sortDir === "desc" ? -cmp : cmp;
+    }});
+
+    var arrows = headRow.querySelectorAll("th");
+    arrows.forEach(function (th) {{
+      var arrow = th.querySelector(".arrow");
+      if (th.dataset.key === sortKey) {{
+        arrow.textContent = sortDir === "desc" ? "▼" : "▲";
+      }} else {{
+        arrow.textContent = "";
+      }}
+    }});
+
+    var body = document.getElementById("lb-body");
+    body.innerHTML = "";
+    if (rows.length === 0) {{
+      var tr = document.createElement("tr");
+      tr.className = "empty-row";
+      var td = document.createElement("td");
+      td.colSpan = columns.length;
+      td.textContent = "No runs match the current filters.";
+      tr.appendChild(td);
+      body.appendChild(tr);
+      return;
+    }}
+    rows.forEach(function (r) {{
+      var tr = document.createElement("tr");
+      columns.forEach(function (col) {{
+        var td = document.createElement("td");
+        var kind = col[2];
+        if (kind === "num1" || kind === "num0" || kind === "num3") td.className = "num";
+        td.innerHTML = fmt(getPath(r, col[0]), kind);
+        tr.appendChild(td);
+      }});
+      body.appendChild(tr);
+    }});
+  }}
+
+  ["f-profile", "f-engine", "f-backend"].forEach(function (id) {{
+    document.getElementById(id).addEventListener("change", renderLeaderboard);
+  }});
+  document.getElementById("f-model").addEventListener("input", renderLeaderboard);
+  document.getElementById("f-valid").addEventListener("change", renderLeaderboard);
+
+  renderLeaderboard();
+
+  // ---- Other modalities ------------------------------------------------
+
+  var activeModality = "all";
+  var tabsEl = document.getElementById("modality-tabs");
+
+  var counts = {{}};
+  modalityRows.forEach(function (r) {{ counts[r.modality] = (counts[r.modality] || 0) + 1; }});
+
+  function makeTab(key, label) {{
+    var btn = document.createElement("button");
+    btn.textContent = label;
+    btn.className = key === activeModality ? "active" : "";
+    btn.addEventListener("click", function () {{
+      activeModality = key;
+      Array.prototype.forEach.call(tabsEl.children, function (b) {{ b.classList.remove("active"); }});
+      btn.classList.add("active");
+      renderModalityTable();
+    }});
+    tabsEl.appendChild(btn);
+  }}
+
+  makeTab("all", "All (" + modalityRows.length + ")");
+  Object.keys(modalityMeta).forEach(function (key) {{
+    if (counts[key]) makeTab(key, modalityMeta[key].label + " (" + counts[key] + ")");
+  }});
+
+  function renderModalityTable() {{
+    var body = document.getElementById("modality-body");
+    body.innerHTML = "";
+    var rows = modalityRows.filter(function (r) {{ return activeModality === "all" || r.modality === activeModality; }});
+    if (rows.length === 0) {{
+      var tr = document.createElement("tr");
+      tr.className = "empty-row";
+      var td = document.createElement("td");
+      td.colSpan = 7;
+      td.textContent = "No runs in this category yet.";
+      tr.appendChild(td);
+      body.appendChild(tr);
+      return;
+    }}
+    rows.forEach(function (r) {{
+      var tr = document.createElement("tr");
+      var cells = [
+        r.timestamp,
+        r.profile,
+        r.model,
+        r.backend,
+        r.engine,
+      ];
+      cells.forEach(function (v) {{
+        var td = document.createElement("td");
+        td.innerHTML = fmt(v, "text");
+        tr.appendChild(td);
+      }});
+      var metricTd = document.createElement("td");
+      metricTd.className = "num";
+      metricTd.textContent = (r.metric_value === null || r.metric_value === undefined)
+        ? "--"
+        : Number(r.metric_value).toFixed(2) + " " + r.metric_unit;
+      tr.appendChild(metricTd);
+      var validTd = document.createElement("td");
+      validTd.innerHTML = fmt(r.valid, "status");
+      tr.appendChild(validTd);
+      body.appendChild(tr);
+    }});
+  }}
+
+  renderModalityTable();
+}})();
+</script>
+</body>
+</html>
+"""
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--results-dir", default="results")
+    parser.add_argument("--out", default="index.html")
+    args = parser.parse_args()
+
+    repo_root = Path(__file__).resolve().parent.parent
+    results_dir = (repo_root / args.results_dir).resolve()
+    out_path = (repo_root / args.out).resolve()
+
+    model_rows, modality_rows = collect(results_dir)
+    generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
+    html = render(model_rows, modality_rows, generated_at)
+    out_path.write_text(html)
+    print(f"Wrote {out_path} ({len(model_rows)} model/router rows, {len(modality_rows)} modality rows)")
+
+
+if __name__ == "__main__":
+    main()

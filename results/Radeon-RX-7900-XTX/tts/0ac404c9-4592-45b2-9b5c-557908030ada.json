@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "tts",
+  "run_id": "0ac404c9-4592-45b2-9b5c-557908030ada",
+  "timestamp": "2026-09-10T09:19:26.250730+00:00",
+  "model": {
+    "name": "OpenMOSS-TTS",
+    "checkpoint": "ilintar/moss-tts-gguf:moss-tts-1.5-q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "openmoss-vulkan",
+    "os": "windows",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "device_model": "AMD Ryzen 7 5800X3D 8-Core Processor",
+    "dgpu": "AMD Radeon RX 7900 XTX",
+    "dgpu_family": "gfx110X",
+    "driver_version": "32.0.31035.1003",
+    "lemonade_version": "11.6.0",
+    "memory_gb": 32.0,
+    "os_version": "Windows 11 Pro for Workstations 6.3 (Build 26200)",
+    "backend_version": "v0.3.0"
+  },
+  "metrics": {
+    "generation_time_ms": 1330.2122857421637,
+    "audio_duration_s": 2.986666666666667,
+    "real_time_factor": 2.245255662332362,
+    "trial_count": 3,
+    "input_chars": 44,
+    "generation_time_ms_stddev": 110.92690516580618,
+    "generation_time_ms_p95": 1435.9226243570447,
+    "peak_memory_gb": 30.9
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

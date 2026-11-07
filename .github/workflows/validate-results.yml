@@ -5,15 +5,21 @@ name: Validate community results
 # keeps the public leaderboard trustworthy without a human reviewing every
 # submission's JSON by hand. The validator itself lives in the sibling code
 # repo (Bekhouche/LemonMatrix) -- this repo holds only results + the
-# generated site, so the tool is installed straight from that repo.
+# generated site, so the tool is installed straight from that repo. The site
+# is also built here, so a result or a builder change that breaks the page
+# fails the PR instead of the deploy.
 on:
   pull_request:
     paths:
       - "results/**/*.json"
+      - "scripts/**"
+      - ".github/workflows/**"
   push:
     branches: [main]
     paths:
       - "results/**/*.json"
+      - "scripts/**"
+      - ".github/workflows/**"
 
 jobs:
   validate:
@@ -29,3 +35,6 @@ jobs:
 
       - name: Validate every result JSON under results/
         run: lemonmatrix validate-submission
+
+      - name: Build the site
+        run: python3 scripts/build_site.py --out "$RUNNER_TEMP/index.html"

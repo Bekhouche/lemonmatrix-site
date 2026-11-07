@@ -14,6 +14,7 @@ Usage: python3 scripts/build_site.py [--results-dir results] [--out index.html]
 from __future__ import annotations
 
 import argparse
+import html
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,6 +32,9 @@ MODALITY_DIRS = {
     "meshgen": ("3D generation", "meshes_per_sec", "mesh/sec"),
 }
 SKIP_DIRS = {"failures", "trials"}
+# Results brought in with `lemonmatrix import` from other tools. They skipped
+# LemonMatrix's validity checks, so they get their own unranked section.
+IMPORTED_DIR = "imported"
 
 LEADERBOARD_COLUMNS = [
     ("timestamp", "Timestamp", "text"),
@@ -75,6 +79,8 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
 
     for profile_dir in sorted(p for p in results_dir.iterdir() if p.is_dir()):
         profile = profile_dir.name
+        if profile == IMPORTED_DIR:
+            continue
 
         # Top-level files directly under <profile>/ are model/router runs.
         for path in sorted(profile_dir.glob("*.json")):
@@ -116,7 +122,125 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
     return model_rows, modality_rows
 
 
-def render(model_rows: list[dict], modality_rows: list[dict], generated_at: str) -> str:
+def collect_imported(results_dir: Path) -> list[dict]:
+    docs = [d for d in (load_json(p) for p in sorted(results_dir.glob(f"{IMPORTED_DIR}/*/*.json"))) if d]
+    return sorted(docs, key=lambda d: d.get("measured_at") or "", reverse=True)
+
+
+DASH = '<span class="muted">--</span>'
+VALID = '<span class="status-ok">valid</span>'
+INVALID = '<span class="status-bad">invalid</span>'
+
+
+def _esc(value: Any) -> str:
+    return html.escape("" if value is None else str(value))
+
+
+def _num(value: Any, digits: int) -> str:
+    return DASH if value is None else f"{value:.{digits}f}"
+
+
+def render_router_costs(model_rows: list[dict]) -> str:
+    rows = [r for r in model_rows if get_path(r, "metrics.routing")]
+    if not rows:
+        return ""
+    body = []
+    for r in rows:
+        routing = r["metrics"]["routing"]
+        split = " &middot; ".join(
+            f"{_esc(name)} {c['share'] * 100:.0f}%" for name, c in routing["candidates"].items()
+        )
+        saved = routing.get("savings_pct")
+        body.append(
+            "<tr>"
+            f"<td>{_esc((r.get('timestamp') or '')[:19].replace('T', ' '))}</td>"
+            f"<td>{_esc(r.get('_profile'))}</td>"
+            f"<td>{_esc(get_path(r, 'model.name'))}</td>"
+            f'<td class="num">{routing["requests"]}</td>'
+            f"<td>{split}</td>"
+            f'<td class="num">{routing["local_share"] * 100:.0f}%</td>'
+            f'<td class="num">{routing["free_share"] * 100:.0f}%</td>'
+            f'<td class="num">{_num(routing["routed_cost_usd"], 6)}</td>'
+            f"<td>{_esc(routing.get('baseline_model')) or DASH}</td>"
+            f'<td class="num">{_num(routing.get("baseline_cost_usd"), 6)}</td>'
+            f'<td class="num">{_num(saved, 1)}{"%" if saved is not None else ""}</td>'
+            f"<td>{VALID if get_path(r, 'validity.valid') else INVALID}</td>"
+            "</tr>"
+        )
+    return f"""
+  <div class="card">
+    <h2>Router cost runs</h2>
+    <p class="hint">
+      A <code>collection.router</code> run with a mixed prompt set: where the router sent each request, what that cost,
+      and what sending every request to the baseline model would have cost on the same token counts. Prices are USD per
+      million tokens, from Lemonade's own cost metadata or the submitter's <code>--cost</code>; non-cloud models count as free.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Timestamp</th><th>Profile</th><th>Router</th><th class="num">Requests</th><th>Split</th>
+          <th class="num">Local</th><th class="num">Free</th><th class="num">Cost USD</th><th>Baseline</th>
+          <th class="num">Baseline USD</th><th class="num">Saved</th><th>Valid</th>
+        </tr></thead>
+        <tbody>{"".join(body)}</tbody>
+      </table>
+    </div>
+  </div>
+"""
+
+
+def render_imported(docs: list[dict]) -> str:
+    if not docs:
+        return ""
+    body, notes = [], []
+    for d in docs:
+        env, source = d.get("environment") or {}, d.get("source") or {}
+        for row in d.get("rows") or []:
+            body.append(
+                "<tr>"
+                f"<td>{_esc(source.get('tool'))}</td>"
+                f"<td>{_esc(source.get('submitted_by')) or DASH}</td>"
+                f"<td>{_esc(env.get('cpu'))}</td>"
+                f"<td>{_esc(row.get('workload'))}</td>"
+                f"<td>{_esc(row.get('model'))}</td>"
+                f"<td>{_esc(row.get('scenario')) or DASH}</td>"
+                f'<td><span class="chip">{_esc(row.get("compute_engine") or "?")}</span></td>'
+                f"<td>{_esc(row.get('backend'))}</td>"
+                f'<td class="num">{_num(row.get("value"), 2)} {_esc(row.get("unit"))}</td>'
+                f'<td class="num">{_num(row.get("ttft_ms"), 0)}</td>'
+                f'<td class="num">{_num(row.get("joules_per_token"), 3)}</td>'
+                "</tr>"
+            )
+        for warning in (d.get("validity") or {}).get("warnings") or []:
+            notes.append(f'<li class="status-bad">{_esc(warning)}</li>')
+    warnings = f'<ul class="hint">{"".join(notes)}</ul>' if notes else ""
+    return f"""
+  <div class="card">
+    <h2>Imported results (unvalidated)</h2>
+    <p class="hint">
+      Results from other Lemonade benchmark tools (lemonade_lab / amdaibenchmarks, LemonMetrics), brought in with
+      <code>lemonmatrix import</code>. LemonMatrix's validity checks never ran on these numbers, so they are shown as
+      reported and never ranked with the leaderboard above.
+    </p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Source</th><th>Submitted by</th><th>Machine</th><th>Workload</th><th>Model</th><th>Scenario</th>
+          <th>Engine</th><th>Backend</th><th class="num">Value</th><th class="num">TTFT ms</th><th class="num">J/token</th>
+        </tr></thead>
+        <tbody>{"".join(body)}</tbody>
+      </table>
+    </div>
+    {warnings}
+  </div>
+"""
+
+
+def render(
+    model_rows: list[dict], modality_rows: list[dict], generated_at: str, imported_docs: list[dict] | None = None
+) -> str:
+    router_costs_html = render_router_costs(model_rows)
+    imported_html = render_imported(imported_docs or [])
     columns_json = json.dumps(LEADERBOARD_COLUMNS)
     model_rows_json = json.dumps(model_rows)
     modality_rows_json = json.dumps(modality_rows)
@@ -407,7 +531,7 @@ footer a {{ color: var(--accent); }}
       </table>
     </div>
   </div>
-
+{router_costs_html}{imported_html}
 </main>
 
 <footer>
@@ -659,10 +783,14 @@ def main() -> None:
     out_path = (repo_root / args.out).resolve()
 
     model_rows, modality_rows = collect(results_dir)
+    imported_docs = collect_imported(results_dir)
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
-    html = render(model_rows, modality_rows, generated_at)
-    out_path.write_text(html)
-    print(f"Wrote {out_path} ({len(model_rows)} model/router rows, {len(modality_rows)} modality rows)")
+    page = render(model_rows, modality_rows, generated_at, imported_docs)
+    out_path.write_text(page)
+    print(
+        f"Wrote {out_path} ({len(model_rows)} model/router rows, {len(modality_rows)} modality rows, "
+        f"{sum(len(d.get('rows') or []) for d in imported_docs)} imported rows)"
+    )
 
 
 if __name__ == "__main__":

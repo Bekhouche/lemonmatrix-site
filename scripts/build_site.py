@@ -140,6 +140,13 @@ def _num(value: Any, digits: int) -> str:
     return DASH if value is None else f"{value:.{digits}f}"
 
 
+def _baseline(routing: dict) -> str:
+    model = routing.get("baseline_model")
+    if not model:
+        return DASH
+    return f"{_esc(model)} ({_esc(routing.get('baseline_method') or 'estimated')})"
+
+
 def render_router_costs(model_rows: list[dict]) -> str:
     rows = [r for r in model_rows if get_path(r, "metrics.routing")]
     if not rows:
@@ -161,7 +168,7 @@ def render_router_costs(model_rows: list[dict]) -> str:
             f'<td class="num">{routing["local_share"] * 100:.0f}%</td>'
             f'<td class="num">{routing["free_share"] * 100:.0f}%</td>'
             f'<td class="num">{_num(routing["routed_cost_usd"], 6)}</td>'
-            f"<td>{_esc(routing.get('baseline_model')) or DASH}</td>"
+            f"<td>{_baseline(routing)}</td>"
             f'<td class="num">{_num(routing.get("baseline_cost_usd"), 6)}</td>'
             f'<td class="num">{_num(saved, 1)}{"%" if saved is not None else ""}</td>'
             f"<td>{VALID if get_path(r, 'validity.valid') else INVALID}</td>"
@@ -172,8 +179,10 @@ def render_router_costs(model_rows: list[dict]) -> str:
     <h2>Router cost runs</h2>
     <p class="hint">
       A <code>collection.router</code> run with a mixed prompt set: where the router sent each request, what that cost,
-      and what sending every request to the baseline model would have cost on the same token counts. Prices are USD per
-      million tokens, from Lemonade's own cost metadata or the submitter's <code>--cost</code>; non-cloud models count as free.
+      and what sending every request to the baseline model would have cost. A <em>measured</em> baseline sends each prompt
+      once to the baseline model and prices its own token counts; an <em>estimated</em> one reuses the routed model's counts,
+      which understates a reasoning model's cost. Prices are USD per million tokens, from Lemonade's own cost metadata or
+      the submitter's <code>--cost</code>; non-cloud models count as free.
     </p>
     <div class="table-scroll">
       <table>

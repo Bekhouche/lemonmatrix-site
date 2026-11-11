@@ -265,15 +265,18 @@ def render(
 ) -> str:
     router_costs_html = render_router_costs(model_rows)
     imported_html = render_imported(imported_docs or [])
+    # A router's tok/s blends its candidates, so it is not ranked against single models.
+    llm_rows = [r for r in model_rows if r.get("run_type") != "router"]
+    router_rows = [r for r in model_rows if r.get("run_type") == "router"]
     columns_json = json.dumps(LEADERBOARD_COLUMNS)
-    model_rows_json = json.dumps(model_rows)
+    model_rows_json = json.dumps(llm_rows)
     modality_rows_json = json.dumps(modality_rows)
     modality_meta_json = json.dumps(
         {key: {"label": label, "unit": unit} for key, (label, _metric, unit) in MODALITY_DIRS.items()}
     )
 
-    total = len(model_rows)
-    valid = sum(1 for r in model_rows if get_path(r, "validity.valid"))
+    total = len(llm_rows)
+    valid = sum(1 for r in llm_rows if get_path(r, "validity.valid"))
     profiles = sorted({r.get("_profile") for r in model_rows if r.get("_profile")})
 
     return f"""<!doctype html>
@@ -497,14 +500,15 @@ footer a {{ color: var(--accent); }}
 <main>
 
   <div class="stat-row">
-    <div class="stat-tile"><div class="value">{total}</div><div class="label">Total LLM / router runs</div></div>
+    <div class="stat-tile"><div class="value">{total}</div><div class="label">LLM runs</div></div>
     <div class="stat-tile"><div class="value">{valid}</div><div class="label">Valid runs</div></div>
     <div class="stat-tile"><div class="value">{len(profiles)}</div><div class="label">Profiles (machines)</div></div>
     <div class="stat-tile"><div class="value">{len(modality_rows)}</div><div class="label">Other modality runs</div></div>
+    <div class="stat-tile"><div class="value">{len(router_rows)}</div><div class="label">Router runs</div></div>
   </div>
 
   <div class="card">
-    <h2>Model &amp; router leaderboard</h2>
+    <h2>LLM leaderboard</h2>
     <p class="hint">Sorted by timestamp by default -- click a column header to re-sort. Filters are applied together (AND).</p>
     <div class="filters">
       <div>

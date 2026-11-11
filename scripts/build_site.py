@@ -609,11 +609,12 @@ def render(
 <title>LemonMatrix Leaderboard</title>
 <meta name="description" content="Community-submitted benchmark results for AMD's Lemonade runtime, collected with LemonMatrix.">
 <style>
-{CSS}</style>
+{CSS}{GUIDE_CSS}</style>
 </head>
 <body>
 
 <header class="hero">
+  {nav("index.html")}
   <h1>🍋 LemonMatrix Leaderboard</h1>
   <p class="tagline">
     Community-submitted benchmark results for
@@ -625,7 +626,7 @@ def render(
   <p class="links">
     <a href="https://github.com/Bekhouche/LemonMatrix" target="_blank" rel="noopener">LemonMatrix (code)</a>
     <a href="https://github.com/LemonMatrix/lemonmatrix.github.io" target="_blank" rel="noopener">This repo (results + site)</a>
-    <a href="https://github.com/LemonMatrix/lemonmatrix.github.io/tree/main/results" target="_blank" rel="noopener">Submit a result via PR</a>
+    <a href="guide.html">Submit a result: step by step</a>
   </p>
 </header>
 
@@ -979,6 +980,272 @@ def render(
 """
 
 
+GUIDE_CSS = """
+nav.site-nav { font-size: var(--text-sm); margin: 0 0 var(--space-3); }
+nav.site-nav a { margin-right: var(--space-4); }
+nav.site-nav a[aria-current] { color: var(--text-primary); text-decoration: none; font-weight: 600; }
+.guide-page header.hero, .guide-page main, .guide-page footer { max-width: 860px; }
+.guide h2 { font-size: 18px; margin: 0 0 var(--space-2); letter-spacing: -0.01em; }
+.guide h2 .step {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; margin-right: var(--space-2);
+  border-radius: var(--radius-pill); background: #FCD846; color: #000; font-size: var(--text-sm);
+}
+.guide h3 { font-size: var(--text-base); margin: var(--space-4) 0 var(--space-1); }
+.guide p, .guide li { color: var(--text-secondary); }
+.guide ul, .guide ol { padding-left: 1.25rem; }
+.guide li { margin: var(--space-1) 0; }
+.guide pre {
+  background: var(--surface-2); border: 1px solid var(--border-subtle); border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4); overflow-x: auto; font-size: var(--text-sm); line-height: 1.5;
+}
+.guide pre code { color: var(--text-primary); }
+.guide .note {
+  border-left: 3px solid #FCD846; background: var(--accent-soft);
+  border-radius: var(--radius-sm); padding: var(--space-2) var(--space-3); margin: var(--space-3) 0;
+}
+.guide .note p { margin: 0; color: var(--text-primary); }
+.guide table { margin: var(--space-2) 0 var(--space-3); }
+.guide td, .guide th { white-space: normal; }
+.guide th { cursor: default; }
+.toc ol { columns: 2; column-gap: var(--space-6); margin: 0; }
+"""
+
+GUIDE_BODY = """
+<div class="card toc">
+  <h2>On this page</h2>
+  <ol>
+    <li><a href="#before">Before you start</a></li>
+    <li><a href="#install">Install LemonMatrix</a></li>
+    <li><a href="#profile">Create a profile</a></li>
+    <li><a href="#run">Run an LLM benchmark</a></li>
+    <li><a href="#valid">Make the run valid</a></li>
+    <li><a href="#other">Other modalities</a></li>
+    <li><a href="#router">Router cost runs</a></li>
+    <li><a href="#submit">Check and submit</a></li>
+    <li><a href="#published">What gets published</a></li>
+    <li><a href="#trouble">Troubleshooting</a></li>
+  </ol>
+</div>
+
+<section class="card" id="before">
+  <h2><span class="step">1</span>Before you start</h2>
+  <ul>
+    <li><a href="https://lemonade-server.ai" target="_blank" rel="noopener">Lemonade</a> installed and running on the
+      machine you want to measure. LemonMatrix only talks to Lemonade's HTTP API; it never reads the hardware itself.</li>
+    <li>The model you want to benchmark, pulled in Lemonade. The most compared model on this board is
+      <code>Qwen3-1.7B-GGUF</code>:
+      <pre><code>lemonade pull Qwen3-1.7B-GGUF</code></pre></li>
+    <li>Python 3.10 or newer, and <code>git</code>.</li>
+    <li>To submit with one command: the <a href="https://cli.github.com" target="_blank" rel="noopener">GitHub CLI</a>,
+      logged in with <code>gh auth login</code>.</li>
+  </ul>
+</section>
+
+<section class="card" id="install">
+  <h2><span class="step">2</span>Install LemonMatrix</h2>
+  <p>Use a virtual environment so nothing touches your system Python.</p>
+  <h3>Linux and macOS</h3>
+  <pre><code>python3 -m venv lemonmatrix-env
+source lemonmatrix-env/bin/activate
+pip install git+https://github.com/Bekhouche/LemonMatrix.git</code></pre>
+  <h3>Windows (PowerShell)</h3>
+  <pre><code>py -m venv lemonmatrix-env
+lemonmatrix-env\\Scripts\\Activate.ps1
+pip install git+https://github.com/Bekhouche/LemonMatrix.git</code></pre>
+  <p>Check it works with <code>lemonmatrix --help</code>.</p>
+</section>
+
+<section class="card" id="profile">
+  <h2><span class="step">3</span>Create a profile</h2>
+  <p>A profile is one Lemonade instance. LemonMatrix asks Lemonade for the machine's CPU, GPU, NPU, OS and Lemonade
+    version once and attaches that to every result from this profile.</p>
+  <pre><code>lemonmatrix profile detect --save Radeon-RX-7900-XTX</code></pre>
+  <p><code>detect</code> scans localhost on Lemonade's usual ports (13305 first, then the older 8000). If Lemonade runs
+    on another machine, or needs an API key, add it directly:</p>
+  <pre><code>lemonmatrix profile add Radeon-RX-7900-XTX --host 192.168.1.42 --port 13305 --token $LEMONADE_API_KEY</code></pre>
+  <p>Check what was discovered:</p>
+  <pre><code>lemonmatrix profile show Radeon-RX-7900-XTX</code></pre>
+  <div class="note"><p>The profile name becomes the folder under <code>results/</code> and the Profile column on the
+    leaderboard. Name it after the hardware, not after yourself or your computer's hostname.</p></div>
+</section>
+
+<section class="card" id="run">
+  <h2><span class="step">4</span>Run an LLM benchmark</h2>
+  <p>This measures prefill speed, decode speed and time to first token over 5 trials, after 2 warm-up requests:</p>
+  <pre><code>lemonmatrix run --profile Radeon-RX-7900-XTX \\
+  --model Qwen3-1.7B-GGUF --model-class dense --quant Q4_0 \\
+  --context-length 4096 --engine dgpu --backend llamacpp-vulkan \\
+  --power-state plugged</code></pre>
+  <table>
+    <thead><tr><th>Flag</th><th>What to put</th></tr></thead>
+    <tbody>
+      <tr><td><code>--model</code></td><td>The model name exactly as Lemonade lists it (<code>lemonade list</code>).</td></tr>
+      <tr><td><code>--model-class</code></td><td><code>dense</code> or <code>moe</code>.</td></tr>
+      <tr><td><code>--quant</code></td><td>The quantization in the model's file, e.g. <code>Q4_0</code> or <code>Q4_K_M</code>.</td></tr>
+      <tr><td><code>--engine</code></td><td>Where it runs: <code>cpu</code>, <code>igpu</code>, <code>dgpu</code>, <code>npu</code> or <code>hybrid</code>.</td></tr>
+      <tr><td><code>--backend</code></td><td>The backend Lemonade uses, e.g. <code>llamacpp-vulkan</code>, <code>llamacpp-rocm</code>, <code>llamacpp-cpu</code>.</td></tr>
+      <tr><td><code>--power-state</code></td><td><code>plugged</code>, <code>battery</code> or <code>power_capped</code> (with <code>--power-cap-w</code>).</td></tr>
+      <tr><td><code>--trials</code>, <code>--warmup</code></td><td>Optional. Defaults are 5 and 2.</td></tr>
+    </tbody>
+  </table>
+  <p>The result is written to <code>results/&lt;profile&gt;/&lt;run_id&gt;.json</code>, and the command prints the speeds
+    and whether the run is valid. Run the same model on another backend or engine to get a comparison row.</p>
+</section>
+
+<section class="card" id="valid">
+  <h2><span class="step">5</span>Make the run valid</h2>
+  <p>Only valid runs are ranked. LemonMatrix marks a run invalid, and says why in <code>validity.notes</code>, when:</p>
+  <ul>
+    <li>another model or app was using the GPU or NPU during the measured trials;</li>
+    <li>the device Lemonade reports doesn't match <code>--engine</code>, or the backend doesn't fit the engine;</li>
+    <li>Lemonade couldn't say which backend served the model;</li>
+    <li>the model was reloaded in the middle of the run;</li>
+    <li>the quantization doesn't match <code>--quant</code>;</li>
+    <li>the hardware was thermally throttled.</li>
+  </ul>
+  <div class="note"><p>Close other GPU-heavy apps, keep a laptop plugged in, and let Lemonade load only the model being
+    measured. <code>--force</code> runs past a mismatch, but the result is then always marked invalid.</p></div>
+</section>
+
+<section class="card" id="other">
+  <h2><span class="step">6</span>Other modalities</h2>
+  <p>Speech, image, embedding and other models have their own commands, because their speed is not measured in
+    tokens. Each writes to its own folder and shows up under <em>Other modalities</em>:</p>
+  <table>
+    <thead><tr><th>Command</th><th>Measures</th></tr></thead>
+    <tbody>
+      <tr><td><code>lemonmatrix tts</code></td><td>Text to speech, seconds of audio per second</td></tr>
+      <tr><td><code>lemonmatrix stt</code></td><td>Speech to text, seconds of audio per second</td></tr>
+      <tr><td><code>lemonmatrix audiogen</code></td><td>Music and audio generation, seconds of audio per second</td></tr>
+      <tr><td><code>lemonmatrix imagegen</code></td><td>Images per second</td></tr>
+      <tr><td><code>lemonmatrix embeddings</code></td><td>Embeddings per second</td></tr>
+      <tr><td><code>lemonmatrix rerank</code></td><td>Documents per second</td></tr>
+      <tr><td><code>lemonmatrix classify</code></td><td>Classifications per second</td></tr>
+      <tr><td><code>lemonmatrix meshgen</code></td><td>3D meshes per second</td></tr>
+    </tbody>
+  </table>
+  <p>Each command's <code>--help</code> shows an example, for instance:</p>
+  <pre><code>lemonmatrix tts --profile Radeon-RX-7900-XTX --model kokoro-v1 \\
+  --engine cpu --backend kokoro-cpu --power-state plugged \\
+  --input-text "Lemonade can speak"</code></pre>
+</section>
+
+<section class="card" id="router">
+  <h2><span class="step">7</span>Router cost runs</h2>
+  <p>A Lemonade <code>collection.router</code> can send easy prompts to a local model and hard ones to a cloud model.
+    A router run records where each request went and what that cost, compared with sending everything to the most
+    expensive candidate:</p>
+  <pre><code>lemonmatrix run --profile Radeon-RX-7900-XTX --run-type router \\
+  --model user.My-Router --context-length 4096 --power-state plugged \\
+  --prompt-set router-mix --trials 20</code></pre>
+  <ul>
+    <li>Cloud prices come from Lemonade's cost metadata. <code>--cost MODEL=IN,OUT</code> sets a price in USD per million
+      input and output tokens; local models count as free.</li>
+    <li>After the trials, each prompt the router served locally is sent once to the baseline model, so the
+      comparison uses the tokens that model really writes. <code>--estimate-baseline</code> skips these extra requests.</li>
+    <li>Cloud API keys stay in Lemonade's environment (<code>LEMONADE_&lt;PROVIDER&gt;_API_KEY</code>); they are never
+      written into the result.</li>
+  </ul>
+</section>
+
+<section class="card" id="submit">
+  <h2><span class="step">8</span>Check and submit</h2>
+  <p>Check the file against the same schema the leaderboard's CI uses:</p>
+  <pre><code>lemonmatrix validate-submission results/Radeon-RX-7900-XTX/&lt;run_id&gt;.json</code></pre>
+  <p>Preview the pull request, then open it:</p>
+  <pre><code>lemonmatrix submit results/Radeon-RX-7900-XTX/&lt;run_id&gt;.json --dry-run
+lemonmatrix submit results/Radeon-RX-7900-XTX/&lt;run_id&gt;.json</code></pre>
+  <p><code>submit</code> forks
+    <a href="https://github.com/LemonMatrix/lemonmatrix.github.io" target="_blank" rel="noopener">LemonMatrix/lemonmatrix.github.io</a>
+    (or reuses your fork), adds the file under the same <code>results/&lt;profile&gt;/</code> path, and opens a PR. CI
+    validates it again; once it is merged, this site rebuilds and your run appears.</p>
+  <h3>Without the GitHub CLI</h3>
+  <ol>
+    <li>Fork the repository on GitHub.</li>
+    <li>Add your file at <code>results/&lt;profile&gt;/&lt;run_id&gt;.json</code> (modality results go in
+      <code>results/&lt;profile&gt;/&lt;modality&gt;/</code>, e.g. <code>tts/</code>).</li>
+    <li>Open a pull request to <code>main</code>.</li>
+  </ol>
+</section>
+
+<section class="card" id="published">
+  <h2><span class="step">9</span>What gets published</h2>
+  <p>The result file is public once merged. It holds:</p>
+  <ul>
+    <li>the hardware names Lemonade reports (CPU, GPU, NPU), memory size, OS version, driver, Lemonade and backend versions;</li>
+    <li>the model, quantization, engine, backend and run settings;</li>
+    <li>the measured numbers and the validity checks.</li>
+  </ul>
+  <p>It does not hold your hostname, IP address, user name, the model's answers or API keys. Open the JSON and read it
+    before you submit; it is plain text.</p>
+</section>
+
+<section class="card" id="trouble">
+  <h2><span class="step">10</span>Troubleshooting</h2>
+  <table>
+    <thead><tr><th>Problem</th><th>Fix</th></tr></thead>
+    <tbody>
+      <tr><td><code>profile detect</code> finds nothing</td><td>Check Lemonade is running and note its port, then use
+        <code>profile add --port</code>.</td></tr>
+      <tr><td>401 or 403 from Lemonade</td><td>The instance has <code>LEMONADE_API_KEY</code> set; pass it with
+        <code>--token</code>.</td></tr>
+      <tr><td>The run is marked invalid</td><td>Read <code>validity.notes</code> in the JSON, fix the cause (see step 5) and
+        run again.</td></tr>
+      <tr><td><code>submit</code> fails with "Permission denied (publickey)"</td><td>The GitHub CLI clones over SSH without
+        a key it can use. Run <code>gh config set git_protocol https</code> and try again.</td></tr>
+    </tbody>
+  </table>
+  <p>Still stuck? Open an issue on <a href="https://github.com/Bekhouche/LemonMatrix/issues" target="_blank"
+    rel="noopener">Bekhouche/LemonMatrix</a>.</p>
+</section>
+"""
+
+
+def nav(current: str) -> str:
+    links = [("index.html", "Leaderboard"), ("guide.html", "How to submit a result")]
+    items = []
+    for href, label in links:
+        attr = ' aria-current="page"' if href == current else ""
+        items.append(f'<a href="{href}"{attr}>{label}</a>')
+    return '<nav class="site-nav">' + "".join(items) + "</nav>"
+
+
+def render_guide(generated_at: str) -> str:
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>Submit a result · LemonMatrix</title>
+<meta name="description" content="Step-by-step guide to benchmarking a Lemonade instance with LemonMatrix and submitting the result.">
+<style>
+{CSS}{GUIDE_CSS}</style>
+</head>
+<body class="guide-page">
+
+<header class="hero">
+  {nav("guide.html")}
+  <h1>🍋 How to submit a result</h1>
+  <p class="tagline">
+    Benchmark your own Lemonade instance with LemonMatrix and add the result to the public leaderboard. Each step
+    below is a command you run on the machine you want to measure.
+  </p>
+</header>
+
+<main class="guide">
+{GUIDE_BODY}
+</main>
+
+<footer>
+  <p>Generated {generated_at}. Built for AMD's Lemonade Developer Challenge.</p>
+</footer>
+</body>
+</html>
+"""
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--results-dir", default="results")
@@ -994,6 +1261,7 @@ def main() -> None:
     generated_at = datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M UTC")
     page = render(model_rows, modality_rows, generated_at, imported_docs)
     out_path.write_text(page)
+    out_path.with_name("guide.html").write_text(render_guide(generated_at))
     print(
         f"Wrote {out_path} ({len(model_rows)} model/router rows, {len(modality_rows)} modality rows, "
         f"{sum(len(d.get('rows') or []) for d in imported_docs)} imported rows)"

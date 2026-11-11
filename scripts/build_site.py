@@ -39,7 +39,7 @@ IMPORTED_DIR = "imported"
 LEADERBOARD_COLUMNS = [
     ("timestamp", "Timestamp", "text"),
     ("_profile", "Profile", "text"),
-    ("environment.device_model", "Device", "text"),
+    ("_device", "Device", "text"),
     ("model.name", "Model", "text"),
     ("model.quantization", "Quant", "text"),
     ("config.compute_engine", "Engine", "chip"),
@@ -69,6 +69,20 @@ def load_json(path: Path) -> dict | None:
         return None
 
 
+ENGINE_DEVICE_KEYS = {"cpu": "cpu", "dgpu": "dgpu", "igpu": "igpu", "npu": "npu", "router": "dgpu"}
+
+
+def device_of(result: dict) -> str | None:
+    """The device that ran the model; environment.device_model is the host CPU."""
+    env = result.get("environment") or {}
+    key = ENGINE_DEVICE_KEYS.get(get_path(result, "config.compute_engine"))
+    name = key and env.get(key)
+    # Some drivers report only a PCI-style number as the GPU name.
+    if name and name.isdigit():
+        name = f"{env.get(key + '_family') or 'unknown'} GPU"
+    return name or env.get("device_model")
+
+
 def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
     """Returns (model_and_router_rows, modality_rows)."""
     model_rows: list[dict] = []
@@ -89,6 +103,7 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
                 continue
             data["_profile"] = profile
             data["_run_id"] = path.stem
+            data["_device"] = device_of(data)
             model_rows.append(data)
 
         # Modality subdirectories.
@@ -107,7 +122,7 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
                         "modality_label": label,
                         "timestamp": data.get("timestamp"),
                         "model": get_path(data, "model.name"),
-                        "device": get_path(data, "environment.device_model"),
+                        "device": device_of(data),
                         "engine": get_path(data, "config.compute_engine"),
                         "backend": get_path(data, "config.backend"),
                         "metric_value": get_path(data, f"metrics.{metric_key}"),

@@ -174,6 +174,44 @@ def _baseline(routing: dict) -> str:
     return f"{_short_model(model)} <span class=\"muted\">({_esc(routing.get('baseline_method') or 'estimated')})</span>"
 
 
+def group_of(result: dict) -> str:
+    """Same grouping as the page script: model without the user. prefix, plus quantization."""
+    name = (get_path(result, "model.name") or "").removeprefix("user.")
+    quant = get_path(result, "model.quantization")
+    return f"{name} · {quant}" if quant and quant != "none" else name
+
+
+def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
+    tiles = []
+    valid = [r for r in llm_rows if get_path(r, "validity.valid") and get_path(r, "metrics.decode.tokens_per_sec")]
+    if valid:
+        groups: dict[str, list[dict]] = {}
+        for r in valid:
+            groups.setdefault(group_of(r), []).append(r)
+        group, runs = max(groups.items(), key=lambda kv: (len(kv[1]), kv[0]))
+        best = max(runs, key=lambda r: get_path(r, "metrics.decode.tokens_per_sec"))
+        tiles.append(
+            f'<div class="stat-tile headline"><div class="value">'
+            f'{get_path(best, "metrics.decode.tokens_per_sec"):.0f} tok/s</div><div class="label">'
+            f"Fastest {_esc(group)}: {_esc(best.get('_device'))}, {_esc(get_path(best, 'config.backend'))}"
+            "</div></div>"
+        )
+    priced = [
+        r for r in router_rows
+        if get_path(r, "validity.valid") and get_path(r, "metrics.routing.savings_pct") is not None
+    ]
+    if priced:
+        latest = max(priced, key=lambda r: r.get("timestamp") or "")
+        routing = latest["metrics"]["routing"]
+        method = routing.get("baseline_method") or "estimated"
+        tiles.append(
+            f'<div class="stat-tile headline"><div class="value">{routing["savings_pct"]:.1f}% saved</div>'
+            f'<div class="label">Latest router run ({_esc(get_path(latest, "model.name"))}), '
+            f"{_esc(method)} baseline</div></div>"
+        )
+    return "".join(tiles)
+
+
 def render_router_costs(model_rows: list[dict]) -> str:
     rows = [r for r in model_rows if get_path(r, "metrics.routing")]
     if not rows:
@@ -289,6 +327,7 @@ def render(
         {key: {"label": label, "unit": unit} for key, (label, _metric, unit) in MODALITY_DIRS.items()}
     )
 
+    headlines_html = render_headlines(llm_rows, router_rows)
     total = len(llm_rows)
     valid = sum(1 for r in llm_rows if get_path(r, "validity.valid"))
     profiles = sorted({r.get("_profile") for r in model_rows if r.get("_profile")})
@@ -380,6 +419,8 @@ main {{
 }}
 .stat-tile .value {{ font-size: 1.5rem; font-weight: 600; }}
 .stat-tile .label {{ font-size: .78rem; color: var(--fg-muted); margin-top: .15rem; }}
+.stat-tile.headline {{ border-color: var(--accent); max-width: 340px; }}
+.stat-tile.headline .value {{ color: var(--accent); }}
 .card {{
   background: var(--bg-alt);
   border: 1px solid var(--border);
@@ -522,6 +563,7 @@ footer a {{ color: var(--accent); }}
 <main>
 
   <div class="stat-row">
+    {headlines_html}
     <div class="stat-tile"><div class="value">{total}</div><div class="label">LLM runs</div></div>
     <div class="stat-tile"><div class="value">{valid}</div><div class="label">Valid runs</div></div>
     <div class="stat-tile"><div class="value">{len(profiles)}</div><div class="label">Profiles (machines)</div></div>

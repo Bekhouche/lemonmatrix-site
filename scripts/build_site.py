@@ -23,10 +23,10 @@ from typing import Any
 MODEL_RUN_TYPES = {None, "model", "router"}
 MODALITY_DIRS = {
     "classify": ("Classification", "classifications_per_sec", "class/sec"),
-    "tts": ("Text-to-speech", "real_time_factor", "RTF"),
-    "stt": ("Speech-to-text", "real_time_factor", "RTF"),
+    "tts": ("Text-to-speech", "real_time_factor", "× real time"),
+    "stt": ("Speech-to-text", "real_time_factor", "× real time"),
     "imagegen": ("Image generation", "images_per_sec", "img/sec"),
-    "audiogen": ("Audio generation", "real_time_factor", "RTF"),
+    "audiogen": ("Audio generation", "real_time_factor", "× real time"),
     "embeddings": ("Embeddings", "embeddings_per_sec", "emb/sec"),
     "rerank": ("Reranking", "documents_per_sec", "doc/sec"),
     "meshgen": ("3D generation", "meshes_per_sec", "mesh/sec"),
@@ -43,10 +43,10 @@ LEADERBOARD_COLUMNS = [
     ("config.compute_engine", "Engine", "chip"),
     ("config.backend", "Backend", "text"),
     ("config.power_state", "Power", "text"),
-    ("metrics.decode.tokens_per_sec", "Decode tok/s", "num1"),
-    ("metrics.prefill.tokens_per_sec", "Prefill tok/s", "num1"),
-    ("metrics.ttft_ms", "TTFT ms", "num0"),
-    ("metrics.decode.joules_per_token", "J/tok (decode)", "num3"),
+    ("metrics.decode.tokens_per_sec", "Decode tok/s ↑", "num1"),
+    ("metrics.prefill.tokens_per_sec", "Prefill tok/s ↑", "num1"),
+    ("metrics.ttft_ms", "TTFT ms ↓", "num0"),
+    ("metrics.decode.joules_per_token", "J/tok (decode) ↓", "num3"),
     ("validity.valid", "Valid", "status"),
 ]
 
@@ -153,11 +153,63 @@ def _num(value: Any, digits: int) -> str:
     return DASH if value is None else f"{value:.{digits}f}"
 
 
+def _short_model(name: str) -> str:
+    """openrouter.nvidia/nemotron-3.5-super-vl:free -> nemotron-3.5-super-vl:free, full name on hover."""
+    short = name.rsplit("/", 1)[-1]
+    if short == name:
+        return _esc(name)
+    return f'<span title="{_esc(name)}">{_esc(short)}</span>'
+
+
+def _per_1k(cost: Any, requests: int) -> str:
+    if cost is None or not requests:
+        return DASH
+    return f"${cost / requests * 1000:.2f}"
+
+
 def _baseline(routing: dict) -> str:
     model = routing.get("baseline_model")
     if not model:
         return DASH
-    return f"{_esc(model)} ({_esc(routing.get('baseline_method') or 'estimated')})"
+    return f"{_short_model(model)} <span class=\"muted\">({_esc(routing.get('baseline_method') or 'estimated')})</span>"
+
+
+def group_of(result: dict) -> str:
+    """Same grouping as the page script: model without the user. prefix, plus quantization."""
+    name = (get_path(result, "model.name") or "").removeprefix("user.")
+    quant = get_path(result, "model.quantization")
+    return f"{name} · {quant}" if quant and quant != "none" else name
+
+
+def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
+    tiles = []
+    valid = [r for r in llm_rows if get_path(r, "validity.valid") and get_path(r, "metrics.decode.tokens_per_sec")]
+    if valid:
+        groups: dict[str, list[dict]] = {}
+        for r in valid:
+            groups.setdefault(group_of(r), []).append(r)
+        group, runs = max(groups.items(), key=lambda kv: (len(kv[1]), kv[0]))
+        best = max(runs, key=lambda r: get_path(r, "metrics.decode.tokens_per_sec"))
+        tiles.append(
+            f'<div class="stat-tile headline"><div class="value">'
+            f'{get_path(best, "metrics.decode.tokens_per_sec"):.0f} tok/s</div><div class="label">'
+            f"Fastest {_esc(group)}: {_esc(best.get('_device'))}, {_esc(get_path(best, 'config.backend'))}"
+            "</div></div>"
+        )
+    priced = [
+        r for r in router_rows
+        if get_path(r, "validity.valid") and get_path(r, "metrics.routing.savings_pct") is not None
+    ]
+    if priced:
+        latest = max(priced, key=lambda r: r.get("timestamp") or "")
+        routing = latest["metrics"]["routing"]
+        method = routing.get("baseline_method") or "estimated"
+        tiles.append(
+            f'<div class="stat-tile headline"><div class="value">{routing["savings_pct"]:.1f}% saved</div>'
+            f'<div class="label">Latest router run ({_esc(get_path(latest, "model.name"))}), '
+            f"{_esc(method)} baseline</div></div>"
+        )
+    return "".join(tiles)
 
 
 def render_router_costs(model_rows: list[dict]) -> str:
@@ -168,22 +220,23 @@ def render_router_costs(model_rows: list[dict]) -> str:
     for r in rows:
         routing = r["metrics"]["routing"]
         split = " &middot; ".join(
-            f"{_esc(name)} {c['share'] * 100:.0f}%" for name, c in routing["candidates"].items()
+            f"{_short_model(name)} {c['share'] * 100:.0f}%" for name, c in routing["candidates"].items()
         )
         saved = routing.get("savings_pct")
+        requests = routing["requests"]
+        timestamp = r.get("timestamp") or ""
         body.append(
             "<tr>"
-            f"<td>{_esc((r.get('timestamp') or '')[:19].replace('T', ' '))}</td>"
+            f'<td><span title="{_esc(timestamp)}">{_esc(timestamp[:10])}</span></td>'
             f"<td>{_esc(r.get('_profile'))}</td>"
             f"<td>{_esc(get_path(r, 'model.name'))}</td>"
-            f'<td class="num">{routing["requests"]}</td>'
+            f'<td class="num"><strong>{_num(saved, 1)}{"%" if saved is not None else ""}</strong></td>'
+            f'<td class="num">{_per_1k(routing["routed_cost_usd"], requests)}</td>'
+            f'<td class="num">{_per_1k(routing.get("baseline_cost_usd"), requests)}</td>'
+            f"<td>{_baseline(routing)}</td>"
             f"<td>{split}</td>"
             f'<td class="num">{routing["local_share"] * 100:.0f}%</td>'
-            f'<td class="num">{routing["free_share"] * 100:.0f}%</td>'
-            f'<td class="num">{_num(routing["routed_cost_usd"], 6)}</td>'
-            f"<td>{_baseline(routing)}</td>"
-            f'<td class="num">{_num(routing.get("baseline_cost_usd"), 6)}</td>'
-            f'<td class="num">{_num(saved, 1)}{"%" if saved is not None else ""}</td>'
+            f'<td class="num">{requests}</td>'
             f"<td>{VALID if get_path(r, 'validity.valid') else INVALID}</td>"
             "</tr>"
         )
@@ -195,14 +248,14 @@ def render_router_costs(model_rows: list[dict]) -> str:
       and what sending every request to the baseline model would have cost. A <em>measured</em> baseline sends each prompt
       once to the baseline model and prices its own token counts; an <em>estimated</em> one reuses the routed model's counts,
       which understates a reasoning model's cost. Prices are USD per million tokens, from Lemonade's own cost metadata or
-      the submitter's <code>--cost</code>; non-cloud models count as free.
+      the submitter's <code>--cost</code>; non-cloud models count as free. Costs are shown per 1,000 requests.
     </p>
     <div class="table-scroll">
       <table>
         <thead><tr>
-          <th>Timestamp</th><th>Profile</th><th>Router</th><th class="num">Requests</th><th>Split</th>
-          <th class="num">Local</th><th class="num">Free</th><th class="num">Cost USD</th><th>Baseline</th>
-          <th class="num">Baseline USD</th><th class="num">Saved</th><th>Valid</th>
+          <th>Date</th><th>Profile</th><th>Router</th><th class="num">Saved ↑</th><th class="num">Cost / 1k req</th>
+          <th class="num">Baseline / 1k req</th><th>Baseline</th><th>Split</th><th class="num">Local</th>
+          <th class="num">Requests</th><th>Valid</th>
         </tr></thead>
         <tbody>{"".join(body)}</tbody>
       </table>
@@ -274,6 +327,7 @@ def render(
         {key: {"label": label, "unit": unit} for key, (label, _metric, unit) in MODALITY_DIRS.items()}
     )
 
+    headlines_html = render_headlines(llm_rows, router_rows)
     total = len(llm_rows)
     valid = sum(1 for r in llm_rows if get_path(r, "validity.valid"))
     profiles = sorted({r.get("_profile") for r in model_rows if r.get("_profile")})
@@ -365,6 +419,8 @@ main {{
 }}
 .stat-tile .value {{ font-size: 1.5rem; font-weight: 600; }}
 .stat-tile .label {{ font-size: .78rem; color: var(--fg-muted); margin-top: .15rem; }}
+.stat-tile.headline {{ border-color: var(--accent); max-width: 340px; }}
+.stat-tile.headline .value {{ color: var(--accent); }}
 .card {{
   background: var(--bg-alt);
   border: 1px solid var(--border);
@@ -507,6 +563,7 @@ footer a {{ color: var(--accent); }}
 <main>
 
   <div class="stat-row">
+    {headlines_html}
     <div class="stat-tile"><div class="value">{total}</div><div class="label">LLM runs</div></div>
     <div class="stat-tile"><div class="value">{valid}</div><div class="label">Valid runs</div></div>
     <div class="stat-tile"><div class="value">{len(profiles)}</div><div class="label">Profiles (machines)</div></div>
@@ -518,7 +575,7 @@ footer a {{ color: var(--accent); }}
     <h2>LLM leaderboard</h2>
     <p class="hint">
       Runs are grouped by model and quantization, and ranked by decode speed within each group. Click a column header to
-      rank by another column. Filters are applied together (AND).
+      rank by another column. ↑ higher is better, ↓ lower is better. Filters are applied together (AND).
     </p>
     <div class="filters">
       <div>
@@ -554,7 +611,8 @@ footer a {{ color: var(--accent); }}
     <h2>Other modalities</h2>
     <p class="hint">
       Non-LLM Lemonade recipes -- text-to-speech, speech-to-text, image/audio/3D generation, embeddings, reranking,
-      classification. Each has its own throughput metric, so these aren't ranked against the table above.
+      classification. Each has its own throughput metric, so these aren't ranked against the table above. Every metric
+      here is higher-is-better; for audio, × real time is seconds of audio per second of processing.
     </p>
     <div class="modality-tabs" id="modality-tabs"></div>
     <div class="table-scroll">
@@ -562,7 +620,7 @@ footer a {{ color: var(--accent); }}
         <thead>
           <tr>
             <th>Date</th><th>Profile</th><th>Model</th><th>Backend</th><th>Engine</th>
-            <th class="num">Metric</th><th>Valid</th>
+            <th class="num">Metric ↑</th><th>Valid</th>
           </tr>
         </thead>
         <tbody id="modality-body"></tbody>

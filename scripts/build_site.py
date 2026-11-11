@@ -37,7 +37,7 @@ SKIP_DIRS = {"failures", "trials"}
 IMPORTED_DIR = "imported"
 
 LEADERBOARD_COLUMNS = [
-    ("timestamp", "Timestamp", "text"),
+    ("timestamp", "Date", "date"),
     ("_profile", "Profile", "text"),
     ("_device", "Device", "text"),
     ("config.compute_engine", "Engine", "chip"),
@@ -266,7 +266,8 @@ def render(
     # A router's tok/s blends its candidates, so it is not ranked against single models.
     llm_rows = [r for r in model_rows if r.get("run_type") != "router"]
     router_rows = [r for r in model_rows if r.get("run_type") == "router"]
-    columns_json = json.dumps(LEADERBOARD_COLUMNS)
+    columns = [c for c in LEADERBOARD_COLUMNS if any(get_path(r, c[0]) is not None for r in llm_rows)]
+    columns_json = json.dumps(columns)
     model_rows_json = json.dumps(llm_rows)
     modality_rows_json = json.dumps(modality_rows)
     modality_meta_json = json.dumps(
@@ -560,7 +561,7 @@ footer a {{ color: var(--accent); }}
       <table id="modality-table">
         <thead>
           <tr>
-            <th>Timestamp</th><th>Profile</th><th>Model</th><th>Backend</th><th>Engine</th>
+            <th>Date</th><th>Profile</th><th>Model</th><th>Backend</th><th>Engine</th>
             <th class="num">Metric</th><th>Valid</th>
           </tr>
         </thead>
@@ -603,6 +604,7 @@ footer a {{ color: var(--accent); }}
     if (kind === "num1") return Number(value).toFixed(1);
     if (kind === "num0") return Math.round(Number(value)).toString();
     if (kind === "num3") return Number(value).toFixed(3);
+    if (kind === "date") return '<span title="' + escapeHtml(String(value)) + '">' + escapeHtml(String(value).slice(0, 10)) + '</span>';
     if (kind === "chip") return '<span class="chip">' + escapeHtml(String(value)) + '</span>';
     if (kind === "status") return value ? '<span class="status-ok">valid</span>' : '<span class="status-bad">invalid</span>';
     return escapeHtml(String(value));
@@ -815,8 +817,10 @@ footer a {{ color: var(--accent); }}
     }}
     rows.forEach(function (r) {{
       var tr = document.createElement("tr");
+      var dateTd = document.createElement("td");
+      dateTd.innerHTML = fmt(r.timestamp, "date");
+      tr.appendChild(dateTd);
       var cells = [
-        r.timestamp,
         r.profile,
         r.model,
         r.backend,

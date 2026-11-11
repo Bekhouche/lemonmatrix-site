@@ -23,10 +23,10 @@ from typing import Any
 MODEL_RUN_TYPES = {None, "model", "router"}
 MODALITY_DIRS = {
     "classify": ("Classification", "classifications_per_sec", "class/sec"),
-    "tts": ("Text-to-speech", "real_time_factor", "RTF"),
-    "stt": ("Speech-to-text", "real_time_factor", "RTF"),
+    "tts": ("Text-to-speech", "real_time_factor", "× real time"),
+    "stt": ("Speech-to-text", "real_time_factor", "× real time"),
     "imagegen": ("Image generation", "images_per_sec", "img/sec"),
-    "audiogen": ("Audio generation", "real_time_factor", "RTF"),
+    "audiogen": ("Audio generation", "real_time_factor", "× real time"),
     "embeddings": ("Embeddings", "embeddings_per_sec", "emb/sec"),
     "rerank": ("Reranking", "documents_per_sec", "doc/sec"),
     "meshgen": ("3D generation", "meshes_per_sec", "mesh/sec"),
@@ -43,10 +43,10 @@ LEADERBOARD_COLUMNS = [
     ("config.compute_engine", "Engine", "chip"),
     ("config.backend", "Backend", "text"),
     ("config.power_state", "Power", "text"),
-    ("metrics.decode.tokens_per_sec", "Decode tok/s", "num1"),
-    ("metrics.prefill.tokens_per_sec", "Prefill tok/s", "num1"),
-    ("metrics.ttft_ms", "TTFT ms", "num0"),
-    ("metrics.decode.joules_per_token", "J/tok (decode)", "num3"),
+    ("metrics.decode.tokens_per_sec", "Decode tok/s ↑", "num1"),
+    ("metrics.prefill.tokens_per_sec", "Prefill tok/s ↑", "num1"),
+    ("metrics.ttft_ms", "TTFT ms ↓", "num0"),
+    ("metrics.decode.joules_per_token", "J/tok (decode) ↓", "num3"),
     ("validity.valid", "Valid", "status"),
 ]
 
@@ -518,7 +518,7 @@ footer a {{ color: var(--accent); }}
     <h2>LLM leaderboard</h2>
     <p class="hint">
       Runs are grouped by model and quantization, and ranked by decode speed within each group. Click a column header to
-      rank by another column. Filters are applied together (AND).
+      rank by another column. ↑ higher is better, ↓ lower is better. Filters are applied together (AND).
     </p>
     <div class="filters">
       <div>
@@ -554,7 +554,8 @@ footer a {{ color: var(--accent); }}
     <h2>Other modalities</h2>
     <p class="hint">
       Non-LLM Lemonade recipes -- text-to-speech, speech-to-text, image/audio/3D generation, embeddings, reranking,
-      classification. Each has its own throughput metric, so these aren't ranked against the table above.
+      classification. Each has its own throughput metric, so these aren't ranked against the table above. Every metric
+      here is higher-is-better; for audio, × real time is seconds of audio per second of processing.
     </p>
     <div class="modality-tabs" id="modality-tabs"></div>
     <div class="table-scroll">
@@ -562,7 +563,7 @@ footer a {{ color: var(--accent); }}
         <thead>
           <tr>
             <th>Date</th><th>Profile</th><th>Model</th><th>Backend</th><th>Engine</th>
-            <th class="num">Metric</th><th>Valid</th>
+            <th class="num">Metric ↑</th><th>Valid</th>
           </tr>
         </thead>
         <tbody id="modality-body"></tbody>

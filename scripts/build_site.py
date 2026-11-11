@@ -51,6 +51,274 @@ LEADERBOARD_COLUMNS = [
 ]
 
 
+CSS = """/* Colors, type, spacing and radii follow Lemonade GUI3 (src/app/src/styles/tokens.css, src/app/DESIGN.md). */
+:root {
+  --surface-base: #0E0E0B;
+  --surface-1: #1A1813;
+  --surface-2: #1F1D17;
+  --surface-3: #25221B;
+  --surface-alpha-05: rgba(255, 255, 255, 0.05);
+  --surface-alpha-02: rgba(255, 255, 255, 0.02);
+  --text-primary: #F2EFE5;
+  --text-secondary: #C7C2B5;
+  --text-tertiary: #A8A39A;
+  --accent: #FCD846;
+  --accent-fg: #FCD846;
+  --accent-on: #000000;
+  --accent-soft: rgba(252, 216, 70, 0.14);
+  --accent-border: rgba(252, 216, 70, 0.28);
+  --success: #78A86B;
+  --danger: #EF8D7F;
+  --border: rgba(255, 255, 255, 0.10);
+  --border-subtle: rgba(255, 255, 255, 0.07);
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", system-ui, "Inter",
+               "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --text-xs: 11px;
+  --text-sm: 12.5px;
+  --text-base: 14px;
+  --text-2xl: 24px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 9999px;
+  --control-height: 36px;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --surface-base: #fdfbf6;
+    --surface-1: #fdfbf6;
+    --surface-2: #f5f2ec;
+    --surface-3: #fdfbf6;
+    --surface-alpha-05: rgba(0, 0, 0, 0.05);
+    --surface-alpha-02: rgba(0, 0, 0, 0.02);
+    --text-primary: #000000;
+    --text-secondary: #2D2F2F;
+    --text-tertiary: #52525B;
+    --accent: rgba(252, 216, 70, 0.58);
+    --accent-fg: #5C4B00;
+    --accent-soft: rgba(252, 216, 70, 0.18);
+    --accent-border: rgba(92, 75, 0, 0.32);
+    --success: #2C702F;
+    --danger: #C62828;
+    --border: rgba(0, 0, 0, 0.16);
+    --border-subtle: rgba(92, 75, 0, 0.18);
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: 1.5;
+}
+a { color: var(--accent-fg); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, th:focus-visible {
+  outline: 2px solid var(--accent-fg);
+  outline-offset: 2px;
+}
+header.hero {
+  padding: var(--space-6) var(--space-5) var(--space-4);
+  max-width: 1100px;
+  margin: 0 auto;
+}
+header.hero h1 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+header.hero .tagline {
+  color: var(--text-secondary);
+  max-width: 68ch;
+  margin: 0 0 var(--space-3);
+}
+header.hero .links { font-size: var(--text-sm); }
+header.hero .links a { margin-right: var(--space-4); }
+main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 var(--space-5) var(--space-6);
+}
+.stat-row {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin: var(--space-4) 0 var(--space-5);
+}
+.stat-tile {
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  min-width: 130px;
+}
+.stat-tile .value { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+.stat-tile .label { font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 2px; }
+.stat-tile.headline { border-color: var(--accent-border); background: var(--accent-soft); max-width: 340px; }
+.stat-tile.headline .value { color: var(--accent-fg); }
+.card {
+  background: var(--surface-1);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+.card h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-base);
+  font-weight: 600;
+}
+.card p.hint {
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  line-height: 1.35;
+  margin: 0 0 var(--space-4);
+}
+.filters {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: var(--space-4);
+}
+.filters label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-1);
+}
+.filters select, .filters input[type=text] {
+  height: var(--control-height);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+  font-family: var(--font-sans);
+}
+.filters .checkbox {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: var(--control-height);
+  font-size: var(--text-sm);
+}
+.filters .checkbox input { accent-color: #FCD846; }
+.filters .checkbox label {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+.table-scroll { overflow-x: auto; }
+th, td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+  white-space: nowrap;
+}
+th {
+  cursor: pointer;
+  user-select: none;
+  color: var(--text-tertiary);
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+th:hover { color: var(--text-primary); }
+th .arrow { color: var(--accent-fg); font-size: .8em; margin-left: .25em; }
+th.rank, td.rank { width: 2.5rem; color: var(--text-tertiary); text-align: right; cursor: default; }
+tbody tr:not(.group-row):hover td { background: var(--surface-alpha-02); }
+tr.group-row td {
+  padding-top: var(--space-4);
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+}
+tr.group-row td::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-right: var(--space-2);
+  border-radius: 50%;
+  background: #FCD846;
+  vertical-align: 1px;
+}
+tr.group-row .muted { font-weight: 400; margin-left: var(--space-2); }
+td.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }
+.chip {
+  display: inline-block;
+  background: var(--surface-alpha-05);
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  padding: 3px var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+}
+.status-ok { color: var(--success); font-weight: 500; }
+.status-bad { color: var(--danger); font-weight: 500; }
+.muted { color: var(--text-tertiary); }
+.modality-tabs {
+  display: inline-flex;
+  gap: 2px;
+  flex-wrap: wrap;
+  padding: 3px;
+  margin-bottom: var(--space-4);
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+}
+.modality-tabs button {
+  background: transparent;
+  border: 0;
+  color: var(--text-secondary);
+  border-radius: var(--radius-pill);
+  padding: 6px var(--space-3);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  cursor: pointer;
+}
+.modality-tabs button:hover { color: var(--text-primary); }
+.modality-tabs button.active {
+  background: #FCD846;
+  color: var(--accent-on);
+  font-weight: 600;
+}
+code { font-family: var(--font-mono); font-size: .92em; }
+footer {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-5) var(--space-6);
+  color: var(--text-tertiary);
+  font-size: var(--text-sm);
+  border-top: 1px solid var(--border-subtle);
+}
+.empty-row td { color: var(--text-tertiary); font-style: italic; }
+"""
+
+
 def get_path(result: dict, dotted: str) -> Any:
     value: Any = result
     for part in dotted.split("."):
@@ -341,272 +609,7 @@ def render(
 <title>LemonMatrix Leaderboard</title>
 <meta name="description" content="Community-submitted benchmark results for AMD's Lemonade runtime, collected with LemonMatrix.">
 <style>
-/* Colors, type, spacing and radii follow Lemonade GUI3 (src/app/src/styles/tokens.css, src/app/DESIGN.md). */
-:root {{
-  --surface-base: #0E0E0B;
-  --surface-1: #1A1813;
-  --surface-2: #1F1D17;
-  --surface-3: #25221B;
-  --surface-alpha-05: rgba(255, 255, 255, 0.05);
-  --surface-alpha-02: rgba(255, 255, 255, 0.02);
-  --text-primary: #F2EFE5;
-  --text-secondary: #C7C2B5;
-  --text-tertiary: #A8A39A;
-  --accent: #FCD846;
-  --accent-fg: #FCD846;
-  --accent-on: #000000;
-  --accent-soft: rgba(252, 216, 70, 0.14);
-  --accent-border: rgba(252, 216, 70, 0.28);
-  --success: #78A86B;
-  --danger: #EF8D7F;
-  --border: rgba(255, 255, 255, 0.10);
-  --border-subtle: rgba(255, 255, 255, 0.07);
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI Variable", "Segoe UI", system-ui, "Inter",
-               "Helvetica Neue", sans-serif;
-  --font-mono: "SF Mono", "JetBrains Mono", Menlo, Consolas, "Liberation Mono", monospace;
-  --text-xs: 11px;
-  --text-sm: 12.5px;
-  --text-base: 14px;
-  --text-2xl: 24px;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-pill: 9999px;
-  --control-height: 36px;
-}}
-@media (prefers-color-scheme: light) {{
-  :root {{
-    --surface-base: #fdfbf6;
-    --surface-1: #fdfbf6;
-    --surface-2: #f5f2ec;
-    --surface-3: #fdfbf6;
-    --surface-alpha-05: rgba(0, 0, 0, 0.05);
-    --surface-alpha-02: rgba(0, 0, 0, 0.02);
-    --text-primary: #000000;
-    --text-secondary: #2D2F2F;
-    --text-tertiary: #52525B;
-    --accent: rgba(252, 216, 70, 0.58);
-    --accent-fg: #5C4B00;
-    --accent-soft: rgba(252, 216, 70, 0.18);
-    --accent-border: rgba(92, 75, 0, 0.32);
-    --success: #2C702F;
-    --danger: #C62828;
-    --border: rgba(0, 0, 0, 0.16);
-    --border-subtle: rgba(92, 75, 0, 0.18);
-  }}
-}}
-* {{ box-sizing: border-box; }}
-body {{
-  margin: 0;
-  background: var(--surface-base);
-  color: var(--text-primary);
-  font-family: var(--font-sans);
-  font-size: var(--text-base);
-  line-height: 1.5;
-}}
-a {{ color: var(--accent-fg); text-underline-offset: 2px; }}
-a:focus-visible, button:focus-visible, select:focus-visible, input:focus-visible, th:focus-visible {{
-  outline: 2px solid var(--accent-fg);
-  outline-offset: 2px;
-}}
-header.hero {{
-  padding: var(--space-6) var(--space-5) var(--space-4);
-  max-width: 1100px;
-  margin: 0 auto;
-}}
-header.hero h1 {{
-  margin: 0 0 var(--space-2);
-  font-size: var(--text-2xl);
-  font-weight: 600;
-  letter-spacing: -0.01em;
-}}
-header.hero .tagline {{
-  color: var(--text-secondary);
-  max-width: 68ch;
-  margin: 0 0 var(--space-3);
-}}
-header.hero .links {{ font-size: var(--text-sm); }}
-header.hero .links a {{ margin-right: var(--space-4); }}
-main {{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 var(--space-5) var(--space-6);
-}}
-.stat-row {{
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-  margin: var(--space-4) 0 var(--space-5);
-}}
-.stat-tile {{
-  background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  min-width: 130px;
-}}
-.stat-tile .value {{ font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }}
-.stat-tile .label {{ font-size: var(--text-xs); color: var(--text-tertiary); margin-top: 2px; }}
-.stat-tile.headline {{ border-color: var(--accent-border); background: var(--accent-soft); max-width: 340px; }}
-.stat-tile.headline .value {{ color: var(--accent-fg); }}
-.card {{
-  background: var(--surface-1);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-lg);
-  padding: var(--space-5);
-  margin-bottom: var(--space-5);
-}}
-.card h2 {{
-  margin: 0 0 var(--space-2);
-  font-size: var(--text-base);
-  font-weight: 600;
-}}
-.card p.hint {{
-  color: var(--text-tertiary);
-  font-size: var(--text-sm);
-  line-height: 1.35;
-  margin: 0 0 var(--space-4);
-}}
-.filters {{
-  display: flex;
-  gap: var(--space-3);
-  flex-wrap: wrap;
-  align-items: end;
-  margin-bottom: var(--space-4);
-}}
-.filters label {{
-  display: block;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-tertiary);
-  margin-bottom: var(--space-1);
-}}
-.filters select, .filters input[type=text] {{
-  height: var(--control-height);
-  background: var(--surface-2);
-  color: var(--text-primary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: 0 var(--space-3);
-  font-size: var(--text-sm);
-  font-family: var(--font-sans);
-}}
-.filters .checkbox {{
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: var(--control-height);
-  font-size: var(--text-sm);
-}}
-.filters .checkbox input {{ accent-color: #FCD846; }}
-.filters .checkbox label {{
-  margin: 0;
-  color: var(--text-secondary);
-  font-size: var(--text-sm);
-  font-weight: 400;
-  letter-spacing: 0;
-  text-transform: none;
-}}
-table {{
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--text-sm);
-}}
-.table-scroll {{ overflow-x: auto; }}
-th, td {{
-  padding: var(--space-2) var(--space-3);
-  text-align: left;
-  border-bottom: 1px solid var(--border-subtle);
-  white-space: nowrap;
-}}
-th {{
-  cursor: pointer;
-  user-select: none;
-  color: var(--text-tertiary);
-  font-weight: 600;
-  font-size: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}}
-th:hover {{ color: var(--text-primary); }}
-th .arrow {{ color: var(--accent-fg); font-size: .8em; margin-left: .25em; }}
-th.rank, td.rank {{ width: 2.5rem; color: var(--text-tertiary); text-align: right; cursor: default; }}
-tbody tr:not(.group-row):hover td {{ background: var(--surface-alpha-02); }}
-tr.group-row td {{
-  padding-top: var(--space-4);
-  font-weight: 600;
-  color: var(--text-primary);
-  border-bottom: 1px solid var(--border);
-}}
-tr.group-row td::before {{
-  content: "";
-  display: inline-block;
-  width: 8px;
-  height: 8px;
-  margin-right: var(--space-2);
-  border-radius: 50%;
-  background: #FCD846;
-  vertical-align: 1px;
-}}
-tr.group-row .muted {{ font-weight: 400; margin-left: var(--space-2); }}
-td.num {{ font-family: var(--font-mono); font-variant-numeric: tabular-nums; text-align: right; }}
-.chip {{
-  display: inline-block;
-  background: var(--surface-alpha-05);
-  color: var(--text-secondary);
-  border-radius: var(--radius-sm);
-  padding: 3px var(--space-2);
-  font-size: var(--text-xs);
-  font-weight: 500;
-}}
-.status-ok {{ color: var(--success); font-weight: 500; }}
-.status-bad {{ color: var(--danger); font-weight: 500; }}
-.muted {{ color: var(--text-tertiary); }}
-.modality-tabs {{
-  display: inline-flex;
-  gap: 2px;
-  flex-wrap: wrap;
-  padding: 3px;
-  margin-bottom: var(--space-4);
-  background: var(--surface-2);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-pill);
-}}
-.modality-tabs button {{
-  background: transparent;
-  border: 0;
-  color: var(--text-secondary);
-  border-radius: var(--radius-pill);
-  padding: 6px var(--space-3);
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  cursor: pointer;
-}}
-.modality-tabs button:hover {{ color: var(--text-primary); }}
-.modality-tabs button.active {{
-  background: #FCD846;
-  color: var(--accent-on);
-  font-weight: 600;
-}}
-code {{ font-family: var(--font-mono); font-size: .92em; }}
-footer {{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: var(--space-5) var(--space-5) var(--space-6);
-  color: var(--text-tertiary);
-  font-size: var(--text-sm);
-  border-top: 1px solid var(--border-subtle);
-}}
-.empty-row td {{ color: var(--text-tertiary); font-style: italic; }}
-</style>
+{CSS}</style>
 </head>
 <body>
 

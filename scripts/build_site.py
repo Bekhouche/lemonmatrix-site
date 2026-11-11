@@ -40,8 +40,6 @@ LEADERBOARD_COLUMNS = [
     ("timestamp", "Timestamp", "text"),
     ("_profile", "Profile", "text"),
     ("_device", "Device", "text"),
-    ("model.name", "Model", "text"),
-    ("model.quantization", "Quant", "text"),
     ("config.compute_engine", "Engine", "chip"),
     ("config.backend", "Backend", "text"),
     ("config.power_state", "Power", "text"),
@@ -434,6 +432,14 @@ th {{
 }}
 th:hover {{ color: var(--fg); }}
 th .arrow {{ opacity: .5; font-size: .7em; margin-left: .2em; }}
+th.rank, td.rank {{ width: 2.5rem; color: var(--fg-muted); text-align: right; cursor: default; }}
+tr.group-row td {{
+  background: var(--bg);
+  font-weight: 600;
+  padding-top: .9rem;
+  border-bottom: 2px solid var(--border);
+}}
+tr.group-row .muted {{ font-weight: 400; margin-left: .5rem; }}
 td.num {{ font-family: var(--mono); text-align: right; }}
 .chip {{
   display: inline-block;
@@ -509,7 +515,10 @@ footer a {{ color: var(--accent); }}
 
   <div class="card">
     <h2>LLM leaderboard</h2>
-    <p class="hint">Sorted by timestamp by default -- click a column header to re-sort. Filters are applied together (AND).</p>
+    <p class="hint">
+      Runs are grouped by model and quantization, and ranked by decode speed within each group. Click a column header to
+      rank by another column. Filters are applied together (AND).
+    </p>
     <div class="filters">
       <div>
         <label for="f-profile">Profile</label>
@@ -612,10 +621,20 @@ footer a {{ color: var(--accent); }}
 
   // ---- Model / router leaderboard ------------------------------------
 
-  var sortKey = "timestamp";
+  var sortKey = "metrics.decode.tokens_per_sec";
   var sortDir = "desc";
 
+  function groupOf(r) {{
+    var name = (getPath(r, "model.name") || "").replace(/^user\\./, "");
+    var quant = getPath(r, "model.quantization");
+    return quant && quant !== "none" ? name + " · " + quant : name;
+  }}
+
   var headRow = document.getElementById("lb-head");
+  var rankTh = document.createElement("th");
+  rankTh.className = "rank";
+  rankTh.textContent = "#";
+  headRow.appendChild(rankTh);
   columns.forEach(function (col) {{
     var th = document.createElement("th");
     th.dataset.key = col[0];
@@ -671,7 +690,15 @@ footer a {{ color: var(--accent); }}
       return true;
     }});
 
+    var groupSize = {{}};
+    rows.forEach(function (r) {{ var g = groupOf(r); groupSize[g] = (groupSize[g] || 0) + 1; }});
+
     rows.sort(function (a, b) {{
+      var ga = groupOf(a), gb = groupOf(b);
+      if (ga !== gb) {{
+        if (groupSize[ga] !== groupSize[gb]) return groupSize[gb] - groupSize[ga];
+        return ga < gb ? -1 : 1;
+      }}
       var av = getPath(a, sortKey);
       var bv = getPath(b, sortKey);
       var aNull = av === null || av === undefined;
@@ -685,6 +712,7 @@ footer a {{ color: var(--accent); }}
     var arrows = headRow.querySelectorAll("th");
     arrows.forEach(function (th) {{
       var arrow = th.querySelector(".arrow");
+      if (!arrow) return;
       if (th.dataset.key === sortKey) {{
         arrow.textContent = sortDir === "desc" ? "▼" : "▲";
       }} else {{
@@ -698,14 +726,34 @@ footer a {{ color: var(--accent); }}
       var tr = document.createElement("tr");
       tr.className = "empty-row";
       var td = document.createElement("td");
-      td.colSpan = columns.length;
+      td.colSpan = columns.length + 1;
       td.textContent = "No runs match the current filters.";
       tr.appendChild(td);
       body.appendChild(tr);
       return;
     }}
+    var currentGroup = null;
+    var rank = 0;
     rows.forEach(function (r) {{
+      var group = groupOf(r);
+      if (group !== currentGroup) {{
+        currentGroup = group;
+        rank = 0;
+        var gtr = document.createElement("tr");
+        gtr.className = "group-row";
+        var gtd = document.createElement("td");
+        gtd.colSpan = columns.length + 1;
+        var n = groupSize[group];
+        gtd.innerHTML = escapeHtml(group) + '<span class="muted">' + n + (n === 1 ? " run" : " runs") + '</span>';
+        gtr.appendChild(gtd);
+        body.appendChild(gtr);
+      }}
+      rank += 1;
       var tr = document.createElement("tr");
+      var rankTd = document.createElement("td");
+      rankTd.className = "rank";
+      rankTd.textContent = rank;
+      tr.appendChild(rankTd);
       columns.forEach(function (col) {{
         var td = document.createElement("td");
         var kind = col[2];

@@ -37,11 +37,9 @@ SKIP_DIRS = {"failures", "trials"}
 IMPORTED_DIR = "imported"
 
 LEADERBOARD_COLUMNS = [
-    ("timestamp", "Timestamp", "text"),
+    ("timestamp", "Date", "date"),
     ("_profile", "Profile", "text"),
-    ("environment.device_model", "Device", "text"),
-    ("model.name", "Model", "text"),
-    ("model.quantization", "Quant", "text"),
+    ("_device", "Device", "text"),
     ("config.compute_engine", "Engine", "chip"),
     ("config.backend", "Backend", "text"),
     ("config.power_state", "Power", "text"),
@@ -69,6 +67,20 @@ def load_json(path: Path) -> dict | None:
         return None
 
 
+ENGINE_DEVICE_KEYS = {"cpu": "cpu", "dgpu": "dgpu", "igpu": "igpu", "npu": "npu", "router": "dgpu"}
+
+
+def device_of(result: dict) -> str | None:
+    """The device that ran the model; environment.device_model is the host CPU."""
+    env = result.get("environment") or {}
+    key = ENGINE_DEVICE_KEYS.get(get_path(result, "config.compute_engine"))
+    name = key and env.get(key)
+    # Some drivers report only a PCI-style number as the GPU name.
+    if name and name.isdigit():
+        name = f"{env.get(key + '_family') or 'unknown'} GPU"
+    return name or env.get("device_model")
+
+
 def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
     """Returns (model_and_router_rows, modality_rows)."""
     model_rows: list[dict] = []
@@ -89,6 +101,7 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
                 continue
             data["_profile"] = profile
             data["_run_id"] = path.stem
+            data["_device"] = device_of(data)
             model_rows.append(data)
 
         # Modality subdirectories.
@@ -107,7 +120,7 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
                         "modality_label": label,
                         "timestamp": data.get("timestamp"),
                         "model": get_path(data, "model.name"),
-                        "device": get_path(data, "environment.device_model"),
+                        "device": device_of(data),
                         "engine": get_path(data, "config.compute_engine"),
                         "backend": get_path(data, "config.backend"),
                         "metric_value": get_path(data, f"metrics.{metric_key}"),
@@ -250,15 +263,19 @@ def render(
 ) -> str:
     router_costs_html = render_router_costs(model_rows)
     imported_html = render_imported(imported_docs or [])
-    columns_json = json.dumps(LEADERBOARD_COLUMNS)
-    model_rows_json = json.dumps(model_rows)
+    # A router's tok/s blends its candidates, so it is not ranked against single models.
+    llm_rows = [r for r in model_rows if r.get("run_type") != "router"]
+    router_rows = [r for r in model_rows if r.get("run_type") == "router"]
+    columns = [c for c in LEADERBOARD_COLUMNS if any(get_path(r, c[0]) is not None for r in llm_rows)]
+    columns_json = json.dumps(columns)
+    model_rows_json = json.dumps(llm_rows)
     modality_rows_json = json.dumps(modality_rows)
     modality_meta_json = json.dumps(
         {key: {"label": label, "unit": unit} for key, (label, _metric, unit) in MODALITY_DIRS.items()}
     )
 
-    total = len(model_rows)
-    valid = sum(1 for r in model_rows if get_path(r, "validity.valid"))
+    total = len(llm_rows)
+    valid = sum(1 for r in llm_rows if get_path(r, "validity.valid"))
     profiles = sorted({r.get("_profile") for r in model_rows if r.get("_profile")})
 
     return f"""<!doctype html>
@@ -416,6 +433,14 @@ th {{
 }}
 th:hover {{ color: var(--fg); }}
 th .arrow {{ opacity: .5; font-size: .7em; margin-left: .2em; }}
+th.rank, td.rank {{ width: 2.5rem; color: var(--fg-muted); text-align: right; cursor: default; }}
+tr.group-row td {{
+  background: var(--bg);
+  font-weight: 600;
+  padding-top: .9rem;
+  border-bottom: 2px solid var(--border);
+}}
+tr.group-row .muted {{ font-weight: 400; margin-left: .5rem; }}
 td.num {{ font-family: var(--mono); text-align: right; }}
 .chip {{
   display: inline-block;
@@ -482,15 +507,19 @@ footer a {{ color: var(--accent); }}
 <main>
 
   <div class="stat-row">
-    <div class="stat-tile"><div class="value">{total}</div><div class="label">Total LLM / router runs</div></div>
+    <div class="stat-tile"><div class="value">{total}</div><div class="label">LLM runs</div></div>
     <div class="stat-tile"><div class="value">{valid}</div><div class="label">Valid runs</div></div>
     <div class="stat-tile"><div class="value">{len(profiles)}</div><div class="label">Profiles (machines)</div></div>
     <div class="stat-tile"><div class="value">{len(modality_rows)}</div><div class="label">Other modality runs</div></div>
+    <div class="stat-tile"><div class="value">{len(router_rows)}</div><div class="label">Router runs</div></div>
   </div>
 
   <div class="card">
-    <h2>Model &amp; router leaderboard</h2>
-    <p class="hint">Sorted by timestamp by default -- click a column header to re-sort. Filters are applied together (AND).</p>
+    <h2>LLM leaderboard</h2>
+    <p class="hint">
+      Runs are grouped by model and quantization, and ranked by decode speed within each group. Click a column header to
+      rank by another column. Filters are applied together (AND).
+    </p>
     <div class="filters">
       <div>
         <label for="f-profile">Profile</label>
@@ -532,7 +561,7 @@ footer a {{ color: var(--accent); }}
       <table id="modality-table">
         <thead>
           <tr>
-            <th>Timestamp</th><th>Profile</th><th>Model</th><th>Backend</th><th>Engine</th>
+            <th>Date</th><th>Profile</th><th>Model</th><th>Backend</th><th>Engine</th>
             <th class="num">Metric</th><th>Valid</th>
           </tr>
         </thead>
@@ -575,6 +604,7 @@ footer a {{ color: var(--accent); }}
     if (kind === "num1") return Number(value).toFixed(1);
     if (kind === "num0") return Math.round(Number(value)).toString();
     if (kind === "num3") return Number(value).toFixed(3);
+    if (kind === "date") return '<span title="' + escapeHtml(String(value)) + '">' + escapeHtml(String(value).slice(0, 10)) + '</span>';
     if (kind === "chip") return '<span class="chip">' + escapeHtml(String(value)) + '</span>';
     if (kind === "status") return value ? '<span class="status-ok">valid</span>' : '<span class="status-bad">invalid</span>';
     return escapeHtml(String(value));
@@ -593,10 +623,20 @@ footer a {{ color: var(--accent); }}
 
   // ---- Model / router leaderboard ------------------------------------
 
-  var sortKey = "timestamp";
+  var sortKey = "metrics.decode.tokens_per_sec";
   var sortDir = "desc";
 
+  function groupOf(r) {{
+    var name = (getPath(r, "model.name") || "").replace(/^user\\./, "");
+    var quant = getPath(r, "model.quantization");
+    return quant && quant !== "none" ? name + " · " + quant : name;
+  }}
+
   var headRow = document.getElementById("lb-head");
+  var rankTh = document.createElement("th");
+  rankTh.className = "rank";
+  rankTh.textContent = "#";
+  headRow.appendChild(rankTh);
   columns.forEach(function (col) {{
     var th = document.createElement("th");
     th.dataset.key = col[0];
@@ -652,7 +692,15 @@ footer a {{ color: var(--accent); }}
       return true;
     }});
 
+    var groupSize = {{}};
+    rows.forEach(function (r) {{ var g = groupOf(r); groupSize[g] = (groupSize[g] || 0) + 1; }});
+
     rows.sort(function (a, b) {{
+      var ga = groupOf(a), gb = groupOf(b);
+      if (ga !== gb) {{
+        if (groupSize[ga] !== groupSize[gb]) return groupSize[gb] - groupSize[ga];
+        return ga < gb ? -1 : 1;
+      }}
       var av = getPath(a, sortKey);
       var bv = getPath(b, sortKey);
       var aNull = av === null || av === undefined;
@@ -666,6 +714,7 @@ footer a {{ color: var(--accent); }}
     var arrows = headRow.querySelectorAll("th");
     arrows.forEach(function (th) {{
       var arrow = th.querySelector(".arrow");
+      if (!arrow) return;
       if (th.dataset.key === sortKey) {{
         arrow.textContent = sortDir === "desc" ? "▼" : "▲";
       }} else {{
@@ -679,14 +728,34 @@ footer a {{ color: var(--accent); }}
       var tr = document.createElement("tr");
       tr.className = "empty-row";
       var td = document.createElement("td");
-      td.colSpan = columns.length;
+      td.colSpan = columns.length + 1;
       td.textContent = "No runs match the current filters.";
       tr.appendChild(td);
       body.appendChild(tr);
       return;
     }}
+    var currentGroup = null;
+    var rank = 0;
     rows.forEach(function (r) {{
+      var group = groupOf(r);
+      if (group !== currentGroup) {{
+        currentGroup = group;
+        rank = 0;
+        var gtr = document.createElement("tr");
+        gtr.className = "group-row";
+        var gtd = document.createElement("td");
+        gtd.colSpan = columns.length + 1;
+        var n = groupSize[group];
+        gtd.innerHTML = escapeHtml(group) + '<span class="muted">' + n + (n === 1 ? " run" : " runs") + '</span>';
+        gtr.appendChild(gtd);
+        body.appendChild(gtr);
+      }}
+      rank += 1;
       var tr = document.createElement("tr");
+      var rankTd = document.createElement("td");
+      rankTd.className = "rank";
+      rankTd.textContent = rank;
+      tr.appendChild(rankTd);
       columns.forEach(function (col) {{
         var td = document.createElement("td");
         var kind = col[2];
@@ -748,8 +817,10 @@ footer a {{ color: var(--accent); }}
     }}
     rows.forEach(function (r) {{
       var tr = document.createElement("tr");
+      var dateTd = document.createElement("td");
+      dateTd.innerHTML = fmt(r.timestamp, "date");
+      tr.appendChild(dateTd);
       var cells = [
-        r.timestamp,
         r.profile,
         r.model,
         r.backend,

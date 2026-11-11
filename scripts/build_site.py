@@ -153,11 +153,25 @@ def _num(value: Any, digits: int) -> str:
     return DASH if value is None else f"{value:.{digits}f}"
 
 
+def _short_model(name: str) -> str:
+    """openrouter.nvidia/nemotron-3.5-super-vl:free -> nemotron-3.5-super-vl:free, full name on hover."""
+    short = name.rsplit("/", 1)[-1]
+    if short == name:
+        return _esc(name)
+    return f'<span title="{_esc(name)}">{_esc(short)}</span>'
+
+
+def _per_1k(cost: Any, requests: int) -> str:
+    if cost is None or not requests:
+        return DASH
+    return f"${cost / requests * 1000:.2f}"
+
+
 def _baseline(routing: dict) -> str:
     model = routing.get("baseline_model")
     if not model:
         return DASH
-    return f"{_esc(model)} ({_esc(routing.get('baseline_method') or 'estimated')})"
+    return f"{_short_model(model)} <span class=\"muted\">({_esc(routing.get('baseline_method') or 'estimated')})</span>"
 
 
 def render_router_costs(model_rows: list[dict]) -> str:
@@ -168,22 +182,23 @@ def render_router_costs(model_rows: list[dict]) -> str:
     for r in rows:
         routing = r["metrics"]["routing"]
         split = " &middot; ".join(
-            f"{_esc(name)} {c['share'] * 100:.0f}%" for name, c in routing["candidates"].items()
+            f"{_short_model(name)} {c['share'] * 100:.0f}%" for name, c in routing["candidates"].items()
         )
         saved = routing.get("savings_pct")
+        requests = routing["requests"]
+        timestamp = r.get("timestamp") or ""
         body.append(
             "<tr>"
-            f"<td>{_esc((r.get('timestamp') or '')[:19].replace('T', ' '))}</td>"
+            f'<td><span title="{_esc(timestamp)}">{_esc(timestamp[:10])}</span></td>'
             f"<td>{_esc(r.get('_profile'))}</td>"
             f"<td>{_esc(get_path(r, 'model.name'))}</td>"
-            f'<td class="num">{routing["requests"]}</td>'
+            f'<td class="num"><strong>{_num(saved, 1)}{"%" if saved is not None else ""}</strong></td>'
+            f'<td class="num">{_per_1k(routing["routed_cost_usd"], requests)}</td>'
+            f'<td class="num">{_per_1k(routing.get("baseline_cost_usd"), requests)}</td>'
+            f"<td>{_baseline(routing)}</td>"
             f"<td>{split}</td>"
             f'<td class="num">{routing["local_share"] * 100:.0f}%</td>'
-            f'<td class="num">{routing["free_share"] * 100:.0f}%</td>'
-            f'<td class="num">{_num(routing["routed_cost_usd"], 6)}</td>'
-            f"<td>{_baseline(routing)}</td>"
-            f'<td class="num">{_num(routing.get("baseline_cost_usd"), 6)}</td>'
-            f'<td class="num">{_num(saved, 1)}{"%" if saved is not None else ""}</td>'
+            f'<td class="num">{requests}</td>'
             f"<td>{VALID if get_path(r, 'validity.valid') else INVALID}</td>"
             "</tr>"
         )
@@ -195,14 +210,14 @@ def render_router_costs(model_rows: list[dict]) -> str:
       and what sending every request to the baseline model would have cost. A <em>measured</em> baseline sends each prompt
       once to the baseline model and prices its own token counts; an <em>estimated</em> one reuses the routed model's counts,
       which understates a reasoning model's cost. Prices are USD per million tokens, from Lemonade's own cost metadata or
-      the submitter's <code>--cost</code>; non-cloud models count as free.
+      the submitter's <code>--cost</code>; non-cloud models count as free. Costs are shown per 1,000 requests.
     </p>
     <div class="table-scroll">
       <table>
         <thead><tr>
-          <th>Timestamp</th><th>Profile</th><th>Router</th><th class="num">Requests</th><th>Split</th>
-          <th class="num">Local</th><th class="num">Free</th><th class="num">Cost USD</th><th>Baseline</th>
-          <th class="num">Baseline USD</th><th class="num">Saved</th><th>Valid</th>
+          <th>Date</th><th>Profile</th><th>Router</th><th class="num">Saved ↑</th><th class="num">Cost / 1k req</th>
+          <th class="num">Baseline / 1k req</th><th>Baseline</th><th>Split</th><th class="num">Local</th>
+          <th class="num">Requests</th><th>Valid</th>
         </tr></thead>
         <tbody>{"".join(body)}</tbody>
       </table>

@@ -1048,12 +1048,16 @@ GUIDE_BODY = """
   <h3>Linux and macOS</h3>
   <pre><code>python3 -m venv lemonmatrix-env
 source lemonmatrix-env/bin/activate
-pip install git+https://github.com/Bekhouche/LemonMatrix.git</code></pre>
+pip install lemonmatrix</code></pre>
   <h3>Windows (PowerShell)</h3>
   <pre><code>py -m venv lemonmatrix-env
 lemonmatrix-env\\Scripts\\Activate.ps1
-pip install git+https://github.com/Bekhouche/LemonMatrix.git</code></pre>
-  <p>Check it works with <code>lemonmatrix --help</code>.</p>
+pip install lemonmatrix</code></pre>
+  <p>If PowerShell refuses to run <code>Activate.ps1</code>, allow scripts for this window only with
+    <code>Set-ExecutionPolicy -Scope Process Bypass</code> and run it again.</p>
+  <p>Check it works with <code>lemonmatrix --version</code>. LemonMatrix is on
+    <a href="https://pypi.org/project/lemonmatrix/" target="_blank" rel="noopener">PyPI</a>; to upgrade later, run
+    <code>pip install -U lemonmatrix</code>.</p>
 </section>
 
 <section class="card" id="profile">

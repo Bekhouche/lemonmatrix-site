@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "rerank",
+  "run_id": "4d82b583-9d74-4fde-9022-8b8c68b2798e",
+  "timestamp": "2026-11-12T20:13:16.717867+00:00",
+  "model": {
+    "name": "jina-reranker-v1-tiny-en-GGUF",
+    "checkpoint": "mradermacher/jina-reranker-v1-tiny-en-GGUF:Q8_0"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-cuda",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "11th Gen Intel(R) Core(TM) i9-11900KF @ 3.50GHz",
+    "device_model": "11th Gen Intel(R) Core(TM) i9-11900KF @ 3.50GHz",
+    "dgpu": "NVIDIA RTX A5000",
+    "dgpu_family": "sm_86",
+    "driver_version": "570.211.01",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 31.21,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "b11836"
+  },
+  "metrics": {
+    "latency_ms": 15.934220748022199,
+    "documents_per_sec": 1004.1281750151456,
+    "trial_count": 5,
+    "document_count": 16,
+    "latency_ms_stddev": 0.21720524561567398,
+    "latency_ms_p95": 16.17814959026873,
+    "peak_memory_gb": 0.727783203125
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

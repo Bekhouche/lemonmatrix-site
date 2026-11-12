@@ -1,0 +1,50 @@
+{
+  "run_id": "c6525bad-9945-4682-8033-d6a071390e6d",
+  "trials": [
+    {
+      "ttft_ms": 33.515,
+      "decode_tokens_per_sec": 99.54937317078026,
+      "prompt_tokens": 41,
+      "output_tokens": 256,
+      "watts": null,
+      "vram_gb": 4.71484375,
+      "host_memory_gb": 2.2
+    },
+    {
+      "ttft_ms": 32.796,
+      "decode_tokens_per_sec": 99.55042248418515,
+      "prompt_tokens": 41,
+      "output_tokens": 256,
+      "watts": null,
+      "vram_gb": 4.71484375,
+      "host_memory_gb": 2.3
+    },
+    {
+      "ttft_ms": 32.81,
+      "decode_tokens_per_sec": 99.63144180761911,
+      "prompt_tokens": 41,
+      "output_tokens": 256,
+      "watts": null,
+      "vram_gb": 4.71484375,
+      "host_memory_gb": 2.2
+    },
+    {
+      "ttft_ms": 33.065,
+      "decode_tokens_per_sec": 99.45312481718176,
+      "prompt_tokens": 41,
+      "output_tokens": 256,
+      "watts": null,
+      "vram_gb": 4.71484375,
+      "host_memory_gb": 2.2
+    },
+    {
+      "ttft_ms": 33.634,
+      "decode_tokens_per_sec": 99.05559232913494,
+      "prompt_tokens": 41,
+      "output_tokens": 256,
+      "watts": null,
+      "vram_gb": 4.71484375,
+      "host_memory_gb": 2.2
+    }
+  ]
+}

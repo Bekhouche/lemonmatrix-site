@@ -1,0 +1,57 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "e59bf843-2e98-466a-ab77-dd5fde3c2c03",
+  "timestamp": "2026-11-12T18:49:53.082367+00:00",
+  "model": {
+    "name": "Qwen3-0.6B-GGUF",
+    "class": "dense",
+    "quantization": "Q4_0",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "llamacpp-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "11th Gen Intel(R) Core(TM) i9-11900KF @ 3.50GHz",
+    "device_model": "11th Gen Intel(R) Core(TM) i9-11900KF @ 3.50GHz",
+    "dgpu": "NVIDIA RTX A5000",
+    "dgpu_family": "sm_86",
+    "driver_version": "570.211.01",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 31.21,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "b11846"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 1703.312212261901,
+      "stddev": 12.685036123636758,
+      "p95": 1720.9131765975676,
+      "ci95_half_width": 15.748027624182077
+    },
+    "decode": {
+      "tokens_per_sec": 47.812491666012185,
+      "inter_token_latency_ms": 20.915036325347092,
+      "stddev": 0.10262323716775232,
+      "p95": 47.93666556669968,
+      "ci95_half_width": 0.12740315108676395
+    },
+    "ttft_ms": 20.5482,
+    "trial_count": 5,
+    "peak_memory_gb": 0.45660400390625,
+    "prompt_sha256": "1c43b07d6b0d7624785966ffe2ddc076aa76b5fcf9357882ac1165f0073f43ee",
+    "ttft_ms_stddev": 0.15170926141801602,
+    "ttft_ms_ci95_half_width": 0.1883417292918377
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

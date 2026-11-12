@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "classify",
+  "run_id": "7fec5cc9-6bb6-4d22-8976-052766b699ab",
+  "timestamp": "2026-11-12T20:15:09.796290+00:00",
+  "model": {
+    "name": "Phishing-Email-Detection-ONNX",
+    "checkpoint": "lemonade-sdk/phishing-email-detection-distilbert-ONNX"
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "onnxruntime-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "11th Gen Intel(R) Core(TM) i9-11900KF @ 3.50GHz",
+    "device_model": "11th Gen Intel(R) Core(TM) i9-11900KF @ 3.50GHz",
+    "dgpu": "NVIDIA RTX A5000",
+    "dgpu_family": "sm_86",
+    "driver_version": "570.211.01",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 31.21,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "0.4.0"
+  },
+  "metrics": {
+    "latency_ms": 11.772693623788655,
+    "classifications_per_sec": 84.9423277251806,
+    "trial_count": 5,
+    "input_chars": 142,
+    "latency_ms_stddev": 0.4869535267195169,
+    "latency_ms_p95": 12.184051238000393,
+    "peak_memory_gb": 0.4583740234375
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

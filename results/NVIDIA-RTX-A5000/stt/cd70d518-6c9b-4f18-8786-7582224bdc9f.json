@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "stt",
+  "run_id": "cd70d518-6c9b-4f18-8786-7582224bdc9f",
+  "timestamp": "2026-11-12T20:01:05.100489+00:00",
+  "model": {
+    "name": "Whisper-Tiny",
+    "checkpoint": "ggerganov/whisper.cpp:ggml-tiny.bin"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "whispercpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "11th Gen Intel(R) Core(TM) i9-11900KF @ 3.50GHz",
+    "device_model": "11th Gen Intel(R) Core(TM) i9-11900KF @ 3.50GHz",
+    "dgpu": "NVIDIA RTX A5000",
+    "dgpu_family": "sm_86",
+    "driver_version": "570.211.01",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 31.21,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "v1.8.4"
+  },
+  "metrics": {
+    "transcription_time_ms": 61.0392851755023,
+    "audio_duration_s": 10.0,
+    "real_time_factor": 163.8289172497294,
+    "trial_count": 5,
+    "transcription_time_ms_stddev": 0.9923115934120273,
+    "transcription_time_ms_p95": 62.398061621934175,
+    "language": "en",
+    "peak_memory_gb": 0.70208740234375
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

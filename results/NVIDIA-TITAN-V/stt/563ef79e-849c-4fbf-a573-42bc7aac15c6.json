@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "stt",
+  "run_id": "563ef79e-849c-4fbf-a573-42bc7aac15c6",
+  "timestamp": "2026-11-12T19:14:35.969351+00:00",
+  "model": {
+    "name": "Whisper-Small",
+    "checkpoint": "ggerganov/whisper.cpp:ggml-small.bin"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "whispercpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "Intel(R) Core(TM) i9-7960X CPU @ 2.80GHz",
+    "device_model": "Intel(R) Core(TM) i9-7960X CPU @ 2.80GHz",
+    "dgpu": "NVIDIA TITAN V",
+    "dgpu_family": "sm_70",
+    "driver_version": "580.178.04",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 125.53,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "v1.8.4"
+  },
+  "metrics": {
+    "transcription_time_ms": 246.16209268569946,
+    "audio_duration_s": 10.0,
+    "real_time_factor": 40.62363904570811,
+    "trial_count": 5,
+    "transcription_time_ms_stddev": 16.231036295382,
+    "transcription_time_ms_p95": 262.88902796804905,
+    "language": "en",
+    "peak_memory_gb": 0.97869873046875
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

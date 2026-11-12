@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "stt",
+  "run_id": "b117f10d-e049-4f02-96be-8daeb6f3e3bf",
+  "timestamp": "2026-11-12T19:20:24.032944+00:00",
+  "model": {
+    "name": "Moonshine-Small-Streaming",
+    "checkpoint": "UsefulSensors/moonshine-streaming:onnx/small"
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "moonshine-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "Intel(R) Core(TM) i9-7960X CPU @ 2.80GHz",
+    "device_model": "Intel(R) Core(TM) i9-7960X CPU @ 2.80GHz",
+    "dgpu": "NVIDIA TITAN V",
+    "dgpu_family": "sm_70",
+    "driver_version": "580.178.04",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 125.53,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "moonshine0.0.62"
+  },
+  "metrics": {
+    "transcription_time_ms": 876.069693826139,
+    "audio_duration_s": 10.0,
+    "real_time_factor": 11.41461697679107,
+    "trial_count": 5,
+    "transcription_time_ms_stddev": 27.04145803253853,
+    "transcription_time_ms_p95": 910.7314372435212,
+    "language": "en",
+    "peak_memory_gb": 0.26397705078125
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

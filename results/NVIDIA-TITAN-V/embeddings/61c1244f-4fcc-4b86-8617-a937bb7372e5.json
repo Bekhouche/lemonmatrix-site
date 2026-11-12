@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "embeddings",
+  "run_id": "61c1244f-4fcc-4b86-8617-a937bb7372e5",
+  "timestamp": "2026-11-12T19:20:49.580719+00:00",
+  "model": {
+    "name": "Qwen3-Embedding-0.6B-GGUF",
+    "checkpoint": "Qwen/Qwen3-Embedding-0.6B-GGUF:Qwen3-Embedding-0.6B-Q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "Intel(R) Core(TM) i9-7960X CPU @ 2.80GHz",
+    "device_model": "Intel(R) Core(TM) i9-7960X CPU @ 2.80GHz",
+    "dgpu": "NVIDIA TITAN V",
+    "dgpu_family": "sm_70",
+    "driver_version": "580.178.04",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 125.53,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "b11846"
+  },
+  "metrics": {
+    "latency_ms": 1196.1767102591693,
+    "embeddings_per_sec": 26.751900221386794,
+    "trial_count": 5,
+    "batch_size": 32,
+    "input_chars_total": 4535,
+    "latency_ms_stddev": 19.11521886532694,
+    "latency_ms_p95": 1215.8065509982407,
+    "embedding_dim": 1024,
+    "peak_memory_gb": 4.42327880859375
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

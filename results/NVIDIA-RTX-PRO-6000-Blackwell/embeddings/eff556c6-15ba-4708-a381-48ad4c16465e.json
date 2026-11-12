@@ -1,0 +1,45 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "embeddings",
+  "run_id": "eff556c6-15ba-4708-a381-48ad4c16465e",
+  "timestamp": "2026-11-12T12:49:42.304494+00:00",
+  "model": {
+    "name": "Qwen3-Embedding-0.6B-GGUF",
+    "checkpoint": "Qwen/Qwen3-Embedding-0.6B-GGUF:Qwen3-Embedding-0.6B-Q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-cuda",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD EPYC 9555 64-Core Processor",
+    "device_model": "AMD EPYC 9555 64-Core Processor",
+    "dgpu": "2x NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "dgpu_family": "2x sm_120",
+    "driver_version": "580.178.04",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 172.92,
+    "os_version": "Linux-7.0.0-43-generic (Ubuntu 24.04)",
+    "backend_version": "b11836"
+  },
+  "metrics": {
+    "latency_ms": 143.87333400081843,
+    "embeddings_per_sec": 222.41786653681055,
+    "trial_count": 5,
+    "batch_size": 32,
+    "input_chars_total": 1640,
+    "latency_ms_stddev": 0.5966214792262204,
+    "latency_ms_p95": 144.66014200006612,
+    "embedding_dim": 1024,
+    "peak_memory_gb": 3.5150146484375
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "imagegen",
+  "run_id": "898deb40-44b9-4a63-875f-85576e58653b",
+  "timestamp": "2026-11-12T13:21:20.909321+00:00",
+  "model": {
+    "name": "SDXL-Base-1.0",
+    "checkpoint": "stabilityai/stable-diffusion-xl-base-1.0:sd_xl_base_1.0.safetensors"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "sd-cpp-cuda",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD EPYC 9555 64-Core Processor",
+    "device_model": "AMD EPYC 9555 64-Core Processor",
+    "dgpu": "2x NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "dgpu_family": "2x sm_120",
+    "driver_version": "580.178.04",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 172.92,
+    "os_version": "Linux-7.0.0-43-generic (Ubuntu 24.04)",
+    "backend_version": "master-957-90e86d1"
+  },
+  "metrics": {
+    "generation_time_ms": 7444.946853001602,
+    "images_per_sec": 0.13431929330655018,
+    "trial_count": 5,
+    "operation": "generate",
+    "image_size": "1024x1024",
+    "generation_time_ms_stddev": 4.274128846011046,
+    "generation_time_ms_p95": 7450.718942197273,
+    "steps": 25,
+    "prompt_chars": 52,
+    "peak_memory_gb": 8.1868896484375
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

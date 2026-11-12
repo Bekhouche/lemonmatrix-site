@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "meshgen",
+  "run_id": "91a69773-8655-47c1-9a72-c3c160d825ba",
+  "timestamp": "2026-11-12T13:50:01.049992+00:00",
+  "model": {
+    "name": "TRELLIS-3D",
+    "checkpoint": "ilintar/trellis2-gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "trellis-cuda",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD EPYC 9555 64-Core Processor",
+    "device_model": "AMD EPYC 9555 64-Core Processor",
+    "dgpu": "2x NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "dgpu_family": "2x sm_120",
+    "driver_version": "580.178.04",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 172.92,
+    "os_version": "Linux-7.0.0-43-generic (Ubuntu 24.04)",
+    "backend_version": "v0.8.1"
+  },
+  "metrics": {
+    "generation_time_ms": 21531.444321392337,
+    "meshes_per_sec": 0.04644370275738821,
+    "trial_count": 5,
+    "generation_time_ms_stddev": 1309.2271553801575,
+    "generation_time_ms_p95": 23164.264213392744,
+    "resolution": "512",
+    "peak_memory_gb": 1.4095458984375
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

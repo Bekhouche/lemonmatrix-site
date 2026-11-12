@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "stt",
+  "run_id": "343f7e70-43e4-4653-80f8-220b7a85c533",
+  "timestamp": "2026-11-12T13:50:53.882799+00:00",
+  "model": {
+    "name": "Moonshine-Tiny-Streaming",
+    "checkpoint": "UsefulSensors/moonshine-streaming:onnx/tiny"
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "moonshine-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD EPYC 9555 64-Core Processor",
+    "device_model": "AMD EPYC 9555 64-Core Processor",
+    "dgpu": "2x NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "dgpu_family": "2x sm_120",
+    "driver_version": "580.178.04",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 172.92,
+    "os_version": "Linux-7.0.0-43-generic (Ubuntu 24.04)",
+    "backend_version": "moonshine0.0.62"
+  },
+  "metrics": {
+    "transcription_time_ms": 2314.550387801137,
+    "audio_duration_s": 51.45,
+    "real_time_factor": 22.228939266635887,
+    "trial_count": 5,
+    "transcription_time_ms_stddev": 53.72457704328863,
+    "transcription_time_ms_p95": 2387.1686970000155,
+    "peak_memory_gb": 0.62225341796875
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

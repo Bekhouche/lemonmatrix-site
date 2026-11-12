@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "stt",
+  "run_id": "83f1688b-7a9d-42d0-afcf-8de821cc3dfb",
+  "timestamp": "2026-11-12T14:41:39.879581+00:00",
+  "model": {
+    "name": "Whisper-Large-v3-Turbo",
+    "checkpoint": "ggerganov/whisper.cpp:ggml-large-v3-turbo.bin"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "whispercpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD EPYC 9555 64-Core Processor",
+    "device_model": "AMD EPYC 9555 64-Core Processor",
+    "dgpu": "2x NVIDIA RTX PRO 6000 Blackwell Server Edition",
+    "dgpu_family": "2x sm_120",
+    "driver_version": "580.178.04",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 172.92,
+    "os_version": "Linux-7.0.0-43-generic (Ubuntu 26.04)",
+    "backend_version": "v1.8.4"
+  },
+  "metrics": {
+    "transcription_time_ms": 381.81134060723707,
+    "audio_duration_s": 51.45,
+    "real_time_factor": 134.75241442062287,
+    "trial_count": 5,
+    "transcription_time_ms_stddev": 4.621494991603914,
+    "transcription_time_ms_p95": 387.93587961117737,
+    "peak_memory_gb": 2.4796142578125
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

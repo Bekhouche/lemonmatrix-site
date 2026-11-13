@@ -1,0 +1,41 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "classify",
+  "run_id": "bcbe5a06-fbc2-40b1-ab78-0a4a1c6121ef",
+  "timestamp": "2026-11-12T21:27:12.872495+00:00",
+  "model": {
+    "name": "Bert-Phishing-ONNX",
+    "checkpoint": "lemonade-sdk/bert-finetuned-phishing-ONNX"
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "onnxruntime-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "Intel(R) N200",
+    "device_model": "Intel(R) N200",
+    "driver_version": "unknown",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 15.4,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "0.4.0"
+  },
+  "metrics": {
+    "latency_ms": 371.9193282071501,
+    "classifications_per_sec": 2.6887551255282545,
+    "trial_count": 5,
+    "input_chars": 142,
+    "latency_ms_stddev": 52.84070977397389,
+    "latency_ms_p95": 443.8353952486068,
+    "peak_memory_gb": 3.1
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

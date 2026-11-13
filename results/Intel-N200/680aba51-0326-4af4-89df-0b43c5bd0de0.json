@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "680aba51-0326-4af4-89df-0b43c5bd0de0",
+  "timestamp": "2026-11-12T19:22:27.849774+00:00",
+  "model": {
+    "name": "Llama-3.2-3B-Instruct-GGUF",
+    "class": "dense",
+    "quantization": "Q4_K_XL",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "llamacpp-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "Intel(R) N200",
+    "device_model": "Intel(R) N200",
+    "driver_version": "unknown",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 15.4,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "b11846"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 104.22858741349027,
+      "stddev": 28.081648736756865,
+      "p95": 142.01513538645952,
+      "ci95_half_width": 34.862382395190124
+    },
+    "decode": {
+      "tokens_per_sec": 1.5482313162160284,
+      "inter_token_latency_ms": 645.8983160501241,
+      "stddev": 0.1598843192969511,
+      "p95": 1.7645885589774686,
+      "ci95_half_width": 0.19849077704006338
+    },
+    "ttft_ms": 594.8464,
+    "trial_count": 5,
+    "peak_memory_gb": 3.7,
+    "prompt_sha256": "1c43b07d6b0d7624785966ffe2ddc076aa76b5fcf9357882ac1165f0073f43ee",
+    "ttft_ms_stddev": 172.98202704703166,
+    "ttft_ms_ci95_half_width": 214.7511220206654
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; peak_memory_gb is host RAM, not VRAM -- vram_gb was unavailable from this instance; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

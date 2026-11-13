@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "embeddings",
+  "run_id": "097454fc-4031-43de-b052-39473507bd38",
+  "timestamp": "2026-11-12T21:20:46.114573+00:00",
+  "model": {
+    "name": "Qwen3-Embedding-0.6B-GGUF",
+    "checkpoint": "Qwen/Qwen3-Embedding-0.6B-GGUF:Qwen3-Embedding-0.6B-Q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "llamacpp-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "Intel(R) N200",
+    "device_model": "Intel(R) N200",
+    "driver_version": "unknown",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 15.4,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "b11846"
+  },
+  "metrics": {
+    "latency_ms": 37725.29289056547,
+    "embeddings_per_sec": 0.8482372845408106,
+    "trial_count": 5,
+    "batch_size": 32,
+    "input_chars_total": 4535,
+    "latency_ms_stddev": 1532.997691467311,
+    "latency_ms_p95": 39092.820639768615,
+    "embedding_dim": 1024,
+    "peak_memory_gb": 2.1
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

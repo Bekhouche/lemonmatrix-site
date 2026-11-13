@@ -385,6 +385,21 @@ def device_of(result: dict) -> str | None:
     return name or env.get("device_model")
 
 
+VENDOR_MARKERS = [
+    ("AMD", ("AMD", "Radeon", "Ryzen", "EPYC", "Instinct", "gfx")),
+    ("NVIDIA", ("NVIDIA", "GeForce", "RTX", "TITAN", "Tesla", "sm_")),
+    ("Intel", ("Intel",)),
+    ("Apple", ("Apple",)),
+]
+
+
+def vendor_of(device: str | None) -> str:
+    for vendor, markers in VENDOR_MARKERS:
+        if device and any(m in device for m in markers):
+            return vendor
+    return "Other"
+
+
 def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
     """Returns (model_and_router_rows, modality_rows)."""
     model_rows: list[dict] = []
@@ -406,6 +421,7 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
             data["_profile"] = profile
             data["_run_id"] = path.stem
             data["_device"] = device_of(data)
+            data["_vendor"] = vendor_of(data["_device"])
             data["_rel_path"] = path.relative_to(results_dir).as_posix()
             model_rows.append(data)
 
@@ -488,6 +504,15 @@ def group_of(result: dict) -> str:
     return f"{name} · {quant}" if quant and quant != "none" else name
 
 
+def _fastest_tile(title: str, group: str, run: dict) -> str:
+    return (
+        f'<div class="stat-tile headline"><div class="value">'
+        f'{get_path(run, "metrics.decode.tokens_per_sec"):.0f} tok/s</div><div class="label">'
+        f"{_esc(title)}, {_esc(group)}: {_esc(run.get('_device'))} ({_esc(run.get('_profile'))}), "
+        f"{_esc(get_path(run, 'config.backend'))}</div></div>"
+    )
+
+
 def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
     tiles = []
     valid = [r for r in llm_rows if get_path(r, "validity.valid") and get_path(r, "metrics.decode.tokens_per_sec")]
@@ -496,13 +521,14 @@ def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
         for r in valid:
             groups.setdefault(group_of(r), []).append(r)
         group, runs = max(groups.items(), key=lambda kv: (len(kv[1]), kv[0]))
-        best = max(runs, key=lambda r: get_path(r, "metrics.decode.tokens_per_sec"))
-        tiles.append(
-            f'<div class="stat-tile headline"><div class="value">'
-            f'{get_path(best, "metrics.decode.tokens_per_sec"):.0f} tok/s</div><div class="label">'
-            f"Fastest {_esc(group)}: {_esc(best.get('_device'))}, {_esc(get_path(best, 'config.backend'))}"
-            "</div></div>"
-        )
+        decode = lambda r: get_path(r, "metrics.decode.tokens_per_sec")  # noqa: E731
+        best = max(runs, key=decode)
+        amd = [r for r in runs if r.get("_vendor") == "AMD"]
+        best_amd = max(amd, key=decode) if amd else None
+        if best_amd is not None:
+            tiles.append(_fastest_tile("Fastest on AMD", group, best_amd))
+        if best is not best_amd:
+            tiles.append(_fastest_tile("Fastest overall", group, best))
     priced = [
         r for r in router_rows
         if get_path(r, "validity.valid") and get_path(r, "metrics.routing.savings_pct") is not None
@@ -695,6 +721,10 @@ def render(
     </p>
     <div class="filters">
       <div>
+        <label for="f-vendor">Vendor</label>
+        <select id="f-vendor"><option value="">All</option></select>
+      </div>
+      <div>
         <label for="f-profile">Profile</label>
         <select id="f-profile"><option value="">All</option></select>
       </div>
@@ -865,11 +895,13 @@ def render(
     }});
   }}
 
+  fillSelect("f-vendor", uniqueSorted(modelRows, "_vendor"));
   fillSelect("f-profile", uniqueSorted(modelRows, "_profile"));
   fillSelect("f-engine", uniqueSorted(modelRows, "config.compute_engine"));
   fillSelect("f-backend", uniqueSorted(modelRows, "config.backend"));
 
   function renderLeaderboard() {{
+    var vendor = document.getElementById("f-vendor").value;
     var profile = document.getElementById("f-profile").value;
     var engine = document.getElementById("f-engine").value;
     var backend = document.getElementById("f-backend").value;
@@ -877,6 +909,7 @@ def render(
     var validOnly = document.getElementById("f-valid").checked;
 
     var rows = modelRows.filter(function (r) {{
+      if (vendor && r._vendor !== vendor) return false;
       if (profile && r._profile !== profile) return false;
       if (engine && getPath(r, "config.compute_engine") !== engine) return false;
       if (backend && getPath(r, "config.backend") !== backend) return false;
@@ -962,7 +995,7 @@ def render(
     }});
   }}
 
-  ["f-profile", "f-engine", "f-backend"].forEach(function (id) {{
+  ["f-vendor", "f-profile", "f-engine", "f-backend"].forEach(function (id) {{
     document.getElementById(id).addEventListener("change", renderLeaderboard);
   }});
   document.getElementById("f-model").addEventListener("input", renderLeaderboard);

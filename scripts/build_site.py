@@ -316,6 +316,37 @@ footer {
   border-top: 1px solid var(--border-subtle);
 }
 .empty-row td { color: var(--text-tertiary); font-style: italic; }
+tr.clickable { cursor: pointer; }
+tr.clickable td a.run-link { color: inherit; text-decoration: none; }
+tr.clickable:hover td a.run-link { color: var(--accent-fg); text-decoration: underline; }
+"""
+
+RUN_CSS = """
+.run-page header.hero, .run-page main, .run-page footer { max-width: 1100px; }
+.crumbs { font-size: var(--text-sm); color: var(--text-tertiary); margin-bottom: var(--space-2); }
+.crumbs a { margin-right: var(--space-2); }
+.run-meta { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; margin-top: var(--space-2); }
+.run-meta .muted { font-size: var(--text-sm); }
+.stat-tile .sub { font-size: var(--text-xs); color: var(--text-tertiary); font-family: var(--font-mono); margin-top: 2px; }
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--space-4); }
+.grid-2 .card { margin: 0; }
+table.kv td:first-child { color: var(--text-tertiary); width: 40%; white-space: nowrap; }
+table.kv td { white-space: normal; word-break: break-word; }
+.checks { list-style: none; padding: 0; margin: 0 0 var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.checks li {
+  padding: 2px var(--space-3); border-radius: var(--radius-pill); border: 1px solid var(--border);
+  font-size: var(--text-sm);
+}
+.checks li.ok { color: var(--success); }
+.checks li.bad { color: var(--danger); border-color: var(--danger); }
+ul.notes { margin: 0; padding-left: 1.25rem; color: var(--text-secondary); font-size: var(--text-sm); }
+td.bar { width: 22%; min-width: 80px; }
+.run-page header.hero .tagline { max-width: none; }
+.bar-track { height: 8px; background: var(--surface-alpha-05); border-radius: var(--radius-pill); overflow: hidden; }
+.bar-fill { height: 100%; background: var(--accent); border-radius: var(--radius-pill); }
+tr.current td { background: var(--accent-soft); }
+tr.current td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+.raw-links a { margin-right: var(--space-4); font-size: var(--text-sm); }
 """
 
 
@@ -370,6 +401,7 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
             data["_profile"] = profile
             data["_run_id"] = path.stem
             data["_device"] = device_of(data)
+            data["_rel_path"] = path.relative_to(results_dir).as_posix()
             model_rows.append(data)
 
         # Modality subdirectories.
@@ -395,6 +427,8 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
                         "metric_unit": metric_unit,
                         "valid": get_path(data, "validity.valid"),
                         "run_id": path.stem,
+                        "_rel_path": path.relative_to(results_dir).as_posix(),
+                        "_data": data,
                     }
                 )
 
@@ -494,8 +528,9 @@ def render_router_costs(model_rows: list[dict]) -> str:
         requests = routing["requests"]
         timestamp = r.get("timestamp") or ""
         body.append(
-            "<tr>"
-            f'<td><span title="{_esc(timestamp)}">{_esc(timestamp[:10])}</span></td>'
+            f'<tr class="clickable" data-href="{_esc(run_href(r.get("_run_id")))}">'
+            f'<td><a class="run-link" href="{_esc(run_href(r.get("_run_id")))}" title="{_esc(timestamp)}">'
+            f"{_esc(timestamp[:10])}</a></td>"
             f"<td>{_esc(r.get('_profile'))}</td>"
             f"<td>{_esc(get_path(r, 'model.name'))}</td>"
             f'<td class="num"><strong>{_num(saved, 1)}{"%" if saved is not None else ""}</strong></td>'
@@ -590,7 +625,7 @@ def render(
     columns = [c for c in LEADERBOARD_COLUMNS if any(get_path(r, c[0]) is not None for r in llm_rows)]
     columns_json = json.dumps(columns)
     model_rows_json = json.dumps(llm_rows)
-    modality_rows_json = json.dumps(modality_rows)
+    modality_rows_json = json.dumps([{k: v for k, v in r.items() if k != "_data"} for r in modality_rows])
     modality_meta_json = json.dumps(
         {key: {"label": label, "unit": unit} for key, (label, _metric, unit) in MODALITY_DIRS.items()}
     )
@@ -744,6 +779,24 @@ def render(
     }});
   }}
 
+  // Every run has its own page, runs/<run id>.html; the first cell is a real link, the rest of the row clicks through.
+  function runHref(id) {{ return "runs/" + encodeURIComponent(id) + ".html"; }}
+  function runLink(id, inner) {{
+    return id ? '<a class="run-link" href="' + runHref(id) + '">' + inner + '</a>' : inner;
+  }}
+  function makeClickable(tr, id) {{
+    if (!id) return;
+    tr.className = "clickable";
+    tr.dataset.href = runHref(id);
+  }}
+  document.addEventListener("click", function (e) {{
+    if (e.target.closest("a, button, input, select")) return;
+    var tr = e.target.closest("tr.clickable");
+    if (!tr || !tr.dataset.href) return;
+    if (e.ctrlKey || e.metaKey) window.open(tr.dataset.href, "_blank");
+    else window.location.href = tr.dataset.href;
+  }});
+
   var columns = JSON.parse(document.getElementById("lm-columns").textContent);
   var modelRows = JSON.parse(document.getElementById("lm-model-rows").textContent);
   var modalityRows = JSON.parse(document.getElementById("lm-modality-rows").textContent);
@@ -880,15 +933,16 @@ def render(
       }}
       rank += 1;
       var tr = document.createElement("tr");
+      makeClickable(tr, r._run_id);
       var rankTd = document.createElement("td");
       rankTd.className = "rank";
       rankTd.textContent = rank;
       tr.appendChild(rankTd);
-      columns.forEach(function (col) {{
+      columns.forEach(function (col, i) {{
         var td = document.createElement("td");
         var kind = col[2];
         if (kind === "num1" || kind === "num0" || kind === "num3") td.className = "num";
-        td.innerHTML = fmt(getPath(r, col[0]), kind);
+        td.innerHTML = i === 0 ? runLink(r._run_id, fmt(getPath(r, col[0]), kind)) : fmt(getPath(r, col[0]), kind);
         tr.appendChild(td);
       }});
       body.appendChild(tr);
@@ -945,8 +999,9 @@ def render(
     }}
     rows.forEach(function (r) {{
       var tr = document.createElement("tr");
+      makeClickable(tr, r.run_id);
       var dateTd = document.createElement("td");
-      dateTd.innerHTML = fmt(r.timestamp, "date");
+      dateTd.innerHTML = runLink(r.run_id, fmt(r.timestamp, "date"));
       tr.appendChild(dateTd);
       var cells = [
         r.profile,
@@ -1206,13 +1261,302 @@ lemonmatrix submit results/Radeon-RX-7900-XTX/&lt;run_id&gt;.json</code></pre>
 """
 
 
-def nav(current: str) -> str:
+def nav(current: str, prefix: str = "") -> str:
     links = [("index.html", "Leaderboard"), ("guide.html", "How to submit a result")]
     items = []
     for href, label in links:
         attr = ' aria-current="page"' if href == current else ""
-        items.append(f'<a href="{href}"{attr}>{label}</a>')
+        items.append(f'<a href="{prefix}{href}"{attr}>{label}</a>')
     return '<nav class="site-nav">' + "".join(items) + "</nav>"
+
+
+# ---- Per-run detail pages ------------------------------------------------
+
+RUNS_DIR = "runs"
+REPO_BLOB = "https://github.com/LemonMatrix/lemonmatrix.github.io/blob/main/results/"
+VALIDITY_LABELS = {
+    "warmup_discarded": "Warm-up discarded",
+    "thermal_ok": "Thermal OK",
+    "exclusive_run": "Exclusive run",
+    "model_reload_free": "No model reload",
+}
+
+
+def run_href(run_id: Any, prefix: str = "") -> str:
+    return f"{prefix}{RUNS_DIR}/{run_id}.html"
+
+
+def _fmt_value(value: Any) -> str:
+    if value is None:
+        return DASH
+    if isinstance(value, bool):
+        return "yes" if value else "no"
+    if isinstance(value, float):
+        return f"{value:.4g}" if abs(value) < 1000 else f"{value:,.1f}"
+    if isinstance(value, (dict, list)):
+        return f"<code>{_esc(json.dumps(value))}</code>"
+    return _esc(value)
+
+
+def _flatten(obj: Any, prefix: str = "") -> list[tuple[str, Any]]:
+    if not isinstance(obj, dict):
+        return [(prefix, obj)]
+    items: list[tuple[str, Any]] = []
+    for key, value in obj.items():
+        name = f"{prefix}.{key}" if prefix else key
+        items.extend(_flatten(value, name) if isinstance(value, dict) else [(name, value)])
+    return items
+
+
+def _kv_table(pairs: list[tuple[str, Any]]) -> str:
+    rows = "".join(f"<tr><td>{_esc(k)}</td><td>{_fmt_value(v)}</td></tr>" for k, v in pairs if v is not None)
+    return f'<table class="kv"><tbody>{rows or "<tr class=empty-row><td colspan=2>Not reported.</td></tr>"}</tbody></table>'
+
+
+def _bar(value: Any, top: float) -> str:
+    if not isinstance(value, (int, float)) or not top:
+        return ""
+    pct = max(2.0, min(100.0, value / top * 100))
+    return f'<div class="bar-track"><div class="bar-fill" style="width:{pct:.1f}%"></div></div>'
+
+
+def _short_num(value: float) -> str:
+    return f"{value:,.0f}" if abs(value) >= 1000 else f"{value:.3g}"
+
+
+def _tile(value: str, label: str, sub: str = "") -> str:
+    sub_html = f'<div class="sub">{sub}</div>' if sub else ""
+    return f'<div class="stat-tile"><div class="value">{value}</div><div class="label">{_esc(label)}</div>{sub_html}</div>'
+
+
+def _spread(block: dict) -> str:
+    half = block.get("ci95_half_width")
+    sd = block.get("stddev")
+    parts = []
+    if half is not None:
+        parts.append(f"± {half:.3g} (95% CI)")
+    if sd is not None:
+        parts.append(f"sd {sd:.3g}")
+    return " · ".join(parts)
+
+
+def run_kind(data: dict, modality: str | None) -> str:
+    if modality:
+        return modality
+    return "router" if data.get("run_type") == "router" else "llm"
+
+
+def main_metric(data: dict, kind: str) -> tuple[Any, str]:
+    if kind == "llm":
+        return get_path(data, "metrics.decode.tokens_per_sec"), "decode tok/s"
+    if kind == "router":
+        return get_path(data, "metrics.routing.savings_pct"), "% saved"
+    _label, key, unit = MODALITY_DIRS[kind]
+    return get_path(data, f"metrics.{key}"), unit
+
+
+def _metric_tiles(data: dict, kind: str) -> str:
+    metrics = data.get("metrics") or {}
+    tiles = []
+    if kind == "llm":
+        decode, prefill = metrics.get("decode") or {}, metrics.get("prefill") or {}
+        if decode.get("tokens_per_sec") is not None:
+            tiles.append(_tile(f"{decode['tokens_per_sec']:.1f}", "Decode tok/s ↑", _spread(decode)))
+        if prefill.get("tokens_per_sec") is not None:
+            tiles.append(_tile(f"{prefill['tokens_per_sec']:.0f}", "Prefill tok/s ↑", _spread(prefill)))
+        if metrics.get("ttft_ms") is not None:
+            half = metrics.get("ttft_ms_ci95_half_width")
+            tiles.append(_tile(f"{metrics['ttft_ms']:.0f}", "TTFT ms ↓", f"± {half:.3g} (95% CI)" if half else ""))
+        if decode.get("inter_token_latency_ms") is not None:
+            tiles.append(_tile(f"{decode['inter_token_latency_ms']:.1f}", "Inter-token ms ↓"))
+        if decode.get("joules_per_token") is not None:
+            tiles.append(_tile(f"{decode['joules_per_token']:.3f}", "J/token (decode) ↓"))
+    else:
+        value, unit = main_metric(data, kind)
+        if value is not None:
+            tiles.append(_tile(_short_num(value), f"{unit} ↑"))
+        for key, val in metrics.items():
+            if (
+                isinstance(val, (int, float)) and not isinstance(val, bool)
+                and not key.endswith(("stddev", "p95", "half_width", "sha256"))
+                and key not in ("trial_count", "peak_memory_gb") and len(tiles) < 5
+                and f"{val:.3g}" != (f"{value:.3g}" if value is not None else None)
+            ):
+                tiles.append(_tile(_short_num(val), key.replace("_", " ")))
+    if metrics.get("peak_memory_gb") is not None:
+        tiles.append(_tile(f"{metrics['peak_memory_gb']:.1f}", "Peak memory GB"))
+    if metrics.get("trial_count") is not None:
+        tiles.append(_tile(str(metrics["trial_count"]), "Trials"))
+    return "".join(tiles)
+
+
+def _validity_card(data: dict) -> str:
+    validity = data.get("validity") or {}
+    checks = []
+    for key, label in VALIDITY_LABELS.items():
+        if key in validity:
+            ok = bool(validity[key])
+            checks.append(f'<li class="{"ok" if ok else "bad"}">{"✓" if ok else "✗"} {_esc(label)}</li>')
+    notes = [n.strip() for n in (validity.get("notes") or "").split(";") if n.strip()]
+    notes_html = f'<ul class="notes">{"".join(f"<li>{_esc(n)}</li>" for n in notes)}</ul>' if notes else ""
+    return f"""
+  <div class="card">
+    <h2>Validity: {VALID if validity.get("valid") else INVALID}</h2>
+    <p class="hint">The checks LemonMatrix ran while measuring; an invalid run is shown but never ranked.</p>
+    <ul class="checks">{"".join(checks)}</ul>
+    {notes_html}
+  </div>"""
+
+
+def _trials_card(trials: list[dict] | None) -> str:
+    if not trials:
+        return ""
+    keys: list[str] = []
+    for t in trials:
+        keys.extend(k for k in t if k not in keys)
+    keys = [k for k in keys if any(t.get(k) is not None for t in trials)]
+    bar_key = next((k for k in ("decode_tokens_per_sec", "tokens_per_sec") if k in keys), None)
+    top = max((t.get(bar_key) or 0 for t in trials), default=0) if bar_key else 0
+    head = "".join(f'<th class="num">{_esc(k.replace("_", " "))}</th>' for k in keys)
+    rows = []
+    for i, t in enumerate(trials, 1):
+        cells = "".join(f'<td class="num">{_fmt_value(t.get(k))}</td>' for k in keys)
+        bar = f'<td class="bar">{_bar(t.get(bar_key), top)}</td>' if bar_key else ""
+        rows.append(f'<tr><td class="rank">{i}</td>{cells}{bar}</tr>')
+    bar_head = f"<th>{_esc(bar_key.replace('_', ' '))}</th>" if bar_key else ""
+    return f"""
+  <div class="card">
+    <h2>Trials</h2>
+    <p class="hint">Each measured trial after warm-up, from the run's trial sidecar. The summary above is computed from these.</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th class="rank">#</th>{head}{bar_head}</tr></thead>
+      <tbody>{"".join(rows)}</tbody>
+    </table></div>
+  </div>"""
+
+
+def _siblings_card(entry: dict, siblings: list[dict]) -> str:
+    if len(siblings) < 2:
+        return ""
+    unit = main_metric(entry["data"], entry["kind"])[1]
+    ordered = sorted(siblings, key=lambda s: (s["metric"] is None, -(s["metric"] or 0)))
+    top = max((s["metric"] or 0 for s in ordered), default=0)
+    rows = []
+    for s in ordered:
+        d = s["data"]
+        cls = "current" if s["run_id"] == entry["run_id"] else "clickable"
+        href = run_href(s["run_id"], "../")
+        rows.append(
+            f'<tr class="{cls}" data-href="{_esc(href)}">'
+            f'<td><a class="run-link" href="{_esc(href)}">{_esc(s["profile"])}</a></td>'
+            f"<td>{_esc(device_of(d))}</td>"
+            f'<td><span class="chip">{_esc(get_path(d, "config.compute_engine"))}</span></td>'
+            f"<td>{_esc(get_path(d, 'config.backend'))}</td>"
+            f'<td class="num">{_num(s["metric"], 2)}</td>'
+            f'<td class="bar">{_bar(s["metric"], top)}</td>'
+            f"<td>{VALID if get_path(d, 'validity.valid') else INVALID}</td>"
+            "</tr>"
+        )
+    return f"""
+  <div class="card">
+    <h2>Same model, other runs</h2>
+    <p class="hint">Every run of {_esc(entry["group"])} on the board, ranked by {_esc(unit)}. This run is highlighted.</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Profile</th><th>Device</th><th>Engine</th><th>Backend</th>
+        <th class="num">{_esc(unit)} ↑</th><th></th><th>Valid</th></tr></thead>
+      <tbody>{"".join(rows)}</tbody>
+    </table></div>
+  </div>"""
+
+
+def render_run_page(entry: dict, siblings: list[dict], trials: list[dict] | None, generated_at: str) -> str:
+    d, kind = entry["data"], entry["kind"]
+    model = get_path(d, "model.name") or "unknown model"
+    kind_label = {"llm": "LLM", "router": "Router"}.get(kind) or MODALITY_DIRS[kind][0]
+    chips = [kind_label, get_path(d, "model.quantization"), get_path(d, "model.class"),
+             get_path(d, "config.compute_engine"), get_path(d, "config.backend")]
+    chips_html = "".join(f'<span class="chip">{_esc(c)}</span>' for c in chips if c and c != "none")
+    timestamp = d.get("timestamp") or ""
+    trials_link = (
+        f'<a href="{REPO_BLOB}{_esc(entry["profile"])}/trials/{_esc(entry["run_id"])}.json" target="_blank" '
+        'rel="noopener">Trial sidecar</a>' if trials else ""
+    )
+    metrics_pairs = [(k, v) for k, v in _flatten(d.get("metrics") or {}) if k != "routing.candidates"]
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<title>{_esc(model)} on {_esc(entry["profile"])} · LemonMatrix</title>
+<meta name="description" content="LemonMatrix run {_esc(entry["run_id"])}: {_esc(model)} on {_esc(device_of(d))}.">
+<style>
+{CSS}{GUIDE_CSS}{RUN_CSS}</style>
+</head>
+<body class="run-page">
+
+<header class="hero">
+  {nav("", "../")}
+  <div class="crumbs"><a href="../index.html">← Leaderboard</a> {_esc(kind_label)} run · <code>{_esc(entry["run_id"])}</code></div>
+  <h1>{_esc(model)}</h1>
+  <p class="tagline">{_esc(device_of(d))} · profile <strong>{_esc(entry["profile"])}</strong></p>
+  <div class="run-meta">{chips_html}{VALID if get_path(d, "validity.valid") else INVALID}
+    <span class="muted" title="{_esc(timestamp)}">{_esc(timestamp[:16].replace("T", " "))} UTC</span></div>
+</header>
+
+<main>
+  <div class="stat-row">{_metric_tiles(d, kind)}</div>
+{_validity_card(d)}
+{_trials_card(trials)}
+{_siblings_card(entry, siblings)}
+  <div class="grid-2">
+    <div class="card"><h2>Model and configuration</h2>{_kv_table(_flatten(d.get("model") or {}, "model") + _flatten(d.get("config") or {}, "config"))}</div>
+    <div class="card"><h2>Environment</h2>{_kv_table(list((d.get("environment") or {}).items()))}</div>
+  </div>
+  <div class="card"><h2>All metrics</h2>{_kv_table(metrics_pairs)}</div>
+  <div class="card raw-links">
+    <h2>Raw data</h2>
+    <a href="{REPO_BLOB}{_esc(entry["rel_path"])}" target="_blank" rel="noopener">Result JSON on GitHub</a>{trials_link}
+    <span class="muted">schema {_esc(d.get("schema_version"))}</span>
+  </div>
+</main>
+
+<footer><p>Generated {generated_at}. Numbers are as reported by the contributor's own Lemonade instance.</p></footer>
+<script>
+document.addEventListener("click", function (e) {{
+  if (e.target.closest("a")) return;
+  var tr = e.target.closest("tr.clickable");
+  if (tr && tr.dataset.href) window.location.href = tr.dataset.href;
+}});
+</script>
+</body>
+</html>
+"""
+
+
+def write_run_pages(
+    results_dir: Path, out_dir: Path, model_rows: list[dict], modality_rows: list[dict], generated_at: str
+) -> int:
+    entries = [
+        {"data": r, "kind": run_kind(r, None), "profile": r["_profile"], "run_id": r["_run_id"], "rel_path": r["_rel_path"]}
+        for r in model_rows
+    ] + [
+        {"data": r["_data"], "kind": r["modality"], "profile": r["profile"], "run_id": r["run_id"], "rel_path": r["_rel_path"]}
+        for r in modality_rows
+    ]
+    groups: dict[tuple[str, str], list[dict]] = {}
+    for e in entries:
+        e["group"] = group_of(e["data"])
+        e["metric"] = main_metric(e["data"], e["kind"])[0]
+        groups.setdefault((e["kind"], e["group"]), []).append(e)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for old in out_dir.glob("*.html"):
+        old.unlink()
+    for e in entries:
+        sidecar = load_json(results_dir / e["profile"] / "trials" / f"{e['run_id']}.json") or {}
+        page = render_run_page(e, groups[(e["kind"], e["group"])], sidecar.get("trials"), generated_at)
+        (out_dir / f"{e['run_id']}.html").write_text(page, encoding="utf-8")
+    return len(entries)
 
 
 def render_guide(generated_at: str) -> str:
@@ -1266,9 +1610,10 @@ def main() -> None:
     page = render(model_rows, modality_rows, generated_at, imported_docs)
     out_path.write_text(page)
     out_path.with_name("guide.html").write_text(render_guide(generated_at))
+    pages = write_run_pages(results_dir, out_path.with_name(RUNS_DIR), model_rows, modality_rows, generated_at)
     print(
         f"Wrote {out_path} ({len(model_rows)} model/router rows, {len(modality_rows)} modality rows, "
-        f"{sum(len(d.get('rows') or []) for d in imported_docs)} imported rows)"
+        f"{sum(len(d.get('rows') or []) for d in imported_docs)} imported rows) and {pages} run pages"
     )
 
 

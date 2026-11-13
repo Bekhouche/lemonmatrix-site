@@ -17,7 +17,9 @@ Live site: https://lemonmatrix.github.io
 - `scripts/build_site.py` -- reads everything under `results/` and renders
   the single self-contained `index.html` the site serves. No server, no
   build framework: plain static HTML with the data embedded inline and
-  filtering/sorting done client-side.
+  filtering/sorting done client-side. It also writes one page per run,
+  `runs/<run id>.html` (config, environment, validity checks, trials and the
+  same model on other machines); every leaderboard row links to its page.
 
 ## Submitting a result
 

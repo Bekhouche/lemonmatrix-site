@@ -383,6 +383,9 @@ def device_of(result: dict) -> str | None:
     # Some drivers report only a PCI-style number as the GPU name.
     if name and name.isdigit():
         name = f"{env.get(key + '_family') or 'unknown'} GPU"
+    engine = get_path(result, "config.compute_engine")
+    if not name and engine in ("igpu", "dgpu", "npu"):
+        return f"{env.get('device_model') or 'Unknown host'} · {engine} not reported by Lemonade"
     return name or env.get("device_model")
 
 
@@ -1467,6 +1470,14 @@ def _validity_card(data: dict) -> str:
             ok = bool(validity[key])
             checks.append(f'<li class="{"ok" if ok else "bad"}">{"✓" if ok else "✗"} {_esc(label)}</li>')
     notes = [n.strip() for n in (validity.get("notes") or "").split(";") if n.strip()]
+    # LemonMatrix joins notes with "; ", and its power note has a "; " of its own.
+    merged: list[str] = []
+    for n in notes:
+        if merged and n.startswith("energy metrics omitted"):
+            merged[-1] += "; " + n
+        else:
+            merged.append(n)
+    notes = merged
     notes_html = f'<ul class="notes">{"".join(f"<li>{_esc(n)}</li>" for n in notes)}</ul>' if notes else ""
     return f"""
   <div class="card">

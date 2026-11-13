@@ -316,6 +316,7 @@ footer {
   border-top: 1px solid var(--border-subtle);
 }
 .empty-row td { color: var(--text-tertiary); font-style: italic; }
+.more-runs { font-size: var(--text-xs); margin-left: var(--space-1); }
 #leaderboard td.wrap { white-space: normal; min-width: 9rem; max-width: 15rem; }
 tr.clickable { cursor: pointer; }
 tr.clickable td a.run-link { color: inherit; text-decoration: none; }
@@ -716,8 +717,9 @@ def render(
   <div class="card">
     <h2>LLM leaderboard</h2>
     <p class="hint">
-      Runs are grouped by model and quantization, and ranked by decode speed within each group. Click a column header to
-      rank by another column. ↑ higher is better, ↓ lower is better. Filters are applied together (AND).
+      Runs are grouped by model and quantization, and ranked by decode speed within each group. Repeated runs of the same
+      machine and backend are folded into their best one; untick the box to see them all. Click a column header to rank
+      by another column. ↑ higher is better, ↓ lower is better. Filters are applied together (AND).
     </p>
     <div class="filters">
       <div>
@@ -743,6 +745,10 @@ def render(
       <div class="checkbox">
         <input type="checkbox" id="f-valid" checked>
         <label for="f-valid">Valid only</label>
+      </div>
+      <div class="checkbox">
+        <input type="checkbox" id="f-best" checked>
+        <label for="f-best">Best run per machine and backend</label>
       </div>
     </div>
     <div class="table-scroll">
@@ -907,6 +913,7 @@ def render(
     var backend = document.getElementById("f-backend").value;
     var modelNeedle = document.getElementById("f-model").value.toLowerCase();
     var validOnly = document.getElementById("f-valid").checked;
+    var bestOnly = document.getElementById("f-best").checked;
 
     var rows = modelRows.filter(function (r) {{
       if (vendor && r._vendor !== vendor) return false;
@@ -936,6 +943,18 @@ def render(
       var cmp = av < bv ? -1 : av > bv ? 1 : 0;
       return sortDir === "desc" ? -cmp : cmp;
     }});
+
+    // Rows are already ranked, so the first run of each machine, engine and backend in a group is its best one.
+    var extra = {{}};
+    if (bestOnly) {{
+      var firstOf = {{}};
+      rows = rows.filter(function (r) {{
+        var key = groupOf(r) + "|" + r._profile + "|" + getPath(r, "config.compute_engine") + "|" + getPath(r, "config.backend");
+        if (firstOf[key]) {{ extra[firstOf[key]] = (extra[firstOf[key]] || 0) + 1; return false; }}
+        firstOf[key] = r._run_id;
+        return true;
+      }});
+    }}
 
     var arrows = headRow.querySelectorAll("th");
     arrows.forEach(function (th) {{
@@ -989,6 +1008,9 @@ def render(
         if (kind === "num1" || kind === "num0" || kind === "num3") td.className = "num";
         else if (wrapColumns.indexOf(col[0]) !== -1) td.className = "wrap";
         td.innerHTML = i === 0 ? runLink(r._run_id, fmt(getPath(r, col[0]), kind)) : fmt(getPath(r, col[0]), kind);
+        if (i === 0 && extra[r._run_id]) {{
+          td.innerHTML += ' <span class="muted more-runs">+' + extra[r._run_id] + (extra[r._run_id] === 1 ? " run" : " runs") + '</span>';
+        }}
         tr.appendChild(td);
       }});
       body.appendChild(tr);
@@ -1000,6 +1022,7 @@ def render(
   }});
   document.getElementById("f-model").addEventListener("input", renderLeaderboard);
   document.getElementById("f-valid").addEventListener("change", renderLeaderboard);
+  document.getElementById("f-best").addEventListener("change", renderLeaderboard);
 
   renderLeaderboard();
 

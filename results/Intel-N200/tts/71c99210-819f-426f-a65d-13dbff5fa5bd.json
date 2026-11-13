@@ -1,0 +1,42 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "tts",
+  "run_id": "71c99210-819f-426f-a65d-13dbff5fa5bd",
+  "timestamp": "2026-11-12T21:07:26.535845+00:00",
+  "model": {
+    "name": "kokoro-v1",
+    "checkpoint": "mikkoph/kokoro-onnx"
+  },
+  "config": {
+    "compute_engine": "cpu",
+    "backend": "kokoro-cpu",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "Intel(R) N200",
+    "device_model": "Intel(R) N200",
+    "driver_version": "unknown",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 15.4,
+    "os_version": "Linux-6.8.0-138-generic (Ubuntu 22.04)",
+    "backend_version": "b21"
+  },
+  "metrics": {
+    "generation_time_ms": 43322.57677447051,
+    "audio_duration_s": 13.55,
+    "real_time_factor": 0.312769946038502,
+    "trial_count": 5,
+    "input_chars": 220,
+    "generation_time_ms_stddev": 1675.5259856798389,
+    "generation_time_ms_p95": 45242.67007824965,
+    "peak_memory_gb": 3.3
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

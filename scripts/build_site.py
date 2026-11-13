@@ -316,6 +316,7 @@ footer {
   border-top: 1px solid var(--border-subtle);
 }
 .empty-row td { color: var(--text-tertiary); font-style: italic; }
+#leaderboard td.wrap { white-space: normal; min-width: 9rem; max-width: 15rem; }
 tr.clickable { cursor: pointer; }
 tr.clickable td a.run-link { color: inherit; text-decoration: none; }
 tr.clickable:hover td a.run-link { color: var(--accent-fg); text-decoration: underline; }
@@ -348,6 +349,10 @@ tr.current td { background: var(--accent-soft); }
 tr.current td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 .raw-links a { margin-right: var(--space-4); font-size: var(--text-sm); }
 """
+
+
+HIDE_WHEN_CONSTANT = {"config.power_state"}
+WRAP_COLUMNS = {"_profile", "_device"}
 
 
 def get_path(result: dict, dotted: str) -> Any:
@@ -623,7 +628,13 @@ def render(
     llm_rows = [r for r in model_rows if r.get("run_type") != "router"]
     router_rows = [r for r in model_rows if r.get("run_type") == "router"]
     columns = [c for c in LEADERBOARD_COLUMNS if any(get_path(r, c[0]) is not None for r in llm_rows)]
+    # A setting every run shares (today: power state, always "plugged") only pushes the speed columns off screen.
+    columns = [
+        c for c in columns
+        if c[0] not in HIDE_WHEN_CONSTANT or len({get_path(r, c[0]) for r in llm_rows}) > 1
+    ]
     columns_json = json.dumps(columns)
+    wrap_columns_json = json.dumps(sorted(WRAP_COLUMNS))
     model_rows_json = json.dumps(llm_rows)
     modality_rows_json = json.dumps([{k: v for k, v in r.items() if k != "_data"} for r in modality_rows])
     modality_meta_json = json.dumps(
@@ -798,6 +809,7 @@ def render(
   }});
 
   var columns = JSON.parse(document.getElementById("lm-columns").textContent);
+  var wrapColumns = {wrap_columns_json};
   var modelRows = JSON.parse(document.getElementById("lm-model-rows").textContent);
   var modalityRows = JSON.parse(document.getElementById("lm-modality-rows").textContent);
   var modalityMeta = JSON.parse(document.getElementById("lm-modality-meta").textContent);
@@ -942,6 +954,7 @@ def render(
         var td = document.createElement("td");
         var kind = col[2];
         if (kind === "num1" || kind === "num0" || kind === "num3") td.className = "num";
+        else if (wrapColumns.indexOf(col[0]) !== -1) td.className = "wrap";
         td.innerHTML = i === 0 ? runLink(r._run_id, fmt(getPath(r, col[0]), kind)) : fmt(getPath(r, col[0]), kind);
         tr.appendChild(td);
       }});

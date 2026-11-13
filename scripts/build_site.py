@@ -316,6 +316,8 @@ footer {
   border-top: 1px solid var(--border-subtle);
 }
 .empty-row td { color: var(--text-tertiary); font-style: italic; }
+.more-runs { font-size: var(--text-xs); margin-left: var(--space-1); }
+#leaderboard td.wrap { white-space: normal; min-width: 9rem; max-width: 15rem; }
 tr.clickable { cursor: pointer; }
 tr.clickable td a.run-link { color: inherit; text-decoration: none; }
 tr.clickable:hover td a.run-link { color: var(--accent-fg); text-decoration: underline; }
@@ -350,6 +352,10 @@ tr.current td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
 """
 
 
+HIDE_WHEN_CONSTANT = {"config.power_state"}
+WRAP_COLUMNS = {"_profile", "_device"}
+
+
 def get_path(result: dict, dotted: str) -> Any:
     value: Any = result
     for part in dotted.split("."):
@@ -377,7 +383,25 @@ def device_of(result: dict) -> str | None:
     # Some drivers report only a PCI-style number as the GPU name.
     if name and name.isdigit():
         name = f"{env.get(key + '_family') or 'unknown'} GPU"
+    engine = get_path(result, "config.compute_engine")
+    if not name and engine in ("igpu", "dgpu", "npu"):
+        return f"{env.get('device_model') or 'Unknown host'} · {engine} not reported by Lemonade"
     return name or env.get("device_model")
+
+
+VENDOR_MARKERS = [
+    ("AMD", ("AMD", "Radeon", "Ryzen", "EPYC", "Instinct", "gfx")),
+    ("NVIDIA", ("NVIDIA", "GeForce", "RTX", "TITAN", "Tesla", "sm_")),
+    ("Intel", ("Intel",)),
+    ("Apple", ("Apple",)),
+]
+
+
+def vendor_of(device: str | None) -> str:
+    for vendor, markers in VENDOR_MARKERS:
+        if device and any(m in device for m in markers):
+            return vendor
+    return "Other"
 
 
 def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
@@ -401,6 +425,7 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
             data["_profile"] = profile
             data["_run_id"] = path.stem
             data["_device"] = device_of(data)
+            data["_vendor"] = vendor_of(data["_device"])
             data["_rel_path"] = path.relative_to(results_dir).as_posix()
             model_rows.append(data)
 
@@ -483,6 +508,15 @@ def group_of(result: dict) -> str:
     return f"{name} · {quant}" if quant and quant != "none" else name
 
 
+def _fastest_tile(title: str, group: str, run: dict) -> str:
+    return (
+        f'<div class="stat-tile headline"><div class="value">'
+        f'{get_path(run, "metrics.decode.tokens_per_sec"):.0f} tok/s</div><div class="label">'
+        f"{_esc(title)}, {_esc(group)}: {_esc(run.get('_device'))} ({_esc(run.get('_profile'))}), "
+        f"{_esc(get_path(run, 'config.backend'))}</div></div>"
+    )
+
+
 def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
     tiles = []
     valid = [r for r in llm_rows if get_path(r, "validity.valid") and get_path(r, "metrics.decode.tokens_per_sec")]
@@ -491,13 +525,14 @@ def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
         for r in valid:
             groups.setdefault(group_of(r), []).append(r)
         group, runs = max(groups.items(), key=lambda kv: (len(kv[1]), kv[0]))
-        best = max(runs, key=lambda r: get_path(r, "metrics.decode.tokens_per_sec"))
-        tiles.append(
-            f'<div class="stat-tile headline"><div class="value">'
-            f'{get_path(best, "metrics.decode.tokens_per_sec"):.0f} tok/s</div><div class="label">'
-            f"Fastest {_esc(group)}: {_esc(best.get('_device'))}, {_esc(get_path(best, 'config.backend'))}"
-            "</div></div>"
-        )
+        decode = lambda r: get_path(r, "metrics.decode.tokens_per_sec")  # noqa: E731
+        best = max(runs, key=decode)
+        amd = [r for r in runs if r.get("_vendor") == "AMD"]
+        best_amd = max(amd, key=decode) if amd else None
+        if best_amd is not None:
+            tiles.append(_fastest_tile("Fastest on AMD", group, best_amd))
+        if best is not best_amd:
+            tiles.append(_fastest_tile("Fastest overall", group, best))
     priced = [
         r for r in router_rows
         if get_path(r, "validity.valid") and get_path(r, "metrics.routing.savings_pct") is not None
@@ -623,7 +658,13 @@ def render(
     llm_rows = [r for r in model_rows if r.get("run_type") != "router"]
     router_rows = [r for r in model_rows if r.get("run_type") == "router"]
     columns = [c for c in LEADERBOARD_COLUMNS if any(get_path(r, c[0]) is not None for r in llm_rows)]
+    # A setting every run shares (today: power state, always "plugged") only pushes the speed columns off screen.
+    columns = [
+        c for c in columns
+        if c[0] not in HIDE_WHEN_CONSTANT or len({get_path(r, c[0]) for r in llm_rows}) > 1
+    ]
     columns_json = json.dumps(columns)
+    wrap_columns_json = json.dumps(sorted(WRAP_COLUMNS))
     model_rows_json = json.dumps(llm_rows)
     modality_rows_json = json.dumps([{k: v for k, v in r.items() if k != "_data"} for r in modality_rows])
     modality_meta_json = json.dumps(
@@ -679,10 +720,15 @@ def render(
   <div class="card">
     <h2>LLM leaderboard</h2>
     <p class="hint">
-      Runs are grouped by model and quantization, and ranked by decode speed within each group. Click a column header to
-      rank by another column. ↑ higher is better, ↓ lower is better. Filters are applied together (AND).
+      Runs are grouped by model and quantization, and ranked by decode speed within each group. Repeated runs of the same
+      machine and backend are folded into their best one; untick the box to see them all. Click a column header to rank
+      by another column. ↑ higher is better, ↓ lower is better. Filters are applied together (AND).
     </p>
     <div class="filters">
+      <div>
+        <label for="f-vendor">Vendor</label>
+        <select id="f-vendor"><option value="">All</option></select>
+      </div>
       <div>
         <label for="f-profile">Profile</label>
         <select id="f-profile"><option value="">All</option></select>
@@ -702,6 +748,10 @@ def render(
       <div class="checkbox">
         <input type="checkbox" id="f-valid" checked>
         <label for="f-valid">Valid only</label>
+      </div>
+      <div class="checkbox">
+        <input type="checkbox" id="f-best" checked>
+        <label for="f-best">Best run per machine and backend</label>
       </div>
     </div>
     <div class="table-scroll">
@@ -798,6 +848,7 @@ def render(
   }});
 
   var columns = JSON.parse(document.getElementById("lm-columns").textContent);
+  var wrapColumns = {wrap_columns_json};
   var modelRows = JSON.parse(document.getElementById("lm-model-rows").textContent);
   var modalityRows = JSON.parse(document.getElementById("lm-modality-rows").textContent);
   var modalityMeta = JSON.parse(document.getElementById("lm-modality-meta").textContent);
@@ -853,18 +904,22 @@ def render(
     }});
   }}
 
+  fillSelect("f-vendor", uniqueSorted(modelRows, "_vendor"));
   fillSelect("f-profile", uniqueSorted(modelRows, "_profile"));
   fillSelect("f-engine", uniqueSorted(modelRows, "config.compute_engine"));
   fillSelect("f-backend", uniqueSorted(modelRows, "config.backend"));
 
   function renderLeaderboard() {{
+    var vendor = document.getElementById("f-vendor").value;
     var profile = document.getElementById("f-profile").value;
     var engine = document.getElementById("f-engine").value;
     var backend = document.getElementById("f-backend").value;
     var modelNeedle = document.getElementById("f-model").value.toLowerCase();
     var validOnly = document.getElementById("f-valid").checked;
+    var bestOnly = document.getElementById("f-best").checked;
 
     var rows = modelRows.filter(function (r) {{
+      if (vendor && r._vendor !== vendor) return false;
       if (profile && r._profile !== profile) return false;
       if (engine && getPath(r, "config.compute_engine") !== engine) return false;
       if (backend && getPath(r, "config.backend") !== backend) return false;
@@ -891,6 +946,18 @@ def render(
       var cmp = av < bv ? -1 : av > bv ? 1 : 0;
       return sortDir === "desc" ? -cmp : cmp;
     }});
+
+    // Rows are already ranked, so the first run of each machine, engine and backend in a group is its best one.
+    var extra = {{}};
+    if (bestOnly) {{
+      var firstOf = {{}};
+      rows = rows.filter(function (r) {{
+        var key = groupOf(r) + "|" + r._profile + "|" + getPath(r, "config.compute_engine") + "|" + getPath(r, "config.backend");
+        if (firstOf[key]) {{ extra[firstOf[key]] = (extra[firstOf[key]] || 0) + 1; return false; }}
+        firstOf[key] = r._run_id;
+        return true;
+      }});
+    }}
 
     var arrows = headRow.querySelectorAll("th");
     arrows.forEach(function (th) {{
@@ -942,18 +1009,23 @@ def render(
         var td = document.createElement("td");
         var kind = col[2];
         if (kind === "num1" || kind === "num0" || kind === "num3") td.className = "num";
+        else if (wrapColumns.indexOf(col[0]) !== -1) td.className = "wrap";
         td.innerHTML = i === 0 ? runLink(r._run_id, fmt(getPath(r, col[0]), kind)) : fmt(getPath(r, col[0]), kind);
+        if (i === 0 && extra[r._run_id]) {{
+          td.innerHTML += ' <span class="muted more-runs">+' + extra[r._run_id] + (extra[r._run_id] === 1 ? " run" : " runs") + '</span>';
+        }}
         tr.appendChild(td);
       }});
       body.appendChild(tr);
     }});
   }}
 
-  ["f-profile", "f-engine", "f-backend"].forEach(function (id) {{
+  ["f-vendor", "f-profile", "f-engine", "f-backend"].forEach(function (id) {{
     document.getElementById(id).addEventListener("change", renderLeaderboard);
   }});
   document.getElementById("f-model").addEventListener("input", renderLeaderboard);
   document.getElementById("f-valid").addEventListener("change", renderLeaderboard);
+  document.getElementById("f-best").addEventListener("change", renderLeaderboard);
 
   renderLeaderboard();
 
@@ -1398,6 +1470,14 @@ def _validity_card(data: dict) -> str:
             ok = bool(validity[key])
             checks.append(f'<li class="{"ok" if ok else "bad"}">{"✓" if ok else "✗"} {_esc(label)}</li>')
     notes = [n.strip() for n in (validity.get("notes") or "").split(";") if n.strip()]
+    # LemonMatrix joins notes with "; ", and its power note has a "; " of its own.
+    merged: list[str] = []
+    for n in notes:
+        if merged and n.startswith("energy metrics omitted"):
+            merged[-1] += "; " + n
+        else:
+            merged.append(n)
+    notes = merged
     notes_html = f'<ul class="notes">{"".join(f"<li>{_esc(n)}</li>" for n in notes)}</ul>' if notes else ""
     return f"""
   <div class="card">

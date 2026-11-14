@@ -397,6 +397,15 @@ VENDOR_MARKERS = [
 ]
 
 
+INSTINCT_GFX = ("gfx908", "gfx90a", "gfx940", "gfx941", "gfx942", "gfx950")
+
+
+def is_instinct(result: dict) -> bool:
+    """AMD datacenter GPU, told apart from Radeon/Ryzen by name or gfx target."""
+    text = f"{result.get('_device') or ''} {result.get('_profile') or ''}"
+    return "Instinct" in text or any(g in text for g in INSTINCT_GFX)
+
+
 def vendor_of(device: str | None) -> str:
     for vendor, markers in VENDOR_MARKERS:
         if device and any(m in device for m in markers):
@@ -524,15 +533,22 @@ def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
         groups: dict[str, list[dict]] = {}
         for r in valid:
             groups.setdefault(group_of(r), []).append(r)
-        group, runs = max(groups.items(), key=lambda kv: (len(kv[1]), kv[0]))
         decode = lambda r: get_path(r, "metrics.decode.tokens_per_sec")  # noqa: E731
-        best = max(runs, key=decode)
-        amd = [r for r in runs if r.get("_vendor") == "AMD"]
-        best_amd = max(amd, key=decode) if amd else None
-        if best_amd is not None:
-            tiles.append(_fastest_tile("Fastest on AMD", group, best_amd))
-        if best is not best_amd:
-            tiles.append(_fastest_tile("Fastest overall", group, best))
+        # Headlines are AMD only: one tile for Radeon/Ryzen (client and
+        # workstation) and one for Instinct (datacenter). Other vendors stay in
+        # the table behind the vendor filter. Each tile uses the model group
+        # with the most runs in its class, so the number has neighbours to
+        # compare with.
+        for title, in_class in (
+            ("Fastest on Radeon", lambda r: r.get("_vendor") == "AMD" and not is_instinct(r)),
+            ("Fastest on Instinct", lambda r: r.get("_vendor") == "AMD" and is_instinct(r)),
+        ):
+            per_group = {g: [r for r in rs if in_class(r)] for g, rs in groups.items()}
+            per_group = {g: rs for g, rs in per_group.items() if rs}
+            if not per_group:
+                continue
+            group, runs = max(per_group.items(), key=lambda kv: (len(kv[1]), kv[0]))
+            tiles.append(_fastest_tile(title, group, max(runs, key=decode)))
     priced = [
         r for r in router_rows
         if get_path(r, "validity.valid") and get_path(r, "metrics.routing.savings_pct") is not None
@@ -727,7 +743,7 @@ def render(
     <div class="filters">
       <div>
         <label for="f-vendor">Vendor</label>
-        <select id="f-vendor"><option value="">All</option></select>
+        <select id="f-vendor"><option value="">All vendors</option></select>
       </div>
       <div>
         <label for="f-profile">Profile</label>
@@ -905,6 +921,10 @@ def render(
   }}
 
   fillSelect("f-vendor", uniqueSorted(modelRows, "_vendor"));
+  // Open on AMD results; "All vendors" is one click away.
+  if (uniqueSorted(modelRows, "_vendor").indexOf("AMD") !== -1) {{
+    document.getElementById("f-vendor").value = "AMD";
+  }}
   fillSelect("f-profile", uniqueSorted(modelRows, "_profile"));
   fillSelect("f-engine", uniqueSorted(modelRows, "config.compute_engine"));
   fillSelect("f-backend", uniqueSorted(modelRows, "config.backend"));

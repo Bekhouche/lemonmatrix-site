@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "6a2ceca0-fb02-41e0-adb9-3248a33d1f03",
+  "timestamp": "2026-11-14T17:23:08.738885+00:00",
+  "model": {
+    "name": "gpt-oss-20b-mxfp4-GGUF",
+    "class": "moe",
+    "quantization": "MXFP4",
+    "context_length": 16384
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "device_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "dgpu": "AMD Radeon AI PRO R9700 (gfx1201)",
+    "dgpu_family": "gfx1201",
+    "driver_version": "unknown",
+    "igpu": "AMD Ryzen 9 9950X3D 16-Core Processor (gfx1036)",
+    "igpu_family": "gfx1036",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 59.46,
+    "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
+    "backend_version": "b11846"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 4906.784370180612,
+      "stddev": 9.71683619876433,
+      "p95": 4913.114128302967,
+      "ci95_half_width": 24.139907432605856
+    },
+    "decode": {
+      "tokens_per_sec": 158.87837345014177,
+      "inter_token_latency_ms": 6.294122845572899,
+      "stddev": 0.013488813230449323,
+      "p95": 158.89162220060365,
+      "ci95_half_width": 0.033510774093337505
+    },
+    "ttft_ms": 2787.569,
+    "trial_count": 3,
+    "peak_memory_gb": 11.477405548095703,
+    "prompt_sha256": "0b96f21a85be4340676d03c9df60f91411f688c3d049de9c43e3260a17c21aa9",
+    "prompt_tokens": 13678,
+    "ttft_ms_stddev": 5.526237327513248,
+    "ttft_ms_ci95_half_width": 13.729042541001723
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "prompt_cache_free": true,
+    "other_models_resident": false,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

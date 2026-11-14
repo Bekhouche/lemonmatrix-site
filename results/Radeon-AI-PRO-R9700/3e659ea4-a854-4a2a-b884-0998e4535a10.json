@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "3e659ea4-a854-4a2a-b884-0998e4535a10",
+  "timestamp": "2026-11-14T17:13:32.280845+00:00",
+  "model": {
+    "name": "Qwen3.5-35B-A3B-GGUF",
+    "class": "moe",
+    "quantization": "Q4_K_XL",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-rocm",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "device_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "dgpu": "AMD Radeon AI PRO R9700 (gfx1201)",
+    "dgpu_family": "gfx1201",
+    "driver_version": "unknown",
+    "igpu": "AMD Ryzen 9 9950X3D 16-Core Processor (gfx1036)",
+    "igpu_family": "gfx1036",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 59.46,
+    "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
+    "backend_version": "b11836"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 3958.474638145051,
+      "stddev": 5.330368495503713,
+      "p95": 3962.5234396388887,
+      "ci95_half_width": 13.242438117820845
+    },
+    "decode": {
+      "tokens_per_sec": 84.18103492782771,
+      "inter_token_latency_ms": 11.879160203451361,
+      "stddev": 0.20640694219696232,
+      "p95": 84.35327220908042,
+      "ci95_half_width": 0.5127846529630221
+    },
+    "ttft_ms": 945.061,
+    "trial_count": 3,
+    "peak_memory_gb": 22.22719955444336,
+    "prompt_sha256": "b90b81a9ade8dafcadfd1e06d1ea4c8a4cc9dff96f3c22eec0724813826e59e1",
+    "prompt_tokens": 3741,
+    "ttft_ms_stddev": 1.2733110381992132,
+    "ttft_ms_ci95_half_width": 3.163335263277681
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "prompt_cache_free": true,
+    "other_models_resident": false,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

@@ -1,0 +1,100 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "8904cd59-1f61-42b5-a980-38f53c8d59e3",
+  "timestamp": "2026-11-14T15:42:50.900616+00:00",
+  "model": {
+    "name": "user.LM-D-three-tier",
+    "class": "router",
+    "quantization": "none",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "router",
+    "backend": "collection.router",
+    "os": "linux",
+    "power_state": "plugged",
+    "router_default_model": "Qwen3-1.7B-GGUF"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "device_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "dgpu": "AMD Radeon AI PRO R9700 (gfx1201)",
+    "dgpu_family": "gfx1201",
+    "driver_version": "unknown",
+    "igpu": "AMD Ryzen 9 9950X3D 16-Core Processor (gfx1036)",
+    "igpu_family": "gfx1036",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 59.46,
+    "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 495.6664141932989,
+      "stddev": 1145.5639841296734,
+      "p95": 3412.7784482047077,
+      "ci95_half_width": 254.2307749131498
+    },
+    "decode": {
+      "tokens_per_sec": 74.5389958229564,
+      "inter_token_latency_ms": 13.415796509724668,
+      "stddev": 17.956865154486348,
+      "p95": 100.06061457311722,
+      "ci95_half_width": 3.985100619852622
+    },
+    "ttft_ms": 105.4524358974359,
+    "trial_count": 120,
+    "peak_memory_gb": 25.828083038330078,
+    "prompt_sha256": "5061664e3d07a0e9e1e54868eddcbf4da9b5ccbf0651c94994b016bf595d30a8",
+    "routing": {
+      "requests": 120,
+      "candidates": {
+        "Qwen3-1.7B-GGUF": {
+          "requests": 33,
+          "prompt_tokens": 576,
+          "output_tokens": 8304,
+          "cost_usd": 0.0,
+          "price_source": "local_default",
+          "share": 0.275
+        },
+        "Qwen3.5-35B-A3B-GGUF": {
+          "requests": 45,
+          "prompt_tokens": 3501,
+          "output_tokens": 11520,
+          "cost_usd": 0.0,
+          "price_source": "local_default",
+          "share": 0.375
+        },
+        "devup.deepseek-ai/DeepSeek-V4-Pro": {
+          "requests": 42,
+          "prompt_tokens": 3297,
+          "output_tokens": 7870,
+          "cost_usd": 0.0147723,
+          "price_source": "override",
+          "share": 0.35
+        }
+      },
+      "local_share": 0.65,
+      "free_share": 0.65,
+      "routed_cost_usd": 0.0147723,
+      "unpriced_requests": 0,
+      "prompt_set_size": 40,
+      "baseline_model": "devup.deepseek-ai/DeepSeek-V4-Pro",
+      "baseline_method": "measured",
+      "baseline_estimated_requests": 0,
+      "baseline_cost_usd": 0.040612200000000036,
+      "savings_usd": 0.025839900000000034,
+      "savings_pct": 63.62595476236208
+    },
+    "ttft_ms_stddev": 104.66759917274662,
+    "ttft_ms_ci95_half_width": 23.22849287742116
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "TTFT, prefill and decode cover the 78 of 120 requests served locally; Lemonade does not time cloud requests; Lemonade doesn't report power draw for this instance; energy metrics omitted; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  },
+  "run_type": "router"
+}

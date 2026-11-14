@@ -1,0 +1,1955 @@
+{
+  "run_id": "20786b2e-e4b4-4f3e-9d17-525272de3de3",
+  "trials": [
+    {
+      "ttft_ms": 49.847,
+      "decode_tokens_per_sec": 49.047884391636,
+      "prompt_tokens": 15,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745529174804688,
+      "host_memory_gb": 47.5,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 0
+    },
+    {
+      "ttft_ms": 51.19,
+      "decode_tokens_per_sec": 48.44666686931939,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745529174804688,
+      "host_memory_gb": 47.6,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 1
+    },
+    {
+      "ttft_ms": 53.237,
+      "decode_tokens_per_sec": 49.19968512201522,
+      "prompt_tokens": 19,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745601654052734,
+      "host_memory_gb": 47.6,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 2
+    },
+    {
+      "ttft_ms": 48.574,
+      "decode_tokens_per_sec": 49.123019258727865,
+      "prompt_tokens": 18,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745601654052734,
+      "host_memory_gb": 47.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 3
+    },
+    {
+      "ttft_ms": 63.538,
+      "decode_tokens_per_sec": 48.985773570849666,
+      "prompt_tokens": 20,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 4
+    },
+    {
+      "ttft_ms": 54.794,
+      "decode_tokens_per_sec": 49.006597825529205,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 5
+    },
+    {
+      "ttft_ms": 50.066,
+      "decode_tokens_per_sec": 49.17380297464869,
+      "prompt_tokens": 14,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 6
+    },
+    {
+      "ttft_ms": 43.12,
+      "decode_tokens_per_sec": 48.79159483459649,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 7
+    },
+    {
+      "ttft_ms": 53.685,
+      "decode_tokens_per_sec": 49.28643867211124,
+      "prompt_tokens": 16,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 8
+    },
+    {
+      "ttft_ms": 45.592,
+      "decode_tokens_per_sec": 49.240375485862515,
+      "prompt_tokens": 16,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 9
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 29,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 10
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 36,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.8,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 11
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 46,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 12
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 21,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 13
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 30,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 14
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 20,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 15
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 38,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.8,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 16
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 29,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 17
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 19,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 18
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 39,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.74561309814453,
+      "host_memory_gb": 47.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 19
+    },
+    {
+      "ttft_ms": 85.399,
+      "decode_tokens_per_sec": 48.94787032615022,
+      "prompt_tokens": 31,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 47.9,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 20
+    },
+    {
+      "ttft_ms": 73.9,
+      "decode_tokens_per_sec": 48.32242541433637,
+      "prompt_tokens": 27,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 47.6,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 21
+    },
+    {
+      "ttft_ms": 61.018,
+      "decode_tokens_per_sec": 48.559811214688445,
+      "prompt_tokens": 26,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 47.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 22
+    },
+    {
+      "ttft_ms": 66.216,
+      "decode_tokens_per_sec": 49.13612904419246,
+      "prompt_tokens": 25,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 47.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 23
+    },
+    {
+      "ttft_ms": 62.749,
+      "decode_tokens_per_sec": 48.94048644924296,
+      "prompt_tokens": 25,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 47.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 24
+    },
+    {
+      "ttft_ms": 76.143,
+      "decode_tokens_per_sec": 49.080661468735904,
+      "prompt_tokens": 24,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 47.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 25
+    },
+    {
+      "ttft_ms": 69.73,
+      "decode_tokens_per_sec": 48.28381339120322,
+      "prompt_tokens": 23,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 47.9,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 26
+    },
+    {
+      "ttft_ms": 50.264,
+      "decode_tokens_per_sec": 48.615932985510156,
+      "prompt_tokens": 22,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 48.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 27
+    },
+    {
+      "ttft_ms": 63.681000000000004,
+      "decode_tokens_per_sec": 48.88093333062412,
+      "prompt_tokens": 23,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 48.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 28
+    },
+    {
+      "ttft_ms": 52.514,
+      "decode_tokens_per_sec": 48.55344067769179,
+      "prompt_tokens": 22,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.745723724365234,
+      "host_memory_gb": 48.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 29
+    },
+    {
+      "ttft_ms": 96.504,
+      "decode_tokens_per_sec": 47.87355074558831,
+      "prompt_tokens": 185,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.773944854736328,
+      "host_memory_gb": 48.1,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 30
+    },
+    {
+      "ttft_ms": 122.465,
+      "decode_tokens_per_sec": 48.25192728604859,
+      "prompt_tokens": 182,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.773948669433594,
+      "host_memory_gb": 48.2,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 31
+    },
+    {
+      "ttft_ms": 117.763,
+      "decode_tokens_per_sec": 47.783573019483335,
+      "prompt_tokens": 188,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.77404022216797,
+      "host_memory_gb": 48.2,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 32
+    },
+    {
+      "ttft_ms": 101.282,
+      "decode_tokens_per_sec": 47.727559858314656,
+      "prompt_tokens": 185,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774044036865234,
+      "host_memory_gb": 48.3,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 33
+    },
+    {
+      "ttft_ms": 107.509,
+      "decode_tokens_per_sec": 48.03814115376689,
+      "prompt_tokens": 189,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.3,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 34
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 162,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.4,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 35
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 159,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.4,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 36
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 165,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.3,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 37
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 164,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.3,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 38
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 162,
+      "output_tokens": 182,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.3,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 39
+    },
+    {
+      "ttft_ms": 55.121,
+      "decode_tokens_per_sec": 48.99359471191959,
+      "prompt_tokens": 15,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.4,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 0
+    },
+    {
+      "ttft_ms": 55.196,
+      "decode_tokens_per_sec": 48.53142942949687,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.4,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 1
+    },
+    {
+      "ttft_ms": 49.276,
+      "decode_tokens_per_sec": 48.775132104098,
+      "prompt_tokens": 19,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.5,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 2
+    },
+    {
+      "ttft_ms": 60.234,
+      "decode_tokens_per_sec": 48.583301404895714,
+      "prompt_tokens": 18,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.5,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 3
+    },
+    {
+      "ttft_ms": 52.022,
+      "decode_tokens_per_sec": 48.64435804612973,
+      "prompt_tokens": 20,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.5,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 4
+    },
+    {
+      "ttft_ms": 52.321,
+      "decode_tokens_per_sec": 48.55308013124183,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.6,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 5
+    },
+    {
+      "ttft_ms": 53.77,
+      "decode_tokens_per_sec": 48.44071246219962,
+      "prompt_tokens": 14,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.6,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 6
+    },
+    {
+      "ttft_ms": 58.119,
+      "decode_tokens_per_sec": 48.479225701213984,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 7
+    },
+    {
+      "ttft_ms": 58.102,
+      "decode_tokens_per_sec": 48.89739256092327,
+      "prompt_tokens": 16,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 8
+    },
+    {
+      "ttft_ms": 56.497,
+      "decode_tokens_per_sec": 48.429323100502245,
+      "prompt_tokens": 16,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 9
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 23,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 10
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 36,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 11
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 52,
+      "output_tokens": 221,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 12
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 21,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 13
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 24,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 14
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 20,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 15
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 44,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 16
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 29,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 17
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 19,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 18
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 33,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 19
+    },
+    {
+      "ttft_ms": 88.908,
+      "decode_tokens_per_sec": 48.63200088643741,
+      "prompt_tokens": 31,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 20
+    },
+    {
+      "ttft_ms": 59.865,
+      "decode_tokens_per_sec": 48.98241435280785,
+      "prompt_tokens": 27,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 21
+    },
+    {
+      "ttft_ms": 66.376,
+      "decode_tokens_per_sec": 48.9701387775325,
+      "prompt_tokens": 26,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 22
+    },
+    {
+      "ttft_ms": 61.164,
+      "decode_tokens_per_sec": 48.865412198914804,
+      "prompt_tokens": 25,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 48.9,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 23
+    },
+    {
+      "ttft_ms": 75.461,
+      "decode_tokens_per_sec": 49.05447971279853,
+      "prompt_tokens": 25,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 24
+    },
+    {
+      "ttft_ms": 67.154,
+      "decode_tokens_per_sec": 48.70568928291473,
+      "prompt_tokens": 24,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 25
+    },
+    {
+      "ttft_ms": 70.48,
+      "decode_tokens_per_sec": 48.88387568236139,
+      "prompt_tokens": 23,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 26
+    },
+    {
+      "ttft_ms": 64.698,
+      "decode_tokens_per_sec": 48.826114886890956,
+      "prompt_tokens": 22,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 27
+    },
+    {
+      "ttft_ms": 50.582,
+      "decode_tokens_per_sec": 49.19791956468137,
+      "prompt_tokens": 23,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 28
+    },
+    {
+      "ttft_ms": 68.899,
+      "decode_tokens_per_sec": 48.91039155933233,
+      "prompt_tokens": 22,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 29
+    },
+    {
+      "ttft_ms": 25.284,
+      "decode_tokens_per_sec": 47.615117482366536,
+      "prompt_tokens": 185,
+      "output_tokens": 256,
+      "cache_tokens": 184,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 30
+    },
+    {
+      "ttft_ms": 24.385,
+      "decode_tokens_per_sec": 48.01056458352906,
+      "prompt_tokens": 182,
+      "output_tokens": 256,
+      "cache_tokens": 181,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 31
+    },
+    {
+      "ttft_ms": 24.918,
+      "decode_tokens_per_sec": 47.759105320251955,
+      "prompt_tokens": 188,
+      "output_tokens": 256,
+      "cache_tokens": 187,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 32
+    },
+    {
+      "ttft_ms": 24.081,
+      "decode_tokens_per_sec": 47.916136613978956,
+      "prompt_tokens": 185,
+      "output_tokens": 256,
+      "cache_tokens": 184,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 33
+    },
+    {
+      "ttft_ms": 24.066,
+      "decode_tokens_per_sec": 48.09576602598077,
+      "prompt_tokens": 189,
+      "output_tokens": 256,
+      "cache_tokens": 188,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 34
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 162,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 35
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 159,
+      "output_tokens": 256,
+      "cache_tokens": 64,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.0,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 36
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 165,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 37
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 158,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 38
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 156,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 39
+    },
+    {
+      "ttft_ms": 52.923,
+      "decode_tokens_per_sec": 49.0151420861717,
+      "prompt_tokens": 15,
+      "output_tokens": 192,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.1,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 0
+    },
+    {
+      "ttft_ms": 57.894,
+      "decode_tokens_per_sec": 48.624266941505006,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.2,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 1
+    },
+    {
+      "ttft_ms": 60.677,
+      "decode_tokens_per_sec": 48.7365386813307,
+      "prompt_tokens": 19,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.2,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 2
+    },
+    {
+      "ttft_ms": 48.369,
+      "decode_tokens_per_sec": 48.59889388917507,
+      "prompt_tokens": 18,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.3,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 3
+    },
+    {
+      "ttft_ms": 65.093,
+      "decode_tokens_per_sec": 49.12835698398126,
+      "prompt_tokens": 20,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.3,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 4
+    },
+    {
+      "ttft_ms": 45.605,
+      "decode_tokens_per_sec": 48.82174930433793,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.3,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 5
+    },
+    {
+      "ttft_ms": 43.289,
+      "decode_tokens_per_sec": 48.802716263495626,
+      "prompt_tokens": 14,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.4,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 6
+    },
+    {
+      "ttft_ms": 59.126,
+      "decode_tokens_per_sec": 48.35660550283,
+      "prompt_tokens": 17,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.4,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 7
+    },
+    {
+      "ttft_ms": 53.163,
+      "decode_tokens_per_sec": 48.85446809554171,
+      "prompt_tokens": 16,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 8
+    },
+    {
+      "ttft_ms": 43.901,
+      "decode_tokens_per_sec": 49.09705698762793,
+      "prompt_tokens": 16,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 9
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 29,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 10
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 36,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 11
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 46,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 12
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 21,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 13
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 24,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 14
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 20,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 15
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 44,
+      "output_tokens": 240,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 16
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 23,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 17
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 25,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 18
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 33,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.5,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 19
+    },
+    {
+      "ttft_ms": 90.434,
+      "decode_tokens_per_sec": 49.52625707351484,
+      "prompt_tokens": 31,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.6,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 20
+    },
+    {
+      "ttft_ms": 78.588,
+      "decode_tokens_per_sec": 48.762913566875184,
+      "prompt_tokens": 27,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.6,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 21
+    },
+    {
+      "ttft_ms": 75.204,
+      "decode_tokens_per_sec": 48.43345319505044,
+      "prompt_tokens": 26,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.6,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 22
+    },
+    {
+      "ttft_ms": 65.119,
+      "decode_tokens_per_sec": 48.45683968292124,
+      "prompt_tokens": 25,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 23
+    },
+    {
+      "ttft_ms": 64.811,
+      "decode_tokens_per_sec": 48.848740545374156,
+      "prompt_tokens": 25,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.7,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 24
+    },
+    {
+      "ttft_ms": 63.974000000000004,
+      "decode_tokens_per_sec": 48.82145953955045,
+      "prompt_tokens": 24,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 25
+    },
+    {
+      "ttft_ms": 69.166,
+      "decode_tokens_per_sec": 48.82877014114961,
+      "prompt_tokens": 23,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.8,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 26
+    },
+    {
+      "ttft_ms": 54.312,
+      "decode_tokens_per_sec": 48.66517159625771,
+      "prompt_tokens": 22,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.9,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 27
+    },
+    {
+      "ttft_ms": 72.666,
+      "decode_tokens_per_sec": 48.64075786497211,
+      "prompt_tokens": 23,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.9,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 28
+    },
+    {
+      "ttft_ms": 57.488,
+      "decode_tokens_per_sec": 48.59104084105566,
+      "prompt_tokens": 22,
+      "output_tokens": 256,
+      "cache_tokens": 3,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 50.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 29
+    },
+    {
+      "ttft_ms": 24.159,
+      "decode_tokens_per_sec": 47.949690056964236,
+      "prompt_tokens": 185,
+      "output_tokens": 256,
+      "cache_tokens": 184,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.9,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 30
+    },
+    {
+      "ttft_ms": 25.261,
+      "decode_tokens_per_sec": 47.62478393756111,
+      "prompt_tokens": 182,
+      "output_tokens": 256,
+      "cache_tokens": 181,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.9,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 31
+    },
+    {
+      "ttft_ms": 23.911,
+      "decode_tokens_per_sec": 47.49768239249738,
+      "prompt_tokens": 188,
+      "output_tokens": 256,
+      "cache_tokens": 187,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 50.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 32
+    },
+    {
+      "ttft_ms": 23.302,
+      "decode_tokens_per_sec": 47.87384734325493,
+      "prompt_tokens": 185,
+      "output_tokens": 256,
+      "cache_tokens": 184,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 50.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 33
+    },
+    {
+      "ttft_ms": 23.658,
+      "decode_tokens_per_sec": 47.60221128138806,
+      "prompt_tokens": 189,
+      "output_tokens": 256,
+      "cache_tokens": 188,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 50.0,
+      "route_to": "Qwen3-4B-GGUF",
+      "matched_rule": "",
+      "default_used": true,
+      "prompt_index": 34
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 162,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 35
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 165,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 36
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 165,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.8,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 37
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 164,
+      "output_tokens": 256,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.8,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 38
+    },
+    {
+      "ttft_ms": 0.0,
+      "decode_tokens_per_sec": null,
+      "prompt_tokens": 162,
+      "output_tokens": 174,
+      "cache_tokens": 0,
+      "watts": null,
+      "vram_gb": 30.774070739746094,
+      "host_memory_gb": 49.9,
+      "route_to": "openrouter.deepseek/deepseek-v3.2",
+      "matched_rule": "code-to-cloud",
+      "default_used": false,
+      "outputs": {
+        "estimated_cost": {
+          "cost_input_per_million": 0.26,
+          "cost_output_per_million": 0.38
+        }
+      },
+      "prompt_index": 39
+    }
+  ]
+}

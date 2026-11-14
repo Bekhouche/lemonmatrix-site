@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "679f5e91-6eee-4b8b-86de-948549bcb654",
+  "timestamp": "2026-11-14T17:16:50.334665+00:00",
+  "model": {
+    "name": "Qwen3.5-35B-A3B-GGUF",
+    "class": "moe",
+    "quantization": "Q4_K_XL",
+    "context_length": 32768
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "device_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "dgpu": "AMD Radeon AI PRO R9700 (gfx1201)",
+    "dgpu_family": "gfx1201",
+    "driver_version": "unknown",
+    "igpu": "AMD Ryzen 9 9950X3D 16-Core Processor (gfx1036)",
+    "igpu_family": "gfx1036",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 59.46,
+    "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
+    "backend_version": "b11846"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 3168.131804199398,
+      "stddev": 5.547154020491038,
+      "p95": 3173.17430068468,
+      "ci95_half_width": 13.781006680558209
+    },
+    "decode": {
+      "tokens_per_sec": 103.6852742962365,
+      "inter_token_latency_ms": 9.644571100259869,
+      "stddev": 0.16934317928166745,
+      "p95": 103.85176542106153,
+      "ci95_half_width": 0.42070573060833144
+    },
+    "ttft_ms": 10003.687333333333,
+    "trial_count": 3,
+    "peak_memory_gb": 22.381603240966797,
+    "prompt_sha256": "e0083c61b93d48e54e341e1c4bf3c9d0ac38283d840854bf29b09963ad078070",
+    "prompt_tokens": 31693,
+    "ttft_ms_stddev": 17.514619160384836,
+    "ttft_ms_ci95_half_width": 43.512237584369444
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "prompt_cache_free": true,
+    "other_models_resident": false,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

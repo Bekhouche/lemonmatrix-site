@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "rerank",
-  "run_id": "81e614eb-b0aa-4986-b115-504b371769e7",
-  "timestamp": "2026-11-14T17:05:09.152968+00:00",
+  "run_type": "embeddings",
+  "run_id": "5325ea98-502e-409d-a59d-147a33201734",
+  "timestamp": "2026-11-14T18:31:49.445811+00:00",
   "model": {
-    "name": "bge-reranker-v2-m3-GGUF",
-    "checkpoint": "pqnet/bge-reranker-v2-m3-Q8_0-GGUF"
+    "name": "Qwen3-Embedding-0.6B-GGUF",
+    "checkpoint": "Qwen/Qwen3-Embedding-0.6B-GGUF:Qwen3-Embedding-0.6B-Q8_0.gguf"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "llamacpp-rocm",
+    "backend": "llamacpp-vulkan",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,16 +24,18 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "b11836"
+    "backend_version": "b11846"
   },
   "metrics": {
-    "latency_ms": 15.581871406175196,
-    "documents_per_sec": 128.35428735520094,
-    "trial_count": 5,
-    "document_count": 2,
-    "latency_ms_stddev": 0.2719489909359768,
-    "latency_ms_p95": 15.94925676472485,
-    "peak_memory_gb": 0.8643760681152344
+    "latency_ms": 10.492763348156586,
+    "embeddings_per_sec": 190.6075581463837,
+    "trial_count": 20,
+    "batch_size": 2,
+    "input_chars_total": 28,
+    "latency_ms_stddev": 0.17663281199364847,
+    "latency_ms_p95": 10.704161977628246,
+    "embedding_dim": 1024,
+    "peak_memory_gb": 4.405479431152344
   },
   "validity": {
     "valid": true,

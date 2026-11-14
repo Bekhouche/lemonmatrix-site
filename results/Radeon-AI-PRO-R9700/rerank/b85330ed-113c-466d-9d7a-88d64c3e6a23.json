@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "classify",
-  "run_id": "2f018269-e97c-47a4-8ea9-8ba9c1d39b12",
-  "timestamp": "2026-11-14T17:05:27.534827+00:00",
+  "run_type": "rerank",
+  "run_id": "b85330ed-113c-466d-9d7a-88d64c3e6a23",
+  "timestamp": "2026-11-14T18:31:42.003233+00:00",
   "model": {
-    "name": "Phishing-Email-Detection-ONNX",
-    "checkpoint": "lemonade-sdk/phishing-email-detection-distilbert-ONNX"
+    "name": "jina-reranker-v1-tiny-en-GGUF",
+    "checkpoint": "mradermacher/jina-reranker-v1-tiny-en-GGUF:Q8_0"
   },
   "config": {
-    "compute_engine": "cpu",
-    "backend": "onnxruntime-cpu",
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-rocm",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,16 +24,16 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "0.4.0"
+    "backend_version": "b11836"
   },
   "metrics": {
-    "latency_ms": 9.12385720293969,
-    "classifications_per_sec": 109.60276753101769,
-    "trial_count": 5,
-    "input_chars": 62,
-    "latency_ms_stddev": 3.859360269810666,
-    "latency_ms_p95": 14.371365378610788,
-    "peak_memory_gb": 0.24948883056640625
+    "latency_ms": 3.709779493510723,
+    "documents_per_sec": 539.1156006707328,
+    "trial_count": 20,
+    "document_count": 2,
+    "latency_ms_stddev": 0.11605822064739256,
+    "latency_ms_p95": 3.846046357648447,
+    "peak_memory_gb": 0.6373710632324219
   },
   "validity": {
     "valid": true,

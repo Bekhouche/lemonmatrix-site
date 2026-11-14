@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "embeddings",
-  "run_id": "b29330ba-f499-4049-8b08-4cd1c56022c9",
-  "timestamp": "2026-11-14T17:05:12.345276+00:00",
+  "run_type": "classify",
+  "run_id": "e9698cd3-02c5-4a2e-8702-d2f2bc61a4b8",
+  "timestamp": "2026-11-14T18:31:59.652817+00:00",
   "model": {
-    "name": "Qwen3-Embedding-0.6B-GGUF",
-    "checkpoint": "Qwen/Qwen3-Embedding-0.6B-GGUF:Qwen3-Embedding-0.6B-Q8_0.gguf"
+    "name": "Phishing-Email-Detection-ONNX",
+    "checkpoint": "lemonade-sdk/phishing-email-detection-distilbert-ONNX"
   },
   "config": {
-    "compute_engine": "dgpu",
-    "backend": "llamacpp-vulkan",
+    "compute_engine": "cpu",
+    "backend": "onnxruntime-cpu",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,18 +24,16 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "b11846"
+    "backend_version": "0.4.0"
   },
   "metrics": {
-    "latency_ms": 10.63864161260426,
-    "embeddings_per_sec": 187.99392561833042,
-    "trial_count": 5,
-    "batch_size": 2,
-    "input_chars_total": 28,
-    "latency_ms_stddev": 0.15507048311808852,
-    "latency_ms_p95": 10.837005847133696,
-    "embedding_dim": 1024,
-    "peak_memory_gb": 4.405479431152344
+    "latency_ms": 9.104253555415198,
+    "classifications_per_sec": 109.83876864953979,
+    "trial_count": 20,
+    "input_chars": 62,
+    "latency_ms_stddev": 2.8163939885686884,
+    "latency_ms_p95": 14.528795605292546,
+    "peak_memory_gb": 0.24948883056640625
   },
   "validity": {
     "valid": true,

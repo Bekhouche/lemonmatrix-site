@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
   "run_type": "rerank",
-  "run_id": "445060d0-c81f-44d5-8069-0bf4ed2355ad",
-  "timestamp": "2026-11-14T17:05:15.496446+00:00",
+  "run_id": "695288d2-4352-4c7d-b8a1-e2284e6b5f4c",
+  "timestamp": "2026-11-14T18:31:45.971251+00:00",
   "model": {
-    "name": "jina-reranker-v1-tiny-en-GGUF",
-    "checkpoint": "mradermacher/jina-reranker-v1-tiny-en-GGUF:Q8_0"
+    "name": "bge-reranker-v2-m3-GGUF",
+    "checkpoint": "pqnet/bge-reranker-v2-m3-Q8_0-GGUF"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "llamacpp-vulkan",
+    "backend": "llamacpp-rocm",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,16 +24,16 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "b11846"
+    "backend_version": "b11836"
   },
   "metrics": {
-    "latency_ms": 3.2039740355685353,
-    "documents_per_sec": 624.2247839081213,
-    "trial_count": 5,
+    "latency_ms": 14.811733830720186,
+    "documents_per_sec": 135.0280813075315,
+    "trial_count": 20,
     "document_count": 2,
-    "latency_ms_stddev": 0.08375072810832146,
-    "latency_ms_p95": 3.3099337946623564,
-    "peak_memory_gb": 0.2757377624511719
+    "latency_ms_stddev": 0.09917938023408354,
+    "latency_ms_p95": 14.993767865234986,
+    "peak_memory_gb": 0.8644828796386719
   },
   "validity": {
     "valid": true,

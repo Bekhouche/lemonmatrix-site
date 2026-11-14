@@ -30,6 +30,7 @@ MODALITY_DIRS = {
     "embeddings": ("Embeddings", "embeddings_per_sec", "emb/sec"),
     "rerank": ("Reranking", "documents_per_sec", "doc/sec"),
     "meshgen": ("3D generation", "meshes_per_sec", "mesh/sec"),
+    "omni": ("Omni workflows", "tasks_per_minute", "tasks/min"),
 }
 SKIP_DIRS = {"failures", "trials"}
 # Results brought in with `lemonmatrix import` from other tools. They skipped
@@ -470,8 +471,9 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
                         "timestamp": data.get("timestamp"),
                         "model": get_path(data, "model.name"),
                         "device": device_of(data),
-                        "engine": get_path(data, "config.compute_engine"),
-                        "backend": get_path(data, "config.backend"),
+                        # An omni run spans several components, each on its own backend.
+                        "engine": "omni" if sub.name == "omni" else get_path(data, "config.compute_engine"),
+                        "backend": "collection.omni" if sub.name == "omni" else get_path(data, "config.backend"),
                         "metric_value": get_path(data, f"metrics.{metric_key}"),
                         "metric_unit": metric_unit,
                         "valid": get_path(data, "validity.valid"),
@@ -1542,6 +1544,13 @@ def _metric_tiles(data: dict, kind: str) -> str:
             tiles.append(_tile(f"{decode['inter_token_latency_ms']:.1f}", "Inter-token ms ↓"))
         if decode.get("joules_per_token") is not None:
             tiles.append(_tile(f"{decode['joules_per_token']:.3f}", "J/token (decode) ↓"))
+    elif kind == "omni":
+        tiles.append(_tile(f"{metrics.get('tasks_per_minute', 0):.1f}", "tasks/min ↑"))
+        tiles.append(_tile(f"{metrics.get('success_rate', 0) * 100:.0f}%", "tasks delivered ↑"))
+        if metrics.get("latency_ms_p50") is not None:
+            tiles.append(_tile(f"{metrics['latency_ms_p50'] / 1000:.1f} s", "latency p50 ↓"))
+        if metrics.get("latency_ms_p95") is not None:
+            tiles.append(_tile(f"{metrics['latency_ms_p95'] / 1000:.1f} s", "latency p95 ↓"))
     else:
         value, unit = main_metric(data, kind)
         if value is not None:
@@ -1584,6 +1593,32 @@ def _validity_card(data: dict) -> str:
     <p class="hint">The checks LemonMatrix ran while measuring; an invalid run is shown but never ranked.</p>
     <ul class="checks">{"".join(checks)}</ul>
     {notes_html}
+  </div>"""
+
+
+def _omni_card(data: dict) -> str:
+    """Per-category breakdown of an omni run: which tasks delivered, how fast."""
+    by = get_path(data, "metrics.by_category") or {}
+    if not by:
+        return ""
+    rows = "".join(
+        f"<tr><td>{_esc(cat)}</td><td class=\"num\">{c.get('requests', 0)}</td>"
+        f"<td class=\"num\">{c.get('success_rate', 0) * 100:.0f}%</td>"
+        f"<td class=\"num\">{c.get('latency_ms_p50', 0) / 1000:.1f}</td>"
+        f"<td class=\"num\">{(c.get('latency_ms_p95') or c.get('latency_ms', 0)) / 1000:.1f}</td>"
+        f"<td class=\"num\">{c.get('images', 0)}</td><td class=\"num\">{c.get('audio', 0)}</td></tr>"
+        for cat, c in by.items()
+    )
+    components = ", ".join(get_path(data, "model.components") or [])
+    return f"""  <div class="card">
+    <h2>Tasks by kind</h2>
+    <p class="hint">One chat request per task to the omni model ({_esc(components)}); Lemonade runs the tool loop.
+      A task is delivered when the answer contains every image or audio clip it asked for. Latency is end to end, in seconds.</p>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Kind</th><th class="num">Requests</th><th class="num">Delivered</th><th class="num">p50 s</th>
+        <th class="num">p95 s</th><th class="num">Images</th><th class="num">Audio</th></tr></thead>
+      <tbody>{rows}</tbody>
+    </table></div>
   </div>"""
 
 
@@ -1685,6 +1720,7 @@ def render_run_page(entry: dict, siblings: list[dict], trials: list[dict] | None
 
 <main>
   <div class="stat-row">{_metric_tiles(d, kind)}</div>
+{_omni_card(d) if kind == "omni" else ""}
 {_validity_card(d)}
 {_trials_card(trials)}
 {_siblings_card(entry, siblings)}

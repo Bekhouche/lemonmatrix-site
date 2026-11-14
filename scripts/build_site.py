@@ -42,6 +42,7 @@ LEADERBOARD_COLUMNS = [
     ("_device", "Device", "text"),
     ("config.compute_engine", "Engine", "chip"),
     ("config.backend", "Backend", "text"),
+    ("_prompt", "Prompt", "text"),
     ("config.power_state", "Power", "text"),
     ("metrics.decode.tokens_per_sec", "Decode tok/s ↑", "num1"),
     ("metrics.prefill.tokens_per_sec", "Prefill tok/s ↑", "num1"),
@@ -406,6 +407,19 @@ def is_instinct(result: dict) -> bool:
     return "Instinct" in text or any(g in text for g in INSTINCT_GFX)
 
 
+def prompt_size(result: dict) -> tuple[str, str]:
+    """(label, bucket) for the prompt length a run used.
+
+    Prefill and TTFT depend on it, so long-prompt runs are shown with their
+    size and never folded together with short-prompt runs. Results from
+    LemonMatrix before metrics.prompt_tokens used the short default prompt.
+    """
+    tokens = get_path(result, "metrics.prompt_tokens")
+    if not tokens or tokens < 1000:
+        return "short", "short"
+    return f"{tokens / 1000:.1f}K", str(get_path(result, "model.context_length") or round(tokens, -3))
+
+
 def vendor_of(device: str | None) -> str:
     for vendor, markers in VENDOR_MARKERS:
         if device and any(m in device for m in markers):
@@ -434,6 +448,7 @@ def collect(results_dir: Path) -> tuple[list[dict], list[dict]]:
             data["_profile"] = profile
             data["_run_id"] = path.stem
             data["_device"] = device_of(data)
+            data["_prompt"], data["_prompt_bucket"] = prompt_size(data)
             data["_vendor"] = vendor_of(data["_device"])
             data["_rel_path"] = path.relative_to(results_dir).as_posix()
             model_rows.append(data)
@@ -742,7 +757,8 @@ def render(
     </p>
     <p class="hint">
       * Prefill and TTFT were measured with the server's prompt cache on (runs before 2026-11-14, and router runs),
-      so they time a cache hit and are likely too fast. Decode is not affected.
+      so they time a cache hit and are likely too fast. Decode is not affected. Prompt is the prompt length per
+      request: prefill rises and decode falls with it, so compare runs of a similar prompt size.
     </p>
     <div class="filters">
       <div>
@@ -979,7 +995,7 @@ def render(
     if (bestOnly) {{
       var firstOf = {{}};
       rows = rows.filter(function (r) {{
-        var key = groupOf(r) + "|" + r._profile + "|" + getPath(r, "config.compute_engine") + "|" + getPath(r, "config.backend");
+        var key = groupOf(r) + "|" + r._profile + "|" + getPath(r, "config.compute_engine") + "|" + getPath(r, "config.backend") + "|" + r._prompt_bucket;
         if (firstOf[key]) {{ extra[firstOf[key]] = (extra[firstOf[key]] || 0) + 1; return false; }}
         firstOf[key] = r._run_id;
         return true;

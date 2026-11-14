@@ -541,19 +541,81 @@ def _fastest_tile(title: str, group: str, run: dict) -> str:
     )
 
 
+# Why a run was refused, as the notes say it; only reasons where a clean run on
+# the same machine shows what the refused number would have claimed.
+REFUSAL_MARKERS = ("competing workload", "stayed loaded")
+
+
+def _refused_tile(llm_rows: list[dict]) -> str:
+    """The refused run with the largest gap to a clean run of the same model,
+    machine, engine, backend and prompt size."""
+    decode = lambda r: get_path(r, "metrics.decode.tokens_per_sec") or 0  # noqa: E731
+    key = lambda r: (group_of(r), r.get("_profile"), get_path(r, "config.compute_engine"),  # noqa: E731
+                     get_path(r, "config.backend"), r.get("_prompt_bucket"))
+    clean: dict[tuple, dict] = {}
+    for r in llm_rows:
+        if get_path(r, "validity.valid") and decode(r) > decode(clean.get(key(r), {})):
+            clean[key(r)] = r
+    best = None
+    for r in llm_rows:
+        notes = get_path(r, "validity.notes") or ""
+        if get_path(r, "validity.valid") or not any(m in notes for m in REFUSAL_MARKERS) or not decode(r):
+            continue
+        match = clean.get(key(r))
+        if match and (best is None or decode(match) / decode(r) > decode(best[1]) / decode(best[0])):
+            best = (r, match)
+    if best is None:
+        return ""
+    refused, ok = best
+    why = "another model was busy" if "competing workload" in (get_path(refused, "validity.notes") or "") \
+        else "other models were loaded"
+    return (
+        f'<div class="stat-tile headline"><div class="value">{decode(refused):.1f} tok/s refused</div>'
+        f'<div class="label">{_esc(group_of(refused))} on {_esc(refused.get("_device"))}, '
+        f"{_esc(get_path(refused, 'config.backend'))}: {why} during the run, so it is not ranked. "
+        f'<a href="{_esc(run_href(refused.get("_run_id")))}">Refused run</a> &middot; '
+        f'<a href="{_esc(run_href(ok.get("_run_id")))}">clean run: {decode(ok):.1f} tok/s</a></div></div>'
+    )
+
+
+def _router_tile(router_rows: list[dict]) -> str:
+    """The valid router run that kept the most cost local."""
+    priced = [
+        r for r in router_rows
+        if get_path(r, "validity.valid") and get_path(r, "metrics.routing.savings_pct") is not None
+    ]
+    if not priced:
+        return ""
+    best = max(priced, key=lambda r: get_path(r, "metrics.routing.savings_pct"))
+    routing = best["metrics"]["routing"]
+    name = (get_path(best, "model.name") or "").removeprefix("user.")
+    return (
+        f'<div class="stat-tile headline"><div class="value">{routing["savings_pct"]:.1f}% saved</div>'
+        f'<div class="label">Best router policy vs. all-cloud: '
+        f'<a href="{_esc(run_href(best.get("_run_id")))}">{_esc(name)}</a> on {_esc(best.get("_profile"))}, '
+        f'{routing["local_share"] * 100:.0f}% of {routing["requests"]} requests kept local, '
+        f'{_esc(routing.get("baseline_method") or "estimated")} baseline</div></div>'
+    )
+
+
 def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
-    tiles = []
-    valid = [r for r in llm_rows if get_path(r, "validity.valid") and get_path(r, "metrics.decode.tokens_per_sec")]
+    """Refused run, best router saving, then the fastest AMD runs."""
+    tiles = [_refused_tile(llm_rows), _router_tile(router_rows)]
+    # Speed headlines compare like with like: short-prompt runs only.
+    valid = [
+        r for r in llm_rows
+        if get_path(r, "validity.valid") and get_path(r, "metrics.decode.tokens_per_sec")
+        and r.get("_prompt_bucket") == "short"
+    ]
     if valid:
         groups: dict[str, list[dict]] = {}
         for r in valid:
             groups.setdefault(group_of(r), []).append(r)
         decode = lambda r: get_path(r, "metrics.decode.tokens_per_sec")  # noqa: E731
-        # Headlines are AMD only: one tile for Radeon/Ryzen (client and
-        # workstation) and one for Instinct (datacenter). Other vendors stay in
-        # the table behind the vendor filter. Each tile uses the model group
-        # with the most runs in its class, so the number has neighbours to
-        # compare with.
+        # AMD only: one tile for Radeon/Ryzen (client and workstation) and one
+        # for Instinct (datacenter). Other vendors stay in the table behind the
+        # vendor filter. Each tile uses the model group with the most runs in
+        # its class, so the number has neighbours to compare with.
         for title, in_class in (
             ("Fastest on Radeon", lambda r: r.get("_vendor") == "AMD" and not is_instinct(r)),
             ("Fastest on Instinct", lambda r: r.get("_vendor") == "AMD" and is_instinct(r)),
@@ -564,20 +626,7 @@ def render_headlines(llm_rows: list[dict], router_rows: list[dict]) -> str:
                 continue
             group, runs = max(per_group.items(), key=lambda kv: (len(kv[1]), kv[0]))
             tiles.append(_fastest_tile(title, group, max(runs, key=decode)))
-    priced = [
-        r for r in router_rows
-        if get_path(r, "validity.valid") and get_path(r, "metrics.routing.savings_pct") is not None
-    ]
-    if priced:
-        latest = max(priced, key=lambda r: r.get("timestamp") or "")
-        routing = latest["metrics"]["routing"]
-        method = routing.get("baseline_method") or "estimated"
-        tiles.append(
-            f'<div class="stat-tile headline"><div class="value">{routing["savings_pct"]:.1f}% saved</div>'
-            f'<div class="label">Latest router run ({_esc(get_path(latest, "model.name"))}), '
-            f"{_esc(method)} baseline</div></div>"
-        )
-    return "".join(tiles)
+    return "".join(t for t in tiles if t)
 
 
 def render_router_costs(model_rows: list[dict]) -> str:

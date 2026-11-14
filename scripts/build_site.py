@@ -740,6 +740,10 @@ def render(
       machine and backend are folded into their best one; untick the box to see them all. Click a column header to rank
       by another column. ↑ higher is better, ↓ lower is better. Filters are applied together (AND).
     </p>
+    <p class="hint">
+      * Prefill and TTFT were measured with the server's prompt cache on (runs before 2026-11-14, and router runs),
+      so they time a cache hit and are likely too fast. Decode is not affected.
+    </p>
     <div class="filters">
       <div>
         <label for="f-vendor">Vendor</label>
@@ -865,6 +869,9 @@ def render(
 
   var columns = JSON.parse(document.getElementById("lm-columns").textContent);
   var wrapColumns = {wrap_columns_json};
+  // Prefill and TTFT from runs that did not disable the prompt cache
+  // (LemonMatrix 0.1.0 and earlier, and router runs) timed a cache hit.
+  var cacheColumns = ["metrics.prefill.tokens_per_sec", "metrics.ttft_ms"];
   var modelRows = JSON.parse(document.getElementById("lm-model-rows").textContent);
   var modalityRows = JSON.parse(document.getElementById("lm-modality-rows").textContent);
   var modalityMeta = JSON.parse(document.getElementById("lm-modality-meta").textContent);
@@ -1031,6 +1038,10 @@ def render(
         if (kind === "num1" || kind === "num0" || kind === "num3") td.className = "num";
         else if (wrapColumns.indexOf(col[0]) !== -1) td.className = "wrap";
         td.innerHTML = i === 0 ? runLink(r._run_id, fmt(getPath(r, col[0]), kind)) : fmt(getPath(r, col[0]), kind);
+        if (cacheColumns.indexOf(col[0]) !== -1 && getPath(r, col[0]) != null
+            && getPath(r, "validity.prompt_cache_free") !== true) {{
+          td.innerHTML += '<span class="muted" title="Cache-assisted: measured with the prompt cache on, likely too fast">*</span>';
+        }}
         if (i === 0 && extra[r._run_id]) {{
           td.innerHTML += ' <span class="muted more-runs">+' + extra[r._run_id] + (extra[r._run_id] === 1 ? " run" : " runs") + '</span>';
         }}
@@ -1454,11 +1465,14 @@ def _metric_tiles(data: dict, kind: str) -> str:
         decode, prefill = metrics.get("decode") or {}, metrics.get("prefill") or {}
         if decode.get("tokens_per_sec") is not None:
             tiles.append(_tile(f"{decode['tokens_per_sec']:.1f}", "Decode tok/s ↑", _spread(decode)))
+        # Without prompt_cache_free the server's prompt cache was on: prefill
+        # and TTFT timed a cache hit (LemonMatrix 0.1.0 and earlier, routers).
+        cached = " (cache-assisted)" if get_path(data, "validity.prompt_cache_free") is not True else ""
         if prefill.get("tokens_per_sec") is not None:
-            tiles.append(_tile(f"{prefill['tokens_per_sec']:.0f}", "Prefill tok/s ↑", _spread(prefill)))
+            tiles.append(_tile(f"{prefill['tokens_per_sec']:.0f}", f"Prefill tok/s ↑{cached}", _spread(prefill)))
         if metrics.get("ttft_ms") is not None:
             half = metrics.get("ttft_ms_ci95_half_width")
-            tiles.append(_tile(f"{metrics['ttft_ms']:.0f}", "TTFT ms ↓", f"± {half:.3g} (95% CI)" if half else ""))
+            tiles.append(_tile(f"{metrics['ttft_ms']:.0f}", f"TTFT ms ↓{cached}", f"± {half:.3g} (95% CI)" if half else ""))
         if decode.get("inter_token_latency_ms") is not None:
             tiles.append(_tile(f"{decode['inter_token_latency_ms']:.1f}", "Inter-token ms ↓"))
         if decode.get("joules_per_token") is not None:

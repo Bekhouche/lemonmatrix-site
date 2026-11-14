@@ -1,0 +1,93 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "omni",
+  "run_id": "cd30d281-ebcd-414a-903f-0366cc676734",
+  "timestamp": "2026-11-14T18:45:49.091262+00:00",
+  "model": {
+    "name": "LMX-Omni-5.5B-Lite",
+    "components": [
+      "Qwen3.5-4B-MTP-GGUF",
+      "SD-Turbo",
+      "Whisper-Tiny",
+      "kokoro-v1"
+    ]
+  },
+  "config": {
+    "os": "linux",
+    "power_state": "plugged",
+    "max_tokens": 512
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "device_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "dgpu": "AMD Radeon AI PRO R9700 (gfx1201)",
+    "dgpu_family": "gfx1201",
+    "driver_version": "unknown",
+    "igpu": "AMD Ryzen 9 9950X3D 16-Core Processor (gfx1036)",
+    "igpu_family": "gfx1036",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 59.46,
+    "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)"
+  },
+  "metrics": {
+    "task_set": "omni-basic",
+    "task_count": 8,
+    "trial_count": 24,
+    "success_rate": 1.0,
+    "tasks_per_minute": 19.898685186138326,
+    "latency_ms": 3015.2745992381824,
+    "latency_ms_p50": 2551.0897130006924,
+    "latency_ms_p95": 6645.664977969134,
+    "latency_ms_stddev": 2283.328642729115,
+    "by_category": {
+      "text": {
+        "requests": 6,
+        "success_rate": 1.0,
+        "latency_ms": 812.7591669908725,
+        "latency_ms_p50": 699.5521549833938,
+        "latency_ms_p95": 1193.2734042347874,
+        "latency_ms_stddev": 259.7063098614309,
+        "images": 0,
+        "audio": 0
+      },
+      "image": {
+        "requests": 6,
+        "success_rate": 1.0,
+        "latency_ms": 4020.640362480966,
+        "latency_ms_p50": 4047.671668988187,
+        "latency_ms_p95": 4339.160278439522,
+        "latency_ms_stddev": 302.18768793589084,
+        "images": 6,
+        "audio": 0
+      },
+      "speech": {
+        "requests": 6,
+        "success_rate": 1.0,
+        "latency_ms": 1119.2025125104312,
+        "latency_ms_p50": 1063.7985175126232,
+        "latency_ms_p95": 1388.2616707705893,
+        "latency_ms_stddev": 192.90974874765874,
+        "images": 0,
+        "audio": 6
+      },
+      "image+speech": {
+        "requests": 6,
+        "success_rate": 1.0,
+        "latency_ms": 6108.49635497046,
+        "latency_ms_p50": 5782.862125430256,
+        "latency_ms_p95": 7493.296654720325,
+        "latency_ms_stddev": 978.0592811782903,
+        "images": 6,
+        "audio": 6
+      }
+    },
+    "peak_memory_gb": 17.557132720947266
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

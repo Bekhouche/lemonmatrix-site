@@ -1,0 +1,269 @@
+{
+  "run_id": "cd30d281-ebcd-414a-903f-0366cc676734",
+  "trials": [
+    {
+      "category": "text",
+      "latency_ms": 618.8405660213903,
+      "images": 0,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.5,
+      "task_index": 0,
+      "pass": 0
+    },
+    {
+      "category": "text",
+      "latency_ms": 976.6022269614041,
+      "images": 0,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.5,
+      "task_index": 1,
+      "pass": 0
+    },
+    {
+      "category": "image",
+      "latency_ms": 3732.717590057291,
+      "images": 1,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.6,
+      "task_index": 2,
+      "pass": 0
+    },
+    {
+      "category": "image",
+      "latency_ms": 4367.635792936198,
+      "images": 1,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 3,
+      "pass": 0
+    },
+    {
+      "category": "speech",
+      "latency_ms": 936.2997480202466,
+      "images": 0,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 4,
+      "pass": 0
+    },
+    {
+      "category": "speech",
+      "latency_ms": 1088.7732490664348,
+      "images": 0,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 5,
+      "pass": 0
+    },
+    {
+      "category": "image+speech",
+      "latency_ms": 5277.181247947738,
+      "images": 1,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.4,
+      "task_index": 6,
+      "pass": 0
+    },
+    {
+      "category": "image+speech",
+      "latency_ms": 6085.719504975714,
+      "images": 1,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.8,
+      "task_index": 7,
+      "pass": 0
+    },
+    {
+      "category": "text",
+      "latency_ms": 616.5107690030709,
+      "images": 0,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.7,
+      "task_index": 0,
+      "pass": 1
+    },
+    {
+      "category": "text",
+      "latency_ms": 1265.497129992582,
+      "images": 0,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.7,
+      "task_index": 1,
+      "pass": 1
+    },
+    {
+      "category": "image",
+      "latency_ms": 3674.4117189664394,
+      "images": 1,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.4,
+      "task_index": 2,
+      "pass": 1
+    },
+    {
+      "category": "image",
+      "latency_ms": 4253.733734949492,
+      "images": 1,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.5,
+      "task_index": 3,
+      "pass": 1
+    },
+    {
+      "category": "speech",
+      "latency_ms": 953.8070230046287,
+      "images": 0,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 4,
+      "pass": 1
+    },
+    {
+      "category": "speech",
+      "latency_ms": 1269.7435619775206,
+      "images": 0,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.4,
+      "task_index": 5,
+      "pass": 1
+    },
+    {
+      "category": "image+speech",
+      "latency_ms": 5320.691168075427,
+      "images": 1,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.2,
+      "task_index": 6,
+      "pass": 1
+    },
+    {
+      "category": "image+speech",
+      "latency_ms": 7742.902577971108,
+      "images": 1,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 7,
+      "pass": 1
+    },
+    {
+      "category": "text",
+      "latency_ms": 656.7087610019371,
+      "images": 0,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 0,
+      "pass": 2
+    },
+    {
+      "category": "text",
+      "latency_ms": 742.3955489648506,
+      "images": 0,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.4,
+      "task_index": 1,
+      "pass": 2
+    },
+    {
+      "category": "image",
+      "latency_ms": 3850.677423994057,
+      "images": 1,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.2,
+      "task_index": 2,
+      "pass": 2
+    },
+    {
+      "category": "image",
+      "latency_ms": 4244.665913982317,
+      "images": 1,
+      "audio": 0,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 3,
+      "pass": 2
+    },
+    {
+      "category": "speech",
+      "latency_ms": 1038.8237859588116,
+      "images": 0,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 4,
+      "pass": 2
+    },
+    {
+      "category": "speech",
+      "latency_ms": 1427.7677070349455,
+      "images": 0,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.5,
+      "task_index": 5,
+      "pass": 2
+    },
+    {
+      "category": "image+speech",
+      "latency_ms": 5480.0047458847985,
+      "images": 1,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.3,
+      "task_index": 6,
+      "pass": 2
+    },
+    {
+      "category": "image+speech",
+      "latency_ms": 6744.478884967975,
+      "images": 1,
+      "audio": 1,
+      "success": true,
+      "vram_gb": 17.557132720947266,
+      "host_memory_gb": 25.8,
+      "task_index": 7,
+      "pass": 2
+    }
+  ]
+}

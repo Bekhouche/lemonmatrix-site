@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
   "run_type": "stt",
-  "run_id": "b9e927f1-14a8-469e-bde6-d5f8bee1381d",
-  "timestamp": "2026-11-14T10:08:33.859066+00:00",
+  "run_id": "a0b27f51-93bd-44e4-82ef-ab42f5f49675",
+  "timestamp": "2026-11-14T17:05:31.932594+00:00",
   "model": {
-    "name": "Whisper-Large-v3-Turbo",
-    "checkpoint": "ggerganov/whisper.cpp:ggml-large-v3-turbo.bin"
+    "name": "Whisper-Small",
+    "checkpoint": "ggerganov/whisper.cpp:ggml-small.bin"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "whispercpp-vulkan",
+    "backend": "whispercpp-rocm",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -27,19 +27,19 @@
     "backend_version": "v1.8.4"
   },
   "metrics": {
-    "transcription_time_ms": 231.1660710023716,
+    "transcription_time_ms": 177.0904804347083,
     "audio_duration_s": 10.0,
-    "real_time_factor": 43.25894348006376,
+    "real_time_factor": 56.46830916858296,
     "trial_count": 5,
-    "transcription_time_ms_stddev": 4.886480946633073,
-    "transcription_time_ms_p95": 234.64399517979473,
-    "peak_memory_gb": 31.532752990722656
+    "transcription_time_ms_stddev": 8.548752232141059,
+    "transcription_time_ms_p95": 187.23045061342418,
+    "peak_memory_gb": 1.3447113037109375
   },
   "validity": {
-    "valid": true,
+    "valid": false,
     "warmup_discarded": true,
     "exclusive_run": true,
     "model_reload_free": true,
-    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+    "notes": "compute_engine claimed 'dgpu' but Lemonade's own /api/v1/health reported device 'cpu' for this model; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
   }
 }

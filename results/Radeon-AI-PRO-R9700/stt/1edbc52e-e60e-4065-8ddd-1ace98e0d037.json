@@ -1,8 +1,8 @@
 {
   "schema_version": "0.1.0",
   "run_type": "stt",
-  "run_id": "26d00252-84b2-4df4-aa7e-1aee561a7b2e",
-  "timestamp": "2026-11-14T10:08:25.908786+00:00",
+  "run_id": "1edbc52e-e60e-4065-8ddd-1ace98e0d037",
+  "timestamp": "2026-11-14T17:05:37.066734+00:00",
   "model": {
     "name": "Whisper-Large-v3-Turbo",
     "checkpoint": "ggerganov/whisper.cpp:ggml-large-v3-turbo.bin"
@@ -27,13 +27,13 @@
     "backend_version": "v1.8.4"
   },
   "metrics": {
-    "transcription_time_ms": 262.0524581987411,
+    "transcription_time_ms": 237.96816100366414,
     "audio_duration_s": 10.0,
-    "real_time_factor": 38.160298394972436,
+    "real_time_factor": 42.0224283695079,
     "trial_count": 5,
-    "transcription_time_ms_stddev": 34.07920117709171,
-    "transcription_time_ms_p95": 307.98065217677504,
-    "peak_memory_gb": 31.79816436767578
+    "transcription_time_ms_stddev": 4.962160880906514,
+    "transcription_time_ms_p95": 244.76875241380185,
+    "peak_memory_gb": 2.4269180297851562
   },
   "validity": {
     "valid": false,

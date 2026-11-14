@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "stt",
-  "run_id": "a3d1e8e2-d815-4dd9-a5b3-c8321870ad37",
-  "timestamp": "2026-11-14T10:08:29.472155+00:00",
+  "run_type": "classify",
+  "run_id": "2f018269-e97c-47a4-8ea9-8ba9c1d39b12",
+  "timestamp": "2026-11-14T17:05:27.534827+00:00",
   "model": {
-    "name": "Whisper-Small",
-    "checkpoint": "ggerganov/whisper.cpp:ggml-small.bin"
+    "name": "Phishing-Email-Detection-ONNX",
+    "checkpoint": "lemonade-sdk/phishing-email-detection-distilbert-ONNX"
   },
   "config": {
-    "compute_engine": "dgpu",
-    "backend": "whispercpp-vulkan",
+    "compute_engine": "cpu",
+    "backend": "onnxruntime-cpu",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,16 +24,16 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "v1.8.4"
+    "backend_version": "0.4.0"
   },
   "metrics": {
-    "transcription_time_ms": 128.25640144292265,
-    "audio_duration_s": 10.0,
-    "real_time_factor": 77.96881783284908,
+    "latency_ms": 9.12385720293969,
+    "classifications_per_sec": 109.60276753101769,
     "trial_count": 5,
-    "transcription_time_ms_stddev": 1.885960119253751,
-    "transcription_time_ms_p95": 130.7660958264023,
-    "peak_memory_gb": 30.444412231445312
+    "input_chars": 62,
+    "latency_ms_stddev": 3.859360269810666,
+    "latency_ms_p95": 14.371365378610788,
+    "peak_memory_gb": 0.24948883056640625
   },
   "validity": {
     "valid": true,

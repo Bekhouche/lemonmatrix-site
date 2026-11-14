@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "rerank",
-  "run_id": "ee783786-33df-4aad-9598-968ec6365bca",
-  "timestamp": "2026-11-14T10:04:31.236800+00:00",
+  "run_type": "imagegen",
+  "run_id": "64870469-b6a8-448a-87c7-8c9afc77da8a",
+  "timestamp": "2026-11-14T17:05:50.625736+00:00",
   "model": {
-    "name": "jina-reranker-v1-tiny-en-GGUF",
-    "checkpoint": "mradermacher/jina-reranker-v1-tiny-en-GGUF:Q8_0"
+    "name": "SD-Turbo-GGUF",
+    "checkpoint": "Green-Sky/SD-Turbo-GGUF:sd_turbo-f16-q8_0.gguf"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "llamacpp-vulkan",
+    "backend": "sd-cpp-rocm",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,16 +24,19 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "b11846"
+    "backend_version": "master-957-90e86d1"
   },
   "metrics": {
-    "latency_ms": 4.270018404349685,
-    "documents_per_sec": 468.38205614352523,
+    "generation_time_ms": 173.14794876147062,
+    "images_per_sec": 5.775407720120349,
     "trial_count": 5,
-    "document_count": 2,
-    "latency_ms_stddev": 0.07956072480128233,
-    "latency_ms_p95": 4.359246953390539,
-    "peak_memory_gb": 27.054576873779297
+    "operation": "generate",
+    "image_size": "256x256",
+    "generation_time_ms_stddev": 0.8993396970490811,
+    "generation_time_ms_p95": 174.272066145204,
+    "steps": 2,
+    "prompt_chars": 32,
+    "peak_memory_gb": 2.4590721130371094
   },
   "validity": {
     "valid": true,

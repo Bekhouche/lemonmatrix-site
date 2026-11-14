@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "classify",
-  "run_id": "dd120254-90ff-46bc-8a60-e335e4836fe4",
-  "timestamp": "2026-11-14T10:04:38.950130+00:00",
+  "run_type": "audiogen",
+  "run_id": "856e8042-3ae5-4f1c-89c5-e6fe947a4346",
+  "timestamp": "2026-11-14T17:06:30.202717+00:00",
   "model": {
-    "name": "Phishing-Email-Detection-ONNX",
-    "checkpoint": "lemonade-sdk/phishing-email-detection-distilbert-ONNX"
+    "name": "ACE-Step-Music",
+    "checkpoint": "Serveurperso/ACE-Step-1.5-GGUF:acestep-v15-xl-sft-Q8_0.gguf"
   },
   "config": {
-    "compute_engine": "cpu",
-    "backend": "onnxruntime-cpu",
+    "compute_engine": "dgpu",
+    "backend": "acestep-rocm",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,16 +24,17 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "0.4.0"
+    "backend_version": "v0.1.2"
   },
   "metrics": {
-    "latency_ms": 8.001262368634343,
-    "classifications_per_sec": 124.98027860204766,
+    "generation_time_ms": 4022.4932842189446,
+    "audio_duration_s": 30.0,
+    "real_time_factor": 7.458060928950727,
     "trial_count": 5,
-    "input_chars": 62,
-    "latency_ms_stddev": 1.690698980644244,
-    "latency_ms_p95": 9.033788205124438,
-    "peak_memory_gb": 27.3525390625
+    "prompt_chars": 30,
+    "generation_time_ms_stddev": 0.7631786718795456,
+    "generation_time_ms_p95": 4023.1145730242133,
+    "peak_memory_gb": 11.825748443603516
   },
   "validity": {
     "valid": true,

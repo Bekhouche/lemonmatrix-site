@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "rerank",
-  "run_id": "a4e71539-e546-45d3-8541-cfc00550bb4b",
-  "timestamp": "2026-11-14T10:04:24.807494+00:00",
+  "run_type": "stt",
+  "run_id": "7a99f445-2f85-4550-a1dd-4b0fd8ace672",
+  "timestamp": "2026-11-14T17:05:45.006972+00:00",
   "model": {
-    "name": "bge-reranker-v2-m3-GGUF",
-    "checkpoint": "pqnet/bge-reranker-v2-m3-Q8_0-GGUF"
+    "name": "Whisper-Large-v3-Turbo",
+    "checkpoint": "ggerganov/whisper.cpp:ggml-large-v3-turbo.bin"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "llamacpp-rocm",
+    "backend": "whispercpp-vulkan",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,16 +24,16 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "b11836"
+    "backend_version": "v1.8.4"
   },
   "metrics": {
-    "latency_ms": 15.522809978574514,
-    "documents_per_sec": 128.84265173383662,
+    "transcription_time_ms": 230.15133421868086,
+    "audio_duration_s": 10.0,
+    "real_time_factor": 43.44967207749657,
     "trial_count": 5,
-    "document_count": 2,
-    "latency_ms_stddev": 0.16384550756056881,
-    "latency_ms_p95": 15.712804393842816,
-    "peak_memory_gb": 27.925323486328125
+    "transcription_time_ms_stddev": 3.5247491460494906,
+    "transcription_time_ms_p95": 232.4103649938479,
+    "peak_memory_gb": 2.047191619873047
   },
   "validity": {
     "valid": true,

@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "audiogen",
-  "run_id": "b955f1e1-7014-4e20-98dc-6c8e81f27eee",
-  "timestamp": "2026-11-14T10:05:27.603830+00:00",
+  "run_type": "embeddings",
+  "run_id": "b29330ba-f499-4049-8b08-4cd1c56022c9",
+  "timestamp": "2026-11-14T17:05:12.345276+00:00",
   "model": {
-    "name": "ACE-Step-Music",
-    "checkpoint": "Serveurperso/ACE-Step-1.5-GGUF:acestep-v15-xl-sft-Q8_0.gguf"
+    "name": "Qwen3-Embedding-0.6B-GGUF",
+    "checkpoint": "Qwen/Qwen3-Embedding-0.6B-GGUF:Qwen3-Embedding-0.6B-Q8_0.gguf"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "acestep-rocm",
+    "backend": "llamacpp-vulkan",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,17 +24,18 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "v0.1.2"
+    "backend_version": "b11846"
   },
   "metrics": {
-    "generation_time_ms": 4622.883108980022,
-    "audio_duration_s": 30.0,
-    "real_time_factor": 6.489456750858471,
+    "latency_ms": 10.63864161260426,
+    "embeddings_per_sec": 187.99392561833042,
     "trial_count": 5,
-    "prompt_chars": 30,
-    "generation_time_ms_stddev": 548.6421148035597,
-    "generation_time_ms_p95": 5024.672200740315,
-    "peak_memory_gb": 30.85333251953125
+    "batch_size": 2,
+    "input_chars_total": 28,
+    "latency_ms_stddev": 0.15507048311808852,
+    "latency_ms_p95": 10.837005847133696,
+    "embedding_dim": 1024,
+    "peak_memory_gb": 4.405479431152344
   },
   "validity": {
     "valid": true,

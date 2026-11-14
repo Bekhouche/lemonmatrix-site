@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "tts",
-  "run_id": "4b3a1920-0904-4fc1-a0ba-ed02e17fbfa2",
-  "timestamp": "2026-11-14T10:04:38.190576+00:00",
+  "run_type": "rerank",
+  "run_id": "445060d0-c81f-44d5-8069-0bf4ed2355ad",
+  "timestamp": "2026-11-14T17:05:15.496446+00:00",
   "model": {
-    "name": "kokoro-v1",
-    "checkpoint": "mikkoph/kokoro-onnx"
+    "name": "jina-reranker-v1-tiny-en-GGUF",
+    "checkpoint": "mradermacher/jina-reranker-v1-tiny-en-GGUF:Q8_0"
   },
   "config": {
-    "compute_engine": "cpu",
-    "backend": "kokoro-cpu",
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-vulkan",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,17 +24,16 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "b21"
+    "backend_version": "b11846"
   },
   "metrics": {
-    "generation_time_ms": 285.211199009791,
-    "audio_duration_s": 3.6,
-    "real_time_factor": 12.622225257979492,
+    "latency_ms": 3.2039740355685353,
+    "documents_per_sec": 624.2247839081213,
     "trial_count": 5,
-    "input_chars": 45,
-    "generation_time_ms_stddev": 3.756754309095521,
-    "generation_time_ms_p95": 290.28146965429187,
-    "peak_memory_gb": 27.3525390625
+    "document_count": 2,
+    "latency_ms_stddev": 0.08375072810832146,
+    "latency_ms_p95": 3.3099337946623564,
+    "peak_memory_gb": 0.2757377624511719
   },
   "validity": {
     "valid": true,

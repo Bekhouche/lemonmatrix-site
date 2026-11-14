@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "rerank",
-  "run_id": "d616f43d-cf50-4485-8b10-835b9e2f0aaf",
-  "timestamp": "2026-11-14T10:04:34.674986+00:00",
+  "run_type": "audiogen",
+  "run_id": "a55e71b6-ffc6-483c-9f06-4cdbdb0b58be",
+  "timestamp": "2026-11-14T17:07:04.488311+00:00",
   "model": {
-    "name": "bge-reranker-v2-m3-GGUF",
-    "checkpoint": "pqnet/bge-reranker-v2-m3-Q8_0-GGUF"
+    "name": "ACE-Step-Music",
+    "checkpoint": "Serveurperso/ACE-Step-1.5-GGUF:acestep-v15-xl-sft-Q8_0.gguf"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "llamacpp-vulkan",
+    "backend": "acestep-vulkan",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,16 +24,17 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "b11846"
+    "backend_version": "v0.1.2"
   },
   "metrics": {
-    "latency_ms": 18.73344120103866,
-    "documents_per_sec": 106.76095110006334,
+    "generation_time_ms": 4223.2174220029265,
+    "audio_duration_s": 30.0,
+    "real_time_factor": 7.103588804995039,
     "trial_count": 5,
-    "document_count": 2,
-    "latency_ms_stddev": 0.049144938642072825,
-    "latency_ms_p95": 18.78783197607845,
-    "peak_memory_gb": 27.3525390625
+    "prompt_chars": 30,
+    "generation_time_ms_stddev": 447.1450017568722,
+    "generation_time_ms_p95": 4823.27074164059,
+    "peak_memory_gb": 12.5736083984375
   },
   "validity": {
     "valid": true,

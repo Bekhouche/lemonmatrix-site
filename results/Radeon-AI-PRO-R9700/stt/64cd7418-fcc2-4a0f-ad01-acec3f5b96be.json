@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "audiogen",
-  "run_id": "8eea4854-c55b-4538-af29-c2b845d8f317",
-  "timestamp": "2026-11-14T10:06:01.927713+00:00",
+  "run_type": "stt",
+  "run_id": "64cd7418-fcc2-4a0f-ad01-acec3f5b96be",
+  "timestamp": "2026-11-14T17:05:40.634885+00:00",
   "model": {
-    "name": "ACE-Step-Music",
-    "checkpoint": "Serveurperso/ACE-Step-1.5-GGUF:acestep-v15-xl-sft-Q8_0.gguf"
+    "name": "Whisper-Small",
+    "checkpoint": "ggerganov/whisper.cpp:ggml-small.bin"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "acestep-vulkan",
+    "backend": "whispercpp-vulkan",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,17 +24,16 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "v0.1.2"
+    "backend_version": "v1.8.4"
   },
   "metrics": {
-    "generation_time_ms": 4021.5347530087456,
-    "audio_duration_s": 30.0,
-    "real_time_factor": 7.459838554809266,
+    "transcription_time_ms": 126.67026759590954,
+    "audio_duration_s": 10.0,
+    "real_time_factor": 78.94512413837295,
     "trial_count": 5,
-    "prompt_chars": 30,
-    "generation_time_ms_stddev": 1.681833899343263,
-    "generation_time_ms_p95": 4023.832433996722,
-    "peak_memory_gb": 31.715763092041016
+    "transcription_time_ms_stddev": 0.9225544791729828,
+    "transcription_time_ms_p95": 127.9176675947383,
+    "peak_memory_gb": 0.9588508605957031
   },
   "validity": {
     "valid": true,

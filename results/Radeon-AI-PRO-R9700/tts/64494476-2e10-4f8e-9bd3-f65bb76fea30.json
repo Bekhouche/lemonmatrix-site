@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "imagegen",
-  "run_id": "386b8b3a-714a-4545-ae51-68be4997b2ee",
-  "timestamp": "2026-11-14T10:04:43.914629+00:00",
+  "run_type": "tts",
+  "run_id": "64494476-2e10-4f8e-9bd3-f65bb76fea30",
+  "timestamp": "2026-11-14T17:05:24.702614+00:00",
   "model": {
-    "name": "SD-Turbo-GGUF",
-    "checkpoint": "Green-Sky/SD-Turbo-GGUF:sd_turbo-f16-q8_0.gguf"
+    "name": "kokoro-v1",
+    "checkpoint": "mikkoph/kokoro-onnx"
   },
   "config": {
-    "compute_engine": "dgpu",
-    "backend": "sd-cpp-rocm",
+    "compute_engine": "cpu",
+    "backend": "kokoro-cpu",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,19 +24,17 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "master-957-90e86d1"
+    "backend_version": "b21"
   },
   "metrics": {
-    "generation_time_ms": 203.54318318422884,
-    "images_per_sec": 4.912962371699232,
+    "generation_time_ms": 284.68089799862355,
+    "audio_duration_s": 3.6,
+    "real_time_factor": 12.645737825435011,
     "trial_count": 5,
-    "operation": "generate",
-    "image_size": "256x256",
-    "generation_time_ms_stddev": 61.09679918915716,
-    "generation_time_ms_p95": 286.93060777150095,
-    "steps": 2,
-    "prompt_chars": 32,
-    "peak_memory_gb": 29.56216049194336
+    "input_chars": 45,
+    "generation_time_ms_stddev": 4.4531448752738925,
+    "generation_time_ms_p95": 290.1567553868517,
+    "peak_memory_gb": 0.24948883056640625
   },
   "validity": {
     "valid": true,

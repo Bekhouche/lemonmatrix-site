@@ -1,0 +1,48 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "imagegen",
+  "run_id": "b0d79326-2a44-4d0e-b9d6-1acf90421084",
+  "timestamp": "2026-11-14T17:05:54.945188+00:00",
+  "model": {
+    "name": "SD-Turbo-GGUF",
+    "checkpoint": "Green-Sky/SD-Turbo-GGUF:sd_turbo-f16-q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "sd-cpp-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "device_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "dgpu": "AMD Radeon AI PRO R9700 (gfx1201)",
+    "dgpu_family": "gfx1201",
+    "driver_version": "unknown",
+    "igpu": "AMD Ryzen 9 9950X3D 16-Core Processor (gfx1036)",
+    "igpu_family": "gfx1036",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 59.46,
+    "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
+    "backend_version": "master-957-90e86d1"
+  },
+  "metrics": {
+    "generation_time_ms": 142.16545359231532,
+    "images_per_sec": 7.034057675275159,
+    "trial_count": 5,
+    "operation": "generate",
+    "image_size": "256x256",
+    "generation_time_ms_stddev": 0.6408151177901751,
+    "generation_time_ms_p95": 142.8984883474186,
+    "steps": 2,
+    "prompt_chars": 32,
+    "peak_memory_gb": 2.0831336975097656
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

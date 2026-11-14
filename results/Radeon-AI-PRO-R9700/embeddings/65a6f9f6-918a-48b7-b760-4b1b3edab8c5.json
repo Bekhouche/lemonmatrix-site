@@ -1,15 +1,15 @@
 {
   "schema_version": "0.1.0",
-  "run_type": "imagegen",
-  "run_id": "a89c25ce-58d2-4444-9d3c-a7a0b2e79ee6",
-  "timestamp": "2026-11-14T10:04:48.421677+00:00",
+  "run_type": "embeddings",
+  "run_id": "65a6f9f6-918a-48b7-b760-4b1b3edab8c5",
+  "timestamp": "2026-11-14T17:05:01.500471+00:00",
   "model": {
-    "name": "SD-Turbo-GGUF",
-    "checkpoint": "Green-Sky/SD-Turbo-GGUF:sd_turbo-f16-q8_0.gguf"
+    "name": "Qwen3-Embedding-0.6B-GGUF",
+    "checkpoint": "Qwen/Qwen3-Embedding-0.6B-GGUF:Qwen3-Embedding-0.6B-Q8_0.gguf"
   },
   "config": {
     "compute_engine": "dgpu",
-    "backend": "sd-cpp-vulkan",
+    "backend": "llamacpp-rocm",
     "os": "linux",
     "power_state": "plugged"
   },
@@ -24,19 +24,18 @@
     "lemonade_version": "2026.46.2",
     "memory_gb": 59.46,
     "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
-    "backend_version": "master-957-90e86d1"
+    "backend_version": "b11836"
   },
   "metrics": {
-    "generation_time_ms": 140.6913748010993,
-    "images_per_sec": 7.107756260209538,
+    "latency_ms": 14.545626379549503,
+    "embeddings_per_sec": 137.4983756500105,
     "trial_count": 5,
-    "operation": "generate",
-    "image_size": "256x256",
-    "generation_time_ms_stddev": 3.1788083015787194,
-    "generation_time_ms_p95": 142.537708603777,
-    "steps": 2,
-    "prompt_chars": 32,
-    "peak_memory_gb": 29.18618392944336
+    "batch_size": 2,
+    "input_chars_total": 28,
+    "latency_ms_stddev": 0.2325317268955471,
+    "latency_ms_p95": 14.814714365638793,
+    "embedding_dim": 1024,
+    "peak_memory_gb": 4.687583923339844
   },
   "validity": {
     "valid": true,

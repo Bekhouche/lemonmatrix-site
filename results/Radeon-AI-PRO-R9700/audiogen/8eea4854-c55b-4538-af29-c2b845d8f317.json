@@ -1,0 +1,46 @@
+{
+  "schema_version": "0.1.0",
+  "run_type": "audiogen",
+  "run_id": "8eea4854-c55b-4538-af29-c2b845d8f317",
+  "timestamp": "2026-11-14T10:06:01.927713+00:00",
+  "model": {
+    "name": "ACE-Step-Music",
+    "checkpoint": "Serveurperso/ACE-Step-1.5-GGUF:acestep-v15-xl-sft-Q8_0.gguf"
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "acestep-vulkan",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "device_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "dgpu": "AMD Radeon AI PRO R9700 (gfx1201)",
+    "dgpu_family": "gfx1201",
+    "driver_version": "unknown",
+    "igpu": "AMD Ryzen 9 9950X3D 16-Core Processor (gfx1036)",
+    "igpu_family": "gfx1036",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 59.46,
+    "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
+    "backend_version": "v0.1.2"
+  },
+  "metrics": {
+    "generation_time_ms": 4021.5347530087456,
+    "audio_duration_s": 30.0,
+    "real_time_factor": 7.459838554809266,
+    "trial_count": 5,
+    "prompt_chars": 30,
+    "generation_time_ms_stddev": 1.681833899343263,
+    "generation_time_ms_p95": 4023.832433996722,
+    "peak_memory_gb": 31.715763092041016
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "notes": "exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}

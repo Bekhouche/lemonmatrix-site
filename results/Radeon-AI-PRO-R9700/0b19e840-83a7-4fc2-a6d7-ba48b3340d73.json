@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1.0",
+  "run_id": "0b19e840-83a7-4fc2-a6d7-ba48b3340d73",
+  "timestamp": "2026-11-14T10:41:57.367439+00:00",
+  "model": {
+    "name": "Qwen3-4B-GGUF",
+    "class": "dense",
+    "quantization": "Q4_0",
+    "context_length": 4096
+  },
+  "config": {
+    "compute_engine": "dgpu",
+    "backend": "llamacpp-rocm",
+    "os": "linux",
+    "power_state": "plugged"
+  },
+  "environment": {
+    "cpu": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "device_model": "AMD Ryzen 9 9950X3D 16-Core Processor",
+    "dgpu": "AMD Radeon AI PRO R9700 (gfx1201)",
+    "dgpu_family": "gfx1201",
+    "driver_version": "unknown",
+    "igpu": "AMD Ryzen 9 9950X3D 16-Core Processor (gfx1036)",
+    "igpu_family": "gfx1036",
+    "lemonade_version": "2026.46.2",
+    "memory_gb": 59.46,
+    "os_version": "Linux-7.0.0-42-generic (Ubuntu 26.04)",
+    "backend_version": "b11836"
+  },
+  "metrics": {
+    "prefill": {
+      "tokens_per_sec": 2588.336217479404,
+      "stddev": 5.636491655684951,
+      "p95": 2594.5921274862535,
+      "ci95_half_width": 6.997506781379992
+    },
+    "decode": {
+      "tokens_per_sec": 158.48219558791777,
+      "inter_token_latency_ms": 6.309857055490195,
+      "stddev": 0.11265486128299126,
+      "p95": 158.5705533000685,
+      "ci95_half_width": 0.13985706072820547
+    },
+    "ttft_ms": 13.522200000000002,
+    "trial_count": 5,
+    "peak_memory_gb": 3.4169998168945312,
+    "prompt_sha256": "1c43b07d6b0d7624785966ffe2ddc076aa76b5fcf9357882ac1165f0073f43ee",
+    "ttft_ms_stddev": 0.02945674795356754,
+    "ttft_ms_ci95_half_width": 0.03656951986340548
+  },
+  "validity": {
+    "valid": true,
+    "warmup_discarded": true,
+    "thermal_ok": true,
+    "exclusive_run": true,
+    "model_reload_free": true,
+    "prompt_cache_free": true,
+    "notes": "Lemonade doesn't report power draw for this instance; energy metrics omitted; exclusive_run verified via /api/v1/health polling (no other loaded model was busy)"
+  }
+}
